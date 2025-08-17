@@ -108,6 +108,7 @@ export const promptFormats = pgTable("prompt_formats", {
 export const promptFormatElements = pgTable("prompt_format_elements", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: varchar("name").notNull(),
+  description: text("description"),
   formatId: varchar("format_id").notNull().references(() => promptFormats.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
