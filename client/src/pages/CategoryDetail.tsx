@@ -399,11 +399,20 @@ export default function CategoryDetail() {
                             <FormItem>
                               <FormLabel>Description</FormLabel>
                               <FormControl>
-                                <Textarea 
-                                  placeholder="Brief description of this category and its purpose"
-                                  className="min-h-[80px]"
-                                  {...field} 
-                                />
+                                <div data-color-mode="light">
+                                  <MDEditor
+                                    value={field.value || ''}
+                                    onChange={(value) => field.onChange(value || '')}
+                                    preview="edit"
+                                    hideToolbar={false}
+                                    visibleDragbar={false}
+                                    height={120}
+                                    style={{
+                                      backgroundColor: 'transparent',
+                                      fontSize: '14px',
+                                    }}
+                                  />
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -509,9 +518,20 @@ export default function CategoryDetail() {
                         
                         <div>
                           <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
-                          <p className="text-gray-900 dark:text-white">
-                            {(category as DocumentCategory).description || 'No description provided'}
-                          </p>
+                          {(category as DocumentCategory).description ? (
+                            <div className="prose dark:prose-invert max-w-none text-sm mt-1">
+                              <ReactMarkdown 
+                                remarkPlugins={[remarkGfm]}
+                                rehypePlugins={[rehypeHighlight]}
+                              >
+                                {(category as DocumentCategory).description}
+                              </ReactMarkdown>
+                            </div>
+                          ) : (
+                            <p className="text-gray-500 dark:text-gray-400 italic text-sm mt-1">
+                              No description provided
+                            </p>
+                          )}
                         </div>
 
                         <div className="flex items-center justify-between mt-4">

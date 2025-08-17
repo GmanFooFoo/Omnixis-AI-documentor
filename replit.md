@@ -130,3 +130,10 @@ LLM Models page design: Must match Documents page layout with list view, search,
   - Responsive design with mobile-optimized touch targets
   - WCAG-compliant accessibility features and keyboard navigation
   - Path truncation for long navigation hierarchies
+- **Markdown Integration**: Enhanced category editing with comprehensive markdown support:
+  - Full-featured markdown editor (MDEditor) for category prompts with syntax highlighting
+  - Markdown rendering for category descriptions with proper typography
+  - Toggle functionality between raw markdown code and rendered view
+  - Integration with remarkGfm and rehypeHighlight for enhanced formatting
+  - Dark mode compatibility for all markdown components
+  - Real-time preview capabilities for better user experience
