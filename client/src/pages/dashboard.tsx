@@ -337,9 +337,11 @@ export default function Dashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Documents</h3>
-                <Button variant="ghost" className="text-accent-blue hover:text-blue-600">
-                  View All
-                </Button>
+                <Link href="/documents">
+                  <Button variant="ghost" className="text-accent-blue hover:text-blue-600">
+                    View All
+                  </Button>
+                </Link>
               </div>
 
               <div className="overflow-x-auto">
