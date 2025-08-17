@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, Save, Tag, Edit, Calendar, Info } from 'lucide-react';
+import { ArrowLeft, Save, Tag, Edit, Calendar, Info, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { DocumentCategory } from '@shared/schema';
 
@@ -454,11 +454,12 @@ Please provide detailed analysis with specific insights relevant to supplier man
                   </CardContent>
                 </Card>
 
-                {/* Metadata Card */}
+                {/* Usage Statistics Card */}
                 <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
                   <CardHeader>
-                    <CardTitle className="text-sm font-semibold text-gray-900 dark:text-white">
-                      Metadata
+                    <CardTitle className="flex items-center space-x-2 text-sm font-semibold text-gray-900 dark:text-white">
+                      <BarChart3 className="h-4 w-4" />
+                      <span>Usage Statistics</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3 text-xs">
@@ -500,22 +501,14 @@ Please provide detailed analysis with specific insights relevant to supplier man
                         </div>
                       </div>
                     )}
-                  </CardContent>
-                </Card>
-
-                {/* Usage Statistics Card (placeholder for future) */}
-                <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-                  <CardHeader>
-                    <CardTitle className="text-sm font-semibold text-gray-900 dark:text-white">
-                      Usage Statistics
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-4">
-                      <Tag className="h-6 w-6 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Usage stats coming soon
-                      </p>
+                    
+                    <div className="border-t pt-3 mt-3">
+                      <div className="text-center">
+                        <Tag className="h-4 w-4 text-gray-300 dark:text-gray-600 mx-auto mb-1" />
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Document usage stats coming soon
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
