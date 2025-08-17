@@ -39,7 +39,7 @@ function TopNavigation() {
           <div className="w-7 h-7 sm:w-8 sm:h-8 bg-accent-blue rounded-lg flex items-center justify-center">
             <i className="fas fa-brain text-white text-xs sm:text-sm"></i>
           </div>
-          <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">DocuAI</h1>
+          <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Omnixis AI- Dokumentar</h1>
         </div>
 
         {/* Desktop Navigation Links */}
@@ -124,7 +124,6 @@ function TopNavigation() {
           </div>
         </div>
       </div>
-
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden mt-4 pb-4 border-t border-gray-200 dark:border-dark-border">

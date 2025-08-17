@@ -1,230 +1,219 @@
-# DocuAI - Automated OCR & Document Processing Platform
+# DocuAI - AI-Powered Document Processing Platform
 
-A modern web application that provides AI-powered OCR and document processing capabilities with real-time processing updates and enterprise-grade document management.
-
-![DocuAI Platform](https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=400&fit=crop&auto=format&q=80)
+A sophisticated document processing web application that leverages advanced AI technologies for intelligent document analysis and extraction, with comprehensive LLM model management and multilingual support.
 
 ## 🚀 Features
 
-### Core Capabilities
+### Core Functionality
 - **AI-Powered OCR**: Advanced text extraction using Mistral AI Document AI
-- **Multi-Format Support**: PDF, DOCX, PNG, JPEG, TIFF files up to 50MB
-- **Unicode Support**: Perfect handling of special characters (äöß, é, ñ, etc.)
-- **Intelligent Image Analysis**: Automatic extraction and annotation of charts, diagrams, and visual elements
-- **Vector Embeddings**: Semantic search capabilities using Mistral AI embeddings
-- **Real-Time Processing**: Live status updates with animated loading states
+- **Multi-Format Support**: PDF, DOCX, PNG, JPEG, and TIFF files up to 50MB
+- **Image Analysis**: Intelligent detection and description of charts, diagrams, signatures, and visual elements
+- **Document Classification**: Automatic categorization and structured data extraction
+- **Vector Search**: Semantic search capabilities with PostgreSQL vector embeddings
+- **Real-time Processing**: Async processing queue with live status updates
 
-### User Experience
-- **Modern Interface**: Clean, responsive design with dark/light theme support
-- **Drag & Drop Upload**: Intuitive file upload with progress tracking
-- **Animated Loading**: Beautiful document type icons during processing
-- **Dashboard Analytics**: Processing statistics and document management
-- **Real-Time Updates**: Live processing status with automatic refresh
+### LLM Model Management
+- **Multiple Providers**: Support for Mistral AI, OpenAI, and Google models
+- **Secure Configuration**: Encrypted API key storage in database
+- **Model Selection**: Configure primary and secondary models for different tasks
+- **Cost Tracking**: Token usage and pricing information per model
+- **Easy Management**: Search, filter, and manage AI models through intuitive interface
+
+### User Interface
+- **Modern Design**: Clean, responsive interface with dark/light theme support
+- **Documents Dashboard**: List and tile view with advanced search and filtering
+- **Settings Management**: Alphabetically organized configuration panels
+- **Real-time Updates**: Live processing status and progress indicators
+- **Mobile Optimized**: Adaptive UI for desktop, tablet, and mobile devices
 
 ## 🏗️ Architecture
 
-### Technology Stack
-- **Frontend**: React 18 + TypeScript + Vite
-- **Backend**: Express.js + TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
-- **AI Processing**: Mistral AI Document AI
-- **Styling**: Tailwind CSS + shadcn/ui components
-- **State Management**: TanStack Query
+### Frontend Stack
+- **React 18** with TypeScript
+- **Vite** for build tooling and development
+- **TanStack Query** for server state management
+- **Wouter** for client-side routing
+- **shadcn/ui** + Radix UI for components
+- **Tailwind CSS** for styling
 
-### Database Design
-```
-📦 Unified PostgreSQL Database
-├── users (authentication & profiles)
-├── documents (metadata & file storage)
-├── extracted_images (image annotations)
-├── vector_embeddings (semantic search)
-├── processing_queue (real-time status)
-└── sessions (authentication sessions)
-```
+### Backend Stack
+- **Express.js** with TypeScript
+- **PostgreSQL** with Drizzle ORM
+- **Session-based Authentication** via Replit Auth
+- **RESTful API** with structured error handling
+- **Multer** for file upload processing
 
-### Storage Architecture
-- **Unified Storage**: Everything stored in single Replit PostgreSQL database
-- **File Storage**: Documents and images stored as base64 in BYTEA fields
-- **Vector Storage**: Embeddings stored as PostgreSQL real arrays
-- **Session Management**: PostgreSQL-based session storage
+### Database Schema
+- **Users & Sessions**: Authentication and user management
+- **Documents**: Metadata, OCR results, and processing status
+- **Categories**: Custom document classification system
+- **LLM Configuration**: Model providers, specifications, and user settings
+- **Vector Embeddings**: Semantic search capabilities
+- **Processing Queue**: Async task management
+
+### External Services
+- **Mistral AI**: Document AI for OCR and analysis
+- **Supabase**: Cloud storage for documents and images
+- **PostgreSQL**: Primary database (Neon-compatible)
+- **Replit Auth**: User authentication system
 
 ## 🛠️ Setup & Installation
 
 ### Prerequisites
-- Node.js 18+ with npm
+- Node.js 18+ 
 - PostgreSQL database
-- Mistral AI API key
+- Mistral AI API key (for production OCR)
 
 ### Environment Variables
-```bash
-# Required
+```env
 DATABASE_URL=postgresql://...
-MISTRAL_API_KEY=your_mistral_api_key
-
-# Auto-configured by Replit
-PGHOST=localhost
-PGPORT=5432
-PGUSER=username
-PGPASSWORD=password
-PGDATABASE=dbname
+MISTRAL_API_KEY=your_mistral_key
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_key
 ```
 
-### Installation Steps
+### Development Setup
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up your database and environment variables
+4. Run database migrations: `npm run db:push`
+5. Start development server: `npm run dev`
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd docuai
-   ```
+The application will be available at `http://localhost:5000`
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## 📊 Database Management
 
-3. **Set up the database**
-   ```bash
-   npm run db:push
-   ```
+### Available Models (Pre-configured)
+- **Mistral Large**: Advanced OCR and document processing
+- **Gemini 2.5 Flash**: Fast text processing
+- **GPT-4o**: Multimodal analysis with vision capabilities  
+- **GPT-4o Mini**: Lightweight processing tasks
 
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+### Commands
+- `npm run db:push` - Apply schema changes to database
+- Database migrations are handled automatically through Drizzle
 
-5. **Access the application**
-   - Frontend: `http://localhost:5000`
-   - Backend API: `http://localhost:5000/api`
+## 🎯 Usage
 
-## 📊 API Endpoints
+### Document Processing
+1. **Upload**: Drag & drop or select documents
+2. **Processing**: Real-time OCR and AI analysis
+3. **Review**: View extracted text, images, and insights
+4. **Search**: Find documents using semantic search
+5. **Export**: Download processed content
 
-### Authentication
-- `GET /api/auth/user` - Get current user
-- `GET /api/login` - Login redirect
-- `GET /api/logout` - Logout
+### LLM Configuration
+1. **Navigate**: Settings → LLM Models
+2. **Add Models**: Configure API keys for different providers
+3. **Set Primary**: Choose default model for processing
+4. **Manage**: Enable/disable models as needed
 
-### Document Management
-- `POST /api/documents/upload` - Upload document for processing
-- `GET /api/documents` - List user documents
+### Categories & Classification
+1. **Create Categories**: Define custom document types
+2. **Set Prompts**: Configure AI analysis for each category
+3. **Auto-Classification**: Documents are automatically categorized
+4. **Custom Analysis**: Get structured insights based on document type
+
+## 🔧 Configuration
+
+### Settings Organization
+Settings are organized alphabetically:
+- **Account**: Profile and user preferences
+- **Database**: Storage and backup management
+- **Design System**: UI components and styling
+- **General**: Application preferences
+- **LLM Models**: AI model configuration
+- **Notifications**: Email and processing alerts
+- **Security**: Authentication and access control
+
+### Processing Pipeline
+1. **Upload** → File validation and storage
+2. **Queue** → Async processing queue management
+3. **OCR** → Text extraction via Mistral AI
+4. **Analysis** → Document classification and insights
+5. **Vectors** → Embedding generation for search
+6. **Storage** → Final storage and indexing
+
+## 🚀 Deployment
+
+The application is designed for deployment on Replit with:
+- Automatic SSL/TLS handling
+- Built-in database connectivity
+- Environment variable management
+- Real-time collaboration support
+
+For production deployment:
+1. Configure your production database
+2. Set up external storage (Supabase)
+3. Add your AI service API keys
+4. Deploy using Replit Deployments
+
+## 📝 API Reference
+
+### Document Endpoints
+- `POST /api/documents` - Upload new document
+- `GET /api/documents` - List user documents  
 - `GET /api/documents/:id` - Get document details
-- `GET /api/documents/:id/images` - Get extracted images
+- `DELETE /api/documents/:id` - Delete document
 
-### Processing & Analytics
-- `GET /api/processing/active` - Get active processing jobs
-- `GET /api/analytics/stats` - Get user statistics
-- `POST /api/documents/search` - Vector similarity search
+### LLM Management
+- `GET /api/llm/models` - List available models
+- `GET /api/llm/user-configs` - Get user configurations
+- `POST /api/llm/user-configs` - Create model configuration
+- `PUT /api/llm/user-configs/:id` - Update configuration
+- `DELETE /api/llm/user-configs/:id` - Remove configuration
 
-## 🔄 Document Processing Pipeline
-
-```mermaid
-graph TD
-    A[File Upload] --> B[Validation & Storage]
-    B --> C[Mistral AI OCR]
-    C --> D[Text Extraction]
-    D --> E[Image Analysis]
-    E --> F[Vector Embeddings]
-    F --> G[Database Storage]
-    G --> H[Completion]
-```
-
-### Processing Steps
-1. **Upload & Validation**: File type and size validation
-2. **OCR Processing**: Mistral AI Document AI extracts text and images
-3. **Image Analysis**: Intelligent annotation of visual elements
-4. **Vector Generation**: Create embeddings for semantic search
-5. **Storage**: Save all data to PostgreSQL database
-6. **Real-Time Updates**: Live status tracking throughout pipeline
-
-## 🌐 Special Character Support
-
-DocuAI fully supports Unicode characters in filenames and content:
-
-- **German**: ä, ö, ü, ß
-- **French**: é, è, à, ç
-- **Spanish**: ñ, í, ó
-- **Symbols**: €, £, ¥, and more
-
-Example filename: `document-äöß.pdf` ✅
-
-## 📁 Project Structure
-
-```
-docuai/
-├── client/                 # React frontend
-│   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── pages/         # Application pages
-│   │   └── lib/           # Utilities and hooks
-├── server/                # Express backend
-│   ├── services/          # External service integrations
-│   ├── storage-replit.ts  # Database operations
-│   ├── routes-database.ts # API route handlers
-│   └── db.ts             # Database connection
-├── shared/               # Shared types and schemas
-│   └── schema.ts        # Drizzle database schema
-└── attached_assets/     # Static assets
-```
-
-## 🚦 Development Scripts
-
-```bash
-# Development
-npm run dev              # Start development server
-
-# Database
-npm run db:push          # Push schema changes to database
-npm run db:studio        # Open Drizzle Studio (database GUI)
-
-# Build
-npm run build            # Build for production
-npm start               # Start production server
-```
-
-## 📈 Performance Features
-
-- **Concurrent Processing**: Parallel file upload and AI processing
-- **Caching**: TanStack Query for optimized data fetching
-- **Real-Time Updates**: Efficient WebSocket-like polling for status
-- **Optimized Database**: Indexed queries with connection pooling
-- **Responsive UI**: Mobile-first design with lazy loading
+### Analytics & Stats
+- `GET /api/analytics/stats` - Processing statistics
+- `GET /api/processing/active` - Active processing jobs
 
 ## 🔒 Security
 
-- **File Validation**: Strict MIME type and size checking
-- **SQL Injection Prevention**: Parameterized queries with Drizzle ORM
-- **Input Sanitization**: Comprehensive validation with Zod schemas
-- **Session Management**: Secure PostgreSQL-based sessions
-- **CORS Protection**: Configured for production deployment
+- **API Key Encryption**: All API keys stored securely in database
+- **Session Management**: PostgreSQL-backed sessions
+- **File Validation**: Comprehensive upload security
+- **Access Control**: User-based document isolation
+- **Data Privacy**: No external data sharing without consent
 
-## 🌟 Key Achievements
+## 🎨 Design System
 
-- ✅ **Unified Database Architecture**: Single PostgreSQL database for all storage needs
-- ✅ **Perfect Unicode Support**: Handles special characters in filenames and content
-- ✅ **Real AI Integration**: Mistral AI for professional OCR and analysis
-- ✅ **Animated User Experience**: Beautiful loading states with document type icons
-- ✅ **Scalable Design**: Built for enterprise-grade document processing
+The application includes a comprehensive design system with:
+- Consistent color palette and typography
+- Reusable UI components
+- Dark/light theme support
+- Responsive breakpoints
+- Accessibility compliance
+
+## 📚 Recent Updates
+
+### LLM Model Management (Current)
+- Added comprehensive model configuration interface
+- Implemented secure API key storage
+- Created Documents-style list layout for model management
+- Added search and filtering capabilities
+- Integrated cost tracking and usage statistics
+
+### Navigation & UX Improvements
+- Reorganized settings with alphabetical tile ordering
+- Enhanced mobile responsiveness
+- Improved file type icons and visual indicators
+- Streamlined document processing workflow
+
+### Database Enhancements
+- Extended schema for LLM provider and model management
+- Added user configuration tables
+- Implemented vector embedding storage
+- Enhanced processing queue management
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This is a demonstration project showcasing modern web development practices with AI integration. The codebase demonstrates:
+- Full-stack TypeScript development
+- Modern React patterns and state management
+- Database design and ORM usage
+- AI service integration
+- Responsive UI/UX design
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Mistral AI** for powerful document processing capabilities
-- **Replit** for seamless development and database hosting
-- **shadcn/ui** for beautiful, accessible UI components
-- **Drizzle ORM** for type-safe database operations
-
----
-
-**Built with ❤️ using modern web technologies**
-
-For questions or support, please open an issue in the repository.
+This project is for demonstration purposes. Please ensure you comply with the terms of service of all external APIs and services used.
