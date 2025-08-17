@@ -29,6 +29,7 @@ export interface IStorage {
   updateDocument(id: string, updates: Partial<InsertDocument>): Promise<Document>;
   getUserDocuments(userId: string): Promise<Document[]>;
   updateDocumentStatus(id: string, status: string, error?: string): Promise<void>;
+  deleteDocument(id: string): Promise<void>;
 
   // Extracted images operations
   createExtractedImage(image: InsertExtractedImage): Promise<ExtractedImage>;
@@ -152,6 +153,35 @@ export class ReplitDatabaseStorage implements IStorage {
         .where(eq(documents.id, id));
     } catch (dbError) {
       console.error("Error updating document status:", dbError);
+    }
+  }
+
+  async deleteDocument(id: string): Promise<void> {
+    try {
+      console.log(`🗑️ Deleting document ${id} and all related content...`);
+      
+      // Delete all related data in the correct order (due to foreign key constraints)
+      
+      // 1. Delete processing queue items
+      await db.delete(processingQueue).where(eq(processingQueue.documentId, id));
+      console.log(`✓ Deleted processing queue items for document ${id}`);
+      
+      // 2. Delete vector embeddings
+      await db.delete(vectorEmbeddings).where(eq(vectorEmbeddings.documentId, id));
+      console.log(`✓ Deleted vector embeddings for document ${id}`);
+      
+      // 3. Delete extracted images
+      await db.delete(extractedImages).where(eq(extractedImages.documentId, id));
+      console.log(`✓ Deleted extracted images for document ${id}`);
+      
+      // 4. Finally delete the document itself
+      await db.delete(documents).where(eq(documents.id, id));
+      console.log(`✓ Deleted document ${id}`);
+      
+      console.log(`🗑️ Successfully deleted document ${id} and all related content`);
+    } catch (error) {
+      console.error(`❌ Error deleting document ${id}:`, error);
+      throw error;
     }
   }
 

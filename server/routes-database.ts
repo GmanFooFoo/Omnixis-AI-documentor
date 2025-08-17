@@ -220,6 +220,27 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete document endpoint
+  app.delete('/api/documents/:id', async (req, res) => {
+    try {
+      const documentId = req.params.id;
+      
+      // Check if document exists
+      const document = await storage.getDocument(documentId);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      
+      // Delete document and all related content
+      await storage.deleteDocument(documentId);
+      
+      res.json({ message: "Document deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
