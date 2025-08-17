@@ -113,37 +113,6 @@ export default function Help() {
               </div>
             </div>
 
-            {/* Getting Started */}
-            <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Getting Started</h2>
-              
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-accent-blue rounded-full flex items-center justify-center text-white text-xs font-bold mt-0.5">1</div>
-                  <div>
-                    <h4 className="font-medium text-gray-900 dark:text-white">Upload a Document</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Drag and drop or click to select a PDF, DOCX, or image file.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-accent-green rounded-full flex items-center justify-center text-white text-xs font-bold mt-0.5">2</div>
-                  <div>
-                    <h4 className="font-medium text-gray-900 dark:text-white">Monitor Processing</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Watch the real-time progress on your dashboard.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold mt-0.5">3</div>
-                  <div>
-                    <h4 className="font-medium text-gray-900 dark:text-white">View Results</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Access extracted text, images, and perform searches in the Documents section.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Contact Support */}
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 sm:p-6">
               <h2 className="text-lg sm:text-xl font-semibold text-blue-900 dark:text-blue-100 mb-3 sm:mb-4">Need More Help?</h2>
