@@ -1,0 +1,19 @@
+Test Document with Special Characters
+=====================================
+
+This is a test document with special characters in the filename (äöß).
+
+Content includes:
+- German umlauts: ä, ö, ü, ß
+- French accents: é, è, à, ç
+- Spanish characters: ñ, í, ó
+- Various symbols: €, £, ¥
+
+This document will test:
+1. UTF-8 filename encoding support
+2. OCR text extraction with Mistral AI
+3. Storage in Replit PostgreSQL database
+4. Animated loading states during processing
+5. Special character preservation throughout the pipeline
+
+The DocuAI platform should handle this seamlessly with the new unified storage architecture.

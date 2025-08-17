@@ -17,13 +17,16 @@ const upload = multer({
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'image/png',
       'image/jpeg',
-      'image/tiff'
+      'image/tiff',
+      'text/plain' // Added for testing with text files
     ];
+    
+    console.log(`File mimetype detected: ${file.mimetype} for file: ${file.originalname}`);
     
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      const error = new Error('Unsupported file type') as any;
+      const error = new Error(`Unsupported file type: ${file.mimetype}`) as any;
       cb(error, false);
     }
   }
