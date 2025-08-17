@@ -29,22 +29,52 @@ export default function Dashboard() {
   }, [isAuthenticated, isLoading, toast]);
 
   // Fetch user statistics
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats = {}, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/analytics/stats"],
     retry: false,
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Session expired",
+          description: "Please log in again",
+          variant: "destructive",
+        });
+        setTimeout(() => window.location.href = "/api/login", 500);
+      }
+    },
   });
 
   // Fetch active processing items
-  const { data: activeProcessing, isLoading: processingLoading } = useQuery({
+  const { data: activeProcessing = [], isLoading: processingLoading } = useQuery({
     queryKey: ["/api/processing/active"],
     retry: false,
     refetchInterval: 2000, // Refresh every 2 seconds for real-time updates
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Session expired",
+          description: "Please log in again",
+          variant: "destructive",
+        });
+        setTimeout(() => window.location.href = "/api/login", 500);
+      }
+    },
   });
 
   // Fetch recent documents
-  const { data: documents, isLoading: documentsLoading } = useQuery({
+  const { data: documents = [], isLoading: documentsLoading } = useQuery({
     queryKey: ["/api/documents"],
     retry: false,
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Session expired",
+          description: "Please log in again",
+          variant: "destructive",
+        });
+        setTimeout(() => window.location.href = "/api/login", 500);
+      }
+    },
   });
 
   if (isLoading) {
@@ -106,7 +136,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-gray-600 dark:text-gray-400 text-sm">Documents Processed</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {statsLoading ? "..." : formatNumber(stats?.documentsProcessed || 0)}
+                      {statsLoading ? "..." : formatNumber((stats as any)?.documentsProcessed || 0)}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-accent-blue/10 rounded-lg flex items-center justify-center">
@@ -122,7 +152,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-gray-600 dark:text-gray-400 text-sm">Images Extracted</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {statsLoading ? "..." : formatNumber(stats?.imagesExtracted || 0)}
+                      {statsLoading ? "..." : formatNumber((stats as any)?.imagesExtracted || 0)}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-accent-green/10 rounded-lg flex items-center justify-center">
@@ -138,7 +168,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-gray-600 dark:text-gray-400 text-sm">Vector Embeddings</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {statsLoading ? "..." : formatNumber(stats?.vectorEmbeddings || 0)}
+                      {statsLoading ? "..." : formatNumber((stats as any)?.vectorEmbeddings || 0)}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
@@ -154,7 +184,7 @@ export default function Dashboard() {
                   <div>
                     <p className="text-gray-600 dark:text-gray-400 text-sm">Storage Used</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {statsLoading ? "..." : formatBytes(stats?.storageUsed || 0)}
+                      {statsLoading ? "..." : formatBytes((stats as any)?.storageUsed || 0)}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-accent-orange/10 rounded-lg flex items-center justify-center">
@@ -226,7 +256,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Active Processing</h3>
                   <Badge variant="secondary">
-                    {processingLoading ? "..." : `${activeProcessing?.length || 0} items`}
+                    {processingLoading ? "..." : `${(activeProcessing as any[])?.length || 0} items`}
                   </Badge>
                 </div>
 
@@ -235,9 +265,9 @@ export default function Dashboard() {
                     <div className="text-center py-4 flex-1 flex items-center justify-center">
                       <div className="w-6 h-6 border-2 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
                     </div>
-                  ) : activeProcessing?.length > 0 ? (
+                  ) : (activeProcessing as any[])?.length > 0 ? (
                     <div className="flex-1">
-                      {activeProcessing.map((item: any) => (
+                      {(activeProcessing as any[]).map((item: any) => (
                         <div key={item.id} className="p-3 bg-gray-50 dark:bg-dark-bg rounded-lg mb-3 last:mb-0">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
@@ -337,8 +367,8 @@ export default function Dashboard() {
                           <div className="w-6 h-6 border-2 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
                         </td>
                       </tr>
-                    ) : documents?.length > 0 ? (
-                      documents.slice(0, 5).map((doc: any) => (
+                    ) : (documents as any[])?.length > 0 ? (
+                      (documents as any[]).slice(0, 5).map((doc: any) => (
                         <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors">
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-3">
