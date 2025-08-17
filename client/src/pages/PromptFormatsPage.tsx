@@ -295,7 +295,7 @@ export default function PromptFormatsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {formats.map((format) => (
+            {formats.sort((a, b) => a.name.localeCompare(b.name)).map((format) => (
               <Card key={format.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between">
@@ -304,7 +304,14 @@ export default function PromptFormatsPage() {
                         <FileText className="h-5 w-5 text-indigo-500" />
                       </div>
                       <div>
-                        <CardTitle className="text-lg">{format.name}</CardTitle>
+                        <div className="flex items-center space-x-2">
+                          <CardTitle className="text-lg">{format.name}</CardTitle>
+                          {format.isDefault && (
+                            <Badge variant="secondary" className="bg-accent-green text-white text-xs">
+                              Default
+                            </Badge>
+                          )}
+                        </div>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                           {format.description}
                         </p>
@@ -323,7 +330,10 @@ export default function PromptFormatsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Structure</h4>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Structure</h4>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Elements</span>
+                    </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                       {format.structure}
                     </p>
