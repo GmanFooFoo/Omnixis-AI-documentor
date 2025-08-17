@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { DocumentTypeIcon } from "@/components/LoadingAnimation";
 
 export default function Documents() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -384,9 +385,7 @@ export default function Documents() {
                           )}
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-3">
-                              <i className={`fas ${doc.mimeType?.includes('pdf') ? 'fa-file-pdf text-red-500' : 
-                                             doc.mimeType?.includes('word') ? 'fa-file-word text-blue-500' : 
-                                             'fa-file-image text-green-500'} text-lg`}></i>
+                              <DocumentTypeIcon fileName={doc.originalName || doc.fileName} size="md" className="text-blue-600" />
                               <div>
                                 <p className="text-sm font-medium text-gray-900 dark:text-white">{doc.originalName}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">{doc.mimeType}</p>
@@ -492,9 +491,7 @@ export default function Documents() {
                           </div>
                         )}
                         <div className="flex items-start space-x-3 mb-4">
-                          <i className={`fas ${doc.mimeType?.includes('pdf') ? 'fa-file-pdf text-red-500' : 
-                                         doc.mimeType?.includes('word') ? 'fa-file-word text-blue-500' : 
-                                         'fa-file-image text-green-500'} text-2xl`}></i>
+                          <DocumentTypeIcon fileName={doc.originalName || doc.fileName} size="lg" className="text-blue-600" />
                           <div className="flex-1">
                             <h3 className="font-semibold text-gray-900 dark:text-white mb-1 truncate">
                               {doc.originalName}
