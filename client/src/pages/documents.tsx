@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,9 +21,27 @@ import { apiRequest } from "@/lib/queryClient";
 
 export default function Documents() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<'table' | 'tiles'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'tiles'>('tiles');
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  // Check screen size and force tiles on mobile/tablet
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const largeScreen = window.innerWidth >= 1024;
+      setIsLargeScreen(largeScreen);
+      if (!largeScreen && viewMode === 'table') {
+        setViewMode('tiles');
+      } else if (largeScreen && viewMode === 'tiles') {
+        setViewMode('table');
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, [viewMode]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -116,7 +134,7 @@ export default function Documents() {
 
   return (
     <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="max-w-none mx-auto px-4 sm:px-6 py-4 sm:py-8" style={{ maxWidth: '1920px' }}>
+      <div className="w-full max-w-none mx-auto px-4 sm:px-6 py-4 sm:py-8" style={{ width: '90vw', maxWidth: '95vw' }}>
         <div className="mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Documents</h2>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Manage and search your processed documents</p>
@@ -139,7 +157,7 @@ export default function Documents() {
                 variant={viewMode === 'table' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('table')}
-                className="whitespace-nowrap"
+                className="whitespace-nowrap hidden lg:inline-flex"
               >
                 <i className="fas fa-table mr-1 sm:mr-2 text-xs sm:text-sm"></i>
                 <span className="text-xs sm:text-sm">Table</span>
@@ -227,7 +245,7 @@ export default function Documents() {
         {/* Documents Display */}
         <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
           <CardContent className="p-3 sm:p-6">
-            {viewMode === 'table' ? (
+            {viewMode === 'table' && isLargeScreen ? (
               /* Table View */
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px]">

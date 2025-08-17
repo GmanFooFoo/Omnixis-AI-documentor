@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,8 +28,26 @@ type CategoryFormData = z.infer<typeof categoryFormSchema>;
 export default function CategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<DocumentCategory | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'table' | 'tiles'>('table'); // Default to table on desktop
+  const [viewMode, setViewMode] = useState<'table' | 'tiles'>('tiles'); // Default to tiles
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  // Check screen size and force tiles on mobile/tablet
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const largeSreen = window.innerWidth >= 1024;
+      setIsLargeScreen(largeSreen);
+      if (!largeSreen && viewMode === 'table') {
+        setViewMode('tiles');
+      } else if (largeSreen && viewMode === 'tiles') {
+        setViewMode('table');
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, [viewMode]);
   const { toast } = useToast();
 
   const form = useForm<CategoryFormData>({
@@ -155,7 +173,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="max-w-none mx-auto px-4 sm:px-6 py-4 sm:py-8" style={{ maxWidth: '1920px' }}>
+      <div className="w-full max-w-none mx-auto px-4 sm:px-6 py-4 sm:py-8" style={{ width: '90vw', maxWidth: '95vw' }}>
         <div className="mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Categories</h2>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Manage document categories and their AI analysis prompts</p>
@@ -179,7 +197,7 @@ export default function CategoriesPage() {
                 variant={viewMode === 'table' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('table')}
-                className="whitespace-nowrap hidden md:inline-flex"
+                className="whitespace-nowrap hidden lg:inline-flex"
               >
                 <i className="fas fa-table mr-1 sm:mr-2 text-xs sm:text-sm"></i>
                 <span className="text-xs sm:text-sm">Table</span>
@@ -306,7 +324,7 @@ export default function CategoriesPage() {
               </Button>
             )}
           </div>
-        ) : viewMode === 'table' ? (
+        ) : viewMode === 'table' && isLargeScreen ? (
           /* Table View */
           <div className="bg-white dark:bg-dark-surface rounded-lg border border-gray-200 dark:border-dark-border overflow-hidden">
             <Table>
