@@ -258,11 +258,17 @@ For production use, ensure MISTRAL_API_KEY is properly configured.`;
       case 'jpeg':
         return 'image/jpeg';
       case 'tiff':
+      case 'tif':
         return 'image/tiff';
       case 'docx':
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'doc':
+        return 'application/msword';
+      case 'pptx':
+        return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
       default:
-        return 'application/octet-stream';
+        // Default to PDF for unknown types since Mistral OCR handles PDFs well
+        return 'application/pdf';
     }
   }
 }
