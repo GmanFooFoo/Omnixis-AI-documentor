@@ -454,8 +454,6 @@ Please provide detailed analysis with specific insights relevant to supplier man
                   </CardContent>
                 </Card>
 
-
-
                 {/* Metadata Card */}
                 <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
                   <CardHeader>
