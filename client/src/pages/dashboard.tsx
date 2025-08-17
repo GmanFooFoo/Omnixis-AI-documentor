@@ -192,13 +192,11 @@ export default function Dashboard() {
 
           {/* Monitoring Panel */}
           <div className="space-y-6">
-            {/* Processing Status / Uploader Status */}
+            {/* Uploader Status */}
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {(activeProcessing as any[])?.length > 0 ? "Uploader Status" : "Processing Status"}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Uploader Status</h3>
                   <Badge variant="secondary">
                     {processingLoading ? "..." : `${(activeProcessing as any[])?.length || 0} items`}
                   </Badge>
@@ -261,12 +259,67 @@ export default function Dashboard() {
                         );
                       })}
                     </div>
+                  ) : (documents as any[])?.length > 0 ? (
+                    // Show last uploaded document status
+                    (() => {
+                      const lastDocument = (documents as any[])[0]; // Most recent document
+                      const fileName = lastDocument?.originalName || lastDocument?.fileName || "Document";
+                      
+                      return (
+                        <div className="border border-gray-200 dark:border-dark-border rounded-lg p-6">
+                          {/* Document Header with Icon */}
+                          <div className="flex items-center space-x-3 mb-4">
+                            <DocumentTypeIcon fileName={fileName} size="lg" className="text-blue-600 dark:text-blue-400" />
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-gray-900 dark:text-white truncate">{fileName}</h4>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {lastDocument?.fileSize ? `${Math.round(lastDocument.fileSize / 1024)} KB` : ''}
+                              </p>
+                            </div>
+                            <Badge variant="default" className="bg-accent-green text-white">
+                              Completed
+                            </Badge>
+                          </div>
+
+                          {/* Completion Status */}
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600 dark:text-gray-400">Processing completed</span>
+                              <span className="text-gray-500 dark:text-gray-500">
+                                {new Date(lastDocument?.createdAt).toLocaleString()}
+                              </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                              <div className="p-2 bg-gray-50 dark:bg-dark-bg rounded">
+                                <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                                  {lastDocument?.imageCount || 0}
+                                </div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">Images</div>
+                              </div>
+                              <div className="p-2 bg-gray-50 dark:bg-dark-bg rounded">
+                                <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                                  {lastDocument?.vectorCount || 0}
+                                </div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">Vectors</div>
+                              </div>
+                              <div className="p-2 bg-gray-50 dark:bg-dark-bg rounded">
+                                <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                                  {lastDocument?.extractedText?.length || 0}
+                                </div>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">Characters</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()
                   ) : (
                     <div className="text-center py-12 flex-1 flex flex-col justify-center">
                       <div className="w-16 h-16 bg-gray-100 dark:bg-dark-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i className="fas fa-check text-2xl text-accent-green"></i>
+                        <i className="fas fa-upload text-2xl text-gray-400"></i>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-400">No active processing</p>
+                      <p className="text-gray-600 dark:text-gray-400">No documents uploaded yet</p>
                       <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Upload a document to get started</p>
                     </div>
                   )}
