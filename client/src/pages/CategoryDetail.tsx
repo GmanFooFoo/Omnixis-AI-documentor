@@ -172,12 +172,15 @@ export default function CategoryDetail() {
                 {(category as DocumentCategory).name}
               </h1>
               <div className="flex items-center space-x-3 mt-2">
+                <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">
+                  {(category as any).formatName || 'CTO'}
+                </Badge>
                 {(category as DocumentCategory).isDefault && (
-                  <Badge variant="secondary" className="bg-accent-green text-white">
-                    Default Category
+                  <Badge variant="secondary" className="bg-accent-green text-white text-xs">
+                    Default
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-accent-green border-accent-green">
+                <Badge variant="outline" className="text-accent-green border-accent-green text-xs">
                   Active
                 </Badge>
               </div>
