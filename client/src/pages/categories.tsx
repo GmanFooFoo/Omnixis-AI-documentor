@@ -358,7 +358,7 @@ export default function CategoriesPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleOpenDialog(category)}
+                          onClick={() => window.location.href = `/categories/${category.id}`}
                           className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-dark-bg"
                         >
                           <Edit className="h-4 w-4 mr-1" />
@@ -407,7 +407,7 @@ export default function CategoriesPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleOpenDialog(category)}
+                        onClick={() => window.location.href = `/categories/${category.id}`}
                         className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-dark-bg"
                       >
                         <Edit className="h-4 w-4 mr-1" />

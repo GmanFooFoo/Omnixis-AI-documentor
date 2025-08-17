@@ -14,6 +14,7 @@ import Documents from "@/pages/documents";
 import DocumentDetail from "@/pages/DocumentDetail";
 import Help from "@/pages/help";
 import Categories from "@/pages/categories";
+import CategoryDetail from "@/pages/CategoryDetail";
 
 function TopNavigation() {
   const { user, isAuthenticated } = useAuth();
@@ -207,6 +208,7 @@ function Router() {
             <Route path="/documents" component={Documents} />
             <Route path="/documents/:id" component={DocumentDetail} />
             <Route path="/categories" component={Categories} />
+            <Route path="/categories/:id" component={CategoryDetail} />
             <Route path="/help" component={Help} />
           </>
         )}

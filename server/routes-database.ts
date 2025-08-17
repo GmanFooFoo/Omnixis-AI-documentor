@@ -252,6 +252,20 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/categories/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const category = await storage.getDocumentCategory(id);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      res.json(category);
+    } catch (error) {
+      console.error('❌ Error fetching category:', error);
+      res.status(500).json({ message: "Failed to fetch category" });
+    }
+  });
+
   app.post('/api/categories', async (req, res) => {
     try {
       const categoryData = req.body;
