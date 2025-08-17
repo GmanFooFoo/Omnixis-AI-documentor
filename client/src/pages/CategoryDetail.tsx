@@ -469,7 +469,7 @@ export default function CategoryDetail() {
                           name="isActive"
                           render={({ field }) => (
                             <FormItem className="space-y-3">
-                              <FormLabel className="text-base">Category Status</FormLabel>
+                              <FormLabel className="text-base">Status</FormLabel>
                               <FormControl>
                                 <div className="flex items-center space-x-6">
                                   <div className="flex items-center space-x-2">
