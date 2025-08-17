@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ArrowLeft, Save, Tag, Edit, Calendar, Info, BarChart3 } from 'lucide-react';
+import { Link } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import type { DocumentCategory } from '@shared/schema';
 
@@ -144,6 +145,15 @@ export default function CategoryDetail() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-16">
       <div className="container mx-auto px-4 py-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <Link href="/" className="hover:text-accent-blue">Home</Link>
+          <span>/</span>
+          <Link href="/categories" className="hover:text-accent-blue">Categories</Link>
+          <span>/</span>
+          <span className="text-gray-600 dark:text-gray-300">{(category as DocumentCategory).name}</span>
+        </div>
+
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
           <div className="flex items-center space-x-4 mb-4 lg:mb-0">
