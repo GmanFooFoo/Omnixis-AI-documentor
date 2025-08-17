@@ -176,12 +176,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 // Async document processing function
 async function processDocumentAsync(documentId: string, fileBuffer: Buffer, fileName: string) {
+  let processingQueueItem: any = null;
+  
   try {
     // Update status to processing
     await storage.updateDocumentStatus(documentId, "processing");
     
     // Step 1: OCR and Image Annotation
-    await storage.createProcessingQueueItem({
+    processingQueueItem = await storage.createProcessingQueueItem({
       documentId,
       status: "processing",
       step: "ocr",
@@ -197,7 +199,7 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     });
 
     // Step 2: Store images in Supabase
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(processingQueueItem.id, {
       step: "storage",
       progress: 40
     });
@@ -221,7 +223,7 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     }
 
     // Step 3: Create embeddings and store in vector database
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(processingQueueItem.id, {
       step: "vectorization",
       progress: 70
     });
@@ -260,7 +262,7 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     });
 
     // Mark processing as completed
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(processingQueueItem.id, {
       status: "completed",
       progress: 100
     });
@@ -276,10 +278,12 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     );
     
     // Mark processing as failed
-    await storage.updateProcessingQueueItem(documentId, {
-      status: "failed",
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
+    if (processingQueueItem) {
+      await storage.updateProcessingQueueItem(processingQueueItem.id, {
+        status: "failed",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   }
 }
 
