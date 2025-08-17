@@ -11,6 +11,7 @@ import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import Documents from "@/pages/documents";
 import DocumentDetail from "@/pages/DocumentDetail";
+import Help from "@/pages/help";
 
 function TopNavigation() {
   const { user, isAuthenticated } = useAuth();
@@ -43,6 +44,9 @@ function TopNavigation() {
           </a>
           <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors">
             Analytics
+          </a>
+          <a href="/help" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors">
+            Help
           </a>
           <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors">
             Settings
@@ -104,6 +108,7 @@ function Router() {
             <Route path="/" component={Dashboard} />
             <Route path="/documents" component={Documents} />
             <Route path="/documents/:id" component={DocumentDetail} />
+            <Route path="/help" component={Help} />
           </>
         )}
         <Route component={NotFound} />

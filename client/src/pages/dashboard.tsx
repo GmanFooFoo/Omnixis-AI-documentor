@@ -184,39 +184,6 @@ export default function Dashboard() {
                 </div>
 
                 <FileUpload />
-
-                {/* Processing Workflow */}
-                <div className="mt-8">
-                  <h4 className="text-md font-medium text-gray-900 dark:text-white mb-4">Processing Workflow</h4>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                      <div className="w-8 h-8 bg-accent-blue rounded-full flex items-center justify-center text-white text-sm font-bold">1</div>
-                      <div className="flex-1">
-                        <h5 className="font-medium text-gray-900 dark:text-white">OCR & Image Annotation</h5>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Mistral AI extracts text and identifies images</p>
-                      </div>
-                      <i className="fas fa-eye text-accent-blue"></i>
-                    </div>
-
-                    <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                      <div className="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center text-white text-sm font-bold">2</div>
-                      <div className="flex-1">
-                        <h5 className="font-medium text-gray-900 dark:text-white">Secure Image Storage</h5>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Images stored in Supabase with unique naming</p>
-                      </div>
-                      <i className="fas fa-shield-alt text-accent-green"></i>
-                    </div>
-
-                    <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                      <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">3</div>
-                      <div className="flex-1">
-                        <h5 className="font-medium text-gray-900 dark:text-white">Vectorization & Storage</h5>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Embeddings created and stored in Vector Database</p>
-                      </div>
-                      <i className="fas fa-brain text-purple-500"></i>
-                    </div>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
