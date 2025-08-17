@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'wouter';
-import { Brain, Key, Plus, Settings, Trash2, Eye, EyeOff, Star, CheckCircle } from 'lucide-react';
+import { Brain, Key, Plus, Settings, Trash2, Eye, EyeOff, Star, CheckCircle, ArrowLeft, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface LlmModel {
@@ -54,6 +54,7 @@ const configFormSchema = z.object({
 type ConfigFormData = z.infer<typeof configFormSchema>;
 
 export default function LlmSettings() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedModel, setSelectedModel] = useState<LlmModel | null>(null);
   const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
@@ -177,316 +178,405 @@ export default function LlmSettings() {
   const configuredModelIds = new Set(userConfigs.map(config => config.model.id));
   const availableModels = models.filter(model => !configuredModelIds.has(model.id));
 
+  // Filter models based on search
+  const filteredUserConfigs = userConfigs.filter(config =>
+    config.model.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    config.provider.displayName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredAvailableModels = availableModels.filter(model =>
+    model.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    model.provider.displayName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-20">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
-          <Link href="/" className="hover:text-accent-blue">Home</Link>
-          <span>/</span>
-          <Link href="/settings" className="hover:text-accent-blue">Settings</Link>
-          <span>/</span>
-          <span className="text-gray-600 dark:text-gray-300">LLM Configuration</span>
+        {/* Header with Breadcrumb */}
+        <div className="flex items-center space-x-4 mb-6">
+          <Link href="/settings">
+            <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Settings
+            </Button>
+          </Link>
         </div>
 
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">LLM Configuration</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
-            Configure your AI language models and API keys for document processing.
-          </p>
-        </div>
-
-        {/* Configured Models */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Your Configured Models</h2>
-            <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-accent-blue hover:bg-blue-600">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Model
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Configure LLM Model</DialogTitle>
-                </DialogHeader>
-                
-                {/* Model Selection */}
-                <div className="space-y-4">
-                  <div>
-                    <Label>Select Model</Label>
-                    <div className="grid gap-2 mt-2 max-h-60 overflow-y-auto">
-                      {availableModels.map((model) => (
-                        <Card
-                          key={model.id}
-                          className={`cursor-pointer transition-colors ${
-                            selectedModel?.id === model.id
-                              ? 'border-accent-blue bg-accent-blue/5'
-                              : 'hover:bg-gray-50 dark:hover:bg-dark-bg'
-                          }`}
-                          onClick={() => setSelectedModel(model)}
-                        >
-                          <CardContent className="p-3">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="font-medium text-sm">{model.displayName}</p>
-                                <p className="text-xs text-gray-500">{model.provider.displayName}</p>
-                              </div>
-                              <div className="text-right">
-                                {model.costPer1kTokens && (
-                                  <p className="text-xs text-gray-500">
-                                    ${model.costPer1kTokens}/1k tokens
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-
-                  {selectedModel && (
-                    <Form {...form}>
-                      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                        <FormField
-                          control={form.control}
-                          name="apiKey"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>API Key</FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <Input
-                                    {...field}
-                                    type={showApiKey ? "text" : "password"}
-                                    placeholder="Enter your API key"
-                                  />
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                    onClick={() => setShowApiKey(!showApiKey)}
-                                  >
-                                    {showApiKey ? (
-                                      <EyeOff className="h-4 w-4" />
-                                    ) : (
-                                      <Eye className="h-4 w-4" />
-                                    )}
-                                  </Button>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="isPrimary"
-                          render={({ field }) => (
-                            <FormItem className="flex items-center justify-between">
-                              <FormLabel>Set as Primary Model</FormLabel>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <div className="flex justify-end space-x-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setIsConfigDialogOpen(false)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            type="submit"
-                            disabled={createConfigMutation.isPending}
-                            className="bg-accent-blue hover:bg-blue-600"
-                          >
-                            {createConfigMutation.isPending ? 'Saving...' : 'Save Configuration'}
-                          </Button>
-                        </div>
-                      </form>
-                    </Form>
-                  )}
-                </div>
-              </DialogContent>
-            </Dialog>
+        {/* Page Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">LLM Models</h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Configure your AI language models and API keys for document processing
+            </p>
           </div>
+          <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-accent-blue hover:bg-blue-600">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Model
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Configure LLM Model</DialogTitle>
+              </DialogHeader>
+              
+              {/* Model Selection */}
+              <div className="space-y-4">
+                <div>
+                  <Label>Select Model</Label>
+                  <div className="grid gap-2 mt-2 max-h-60 overflow-y-auto">
+                    {filteredAvailableModels.map((model) => (
+                      <Card
+                        key={model.id}
+                        className={`cursor-pointer transition-colors ${
+                          selectedModel?.id === model.id
+                            ? 'border-accent-blue bg-accent-blue/5'
+                            : 'hover:bg-gray-50 dark:hover:bg-dark-bg'
+                        }`}
+                        onClick={() => setSelectedModel(model)}
+                      >
+                        <CardContent className="p-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium text-sm">{model.displayName}</p>
+                              <p className="text-xs text-gray-500">{model.provider.displayName}</p>
+                            </div>
+                            <div className="text-right">
+                              {model.costPer1kTokens && (
+                                <p className="text-xs text-gray-500">
+                                  ${model.costPer1kTokens}/1k tokens
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
 
-          {configsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[...Array(3)].map((_, i) => (
-                <Card key={i} className="animate-pulse">
+                {selectedModel && (
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="apiKey"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>API Key</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  {...field}
+                                  type={showApiKey ? "text" : "password"}
+                                  placeholder="Enter your API key"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                  onClick={() => setShowApiKey(!showApiKey)}
+                                >
+                                  {showApiKey ? (
+                                    <EyeOff className="h-4 w-4" />
+                                  ) : (
+                                    <Eye className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="isPrimary"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center justify-between">
+                            <FormLabel>Set as Primary Model</FormLabel>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setIsConfigDialogOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="submit"
+                          disabled={createConfigMutation.isPending}
+                          className="bg-accent-blue hover:bg-blue-600"
+                        >
+                          {createConfigMutation.isPending ? 'Saving...' : 'Save Configuration'}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Search models..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-accent-blue/10 rounded-lg flex items-center justify-center">
+                  <Brain className="h-5 w-5 text-accent-blue" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Configured Models</p>
+                  <p className="text-xl font-semibold text-gray-900 dark:text-white">{userConfigs.length}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-accent-green/10 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-accent-green" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Active Models</p>
+                  <p className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {userConfigs.filter(c => c.isEnabled).length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-accent-orange/10 rounded-lg flex items-center justify-center">
+                  <Star className="h-5 w-5 text-accent-orange" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Available Models</p>
+                  <p className="text-xl font-semibold text-gray-900 dark:text-white">{availableModels.length}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Configured Models List */}
+        {filteredUserConfigs.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Your Configured Models</h2>
+            <div className="space-y-3">
+              {filteredUserConfigs.map((config) => (
+                <Card key={config.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : userConfigs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {userConfigs.map((config) => (
-                <Card key={config.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-accent-blue/10 rounded-lg flex items-center justify-center">
-                          <Brain className="h-5 w-5 text-accent-blue" />
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-accent-blue/10 rounded-lg flex items-center justify-center">
+                          <Brain className="h-6 w-6 text-accent-blue" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900 dark:text-white">
-                            {config.model.displayName}
-                          </h3>
+                          <div className="flex items-center space-x-2 mb-1">
+                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                              {config.model.displayName}
+                            </h3>
+                            {config.isPrimary && (
+                              <Badge className="bg-accent-green text-white">
+                                <Star className="mr-1 h-3 w-3" />
+                                Primary
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-sm text-gray-500">{config.provider.displayName}</p>
+                          <div className="flex items-center space-x-4 mt-2">
+                            <div className="flex items-center space-x-1">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">API Key:</span>
+                              {config.hasApiKey ? (
+                                <CheckCircle className="h-4 w-4 text-accent-green" />
+                              ) : (
+                                <span className="text-red-500 text-sm">Missing</span>
+                              )}
+                            </div>
+                            {config.model.costPer1kTokens && (
+                              <div className="flex items-center space-x-1">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Cost:</span>
+                                <span className="text-sm text-gray-900 dark:text-white">
+                                  ${config.model.costPer1kTokens}/1k tokens
+                                </span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      {config.isPrimary && (
-                        <Badge className="bg-accent-green text-white">
-                          <Star className="mr-1 h-3 w-3" />
-                          Primary
-                        </Badge>
-                      )}
-                    </div>
 
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">API Key</span>
+                      <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-2">
-                          {config.hasApiKey ? (
-                            <CheckCircle className="h-4 w-4 text-accent-green" />
-                          ) : (
-                            <span className="text-red-500 text-sm">Missing</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Status</span>
-                        <Switch
-                          checked={config.isEnabled}
-                          onCheckedChange={() => handleToggleEnabled(config)}
-                          disabled={updateConfigMutation.isPending}
-                        />
-                      </div>
-
-                      {config.model.costPer1kTokens && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600 dark:text-gray-400">Cost</span>
-                          <span className="text-sm text-gray-900 dark:text-white">
-                            ${config.model.costPer1kTokens}/1k tokens
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-dark-border">
-                      <div className="flex space-x-2">
-                        {!config.isPrimary && config.isEnabled && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSetPrimary(config)}
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Enabled</span>
+                          <Switch
+                            checked={config.isEnabled}
+                            onCheckedChange={() => handleToggleEnabled(config)}
                             disabled={updateConfigMutation.isPending}
+                          />
+                        </div>
+
+                        <div className="flex space-x-2">
+                          {!config.isPrimary && config.isEnabled && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleSetPrimary(config)}
+                              disabled={updateConfigMutation.isPending}
+                            >
+                              Set Primary
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteConfig(config.id)}
+                            disabled={deleteConfigMutation.isPending}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                           >
-                            Set Primary
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                        )}
+                        </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteConfig(config.id)}
-                        disabled={deleteConfigMutation.isPending}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          ) : (
-            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardContent className="p-12 text-center">
-                <Brain className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                  No LLM Models Configured
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 mb-6">
-                  Configure your first AI language model to start processing documents.
-                </p>
-                <Button
-                  onClick={() => setIsConfigDialogOpen(true)}
-                  className="bg-accent-blue hover:bg-blue-600"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Your First Model
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Available Models Info */}
-        {availableModels.length > 0 && (
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-                Available Models ({availableModels.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {availableModels.map((model) => (
-                  <div
-                    key={model.id}
-                    className="p-4 border border-gray-200 dark:border-dark-border rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-gray-900 dark:text-white">
-                        {model.displayName}
-                      </h4>
-                      <Badge variant="outline">
-                        {model.provider.displayName}
-                      </Badge>
-                    </div>
-                    {model.description && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                        {model.description}
-                      </p>
-                    )}
+        {/* Available Models */}
+        {filteredAvailableModels.length > 0 && (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Available Models ({filteredAvailableModels.length})
+            </h2>
+            <div className="space-y-3">
+              {filteredAvailableModels.map((model) => (
+                <Card key={model.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
                     <div className="flex items-center justify-between">
-                      {model.costPer1kTokens && (
-                        <span className="text-sm text-gray-500">
-                          ${model.costPer1kTokens}/1k tokens
-                        </span>
-                      )}
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                          <Brain className="h-6 w-6 text-gray-400" />
+                        </div>
+                        <div>
+                          <div className="flex items-center space-x-2 mb-1">
+                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                              {model.displayName}
+                            </h3>
+                            <Badge variant="outline">
+                              {model.provider.displayName}
+                            </Badge>
+                          </div>
+                          {model.description && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              {model.description}
+                            </p>
+                          )}
+                          <div className="flex items-center space-x-4">
+                            {model.costPer1kTokens && (
+                              <div className="flex items-center space-x-1">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Cost:</span>
+                                <span className="text-sm text-gray-900 dark:text-white">
+                                  ${model.costPer1kTokens}/1k tokens
+                                </span>
+                              </div>
+                            )}
+                            {model.maxTokens && (
+                              <div className="flex items-center space-x-1">
+                                <span className="text-sm text-gray-600 dark:text-gray-400">Max Tokens:</span>
+                                <span className="text-sm text-gray-900 dark:text-white">
+                                  {model.maxTokens.toLocaleString()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
                       <Button
-                        size="sm"
-                        variant="outline"
                         onClick={() => openConfigDialog(model)}
+                        className="bg-accent-blue hover:bg-blue-600"
                       >
                         Configure
                       </Button>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {userConfigs.length === 0 && availableModels.length === 0 && !configsLoading && !modelsLoading && (
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-12 text-center">
+              <Brain className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                No LLM Models Available
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400">
+                No language models are currently available for configuration.
+              </p>
             </CardContent>
           </Card>
+        )}
+
+        {/* Loading State */}
+        {(configsLoading || modelsLoading) && (
+          <div className="space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <Card key={i} className="animate-pulse bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                <CardContent className="p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/6"></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
     </div>
