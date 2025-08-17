@@ -16,6 +16,9 @@ import Help from "@/pages/help";
 import Storybook from "@/pages/storybook";
 import Categories from "@/pages/categories";
 import CategoryDetail from "@/pages/CategoryDetail";
+import Settings from "@/pages/settings";
+import DesignSystem from "@/pages/DesignSystem";
+import LlmSettings from "@/pages/LlmSettings";
 
 function TopNavigation() {
   const { user, isAuthenticated } = useAuth();
@@ -61,7 +64,7 @@ function TopNavigation() {
             <i className="fas fa-question-circle"></i>
             <span>Help</span>
           </a>
-          <a href="#" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
+          <a href="/settings" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             <i className="fas fa-cog"></i>
             <span>Settings</span>
           </a>
@@ -162,7 +165,7 @@ function TopNavigation() {
               <i className="fas fa-question-circle mr-3 w-4"></i>Help
             </a>
             <a 
-              href="#" 
+              href="/settings" 
               className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -218,6 +221,9 @@ function Router() {
             <Route path="/categories/:id" component={CategoryDetail} />
             <Route path="/help" component={Help} />
             <Route path="/storybook" component={Storybook} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/settings/design-system" component={DesignSystem} />
+            <Route path="/settings/llm" component={LlmSettings} />
           </>
         )}
         <Route component={NotFound} />
