@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -320,6 +320,29 @@ export default function CategoriesPage() {
                           </FormItem>
                         )}
                       />
+
+                      <FormField
+                        control={form.control}
+                        name="isDefault"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base">Default Category</FormLabel>
+                              <FormDescription>
+                                Set this as the default category for new documents. Only one category can be default at a time.
+                              </FormDescription>
+                            </div>
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
                       
                       <div className="flex items-center justify-between pt-4">
                         <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
@@ -442,7 +465,7 @@ export default function CategoriesPage() {
                           <Edit className="h-4 w-4 mr-1" />
                           Edit
                         </Button>
-                        {!category.isDefault && (
+                        {!category.isDefault ? (
                           <Button
                             variant="ghost"
                             size="sm"
@@ -452,6 +475,10 @@ export default function CategoriesPage() {
                             <Trash2 className="h-4 w-4 mr-1" />
                             Delete
                           </Button>
+                        ) : (
+                          <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
+                            Default category cannot be deleted
+                          </span>
                         )}
                       </div>
                     </TableCell>
@@ -491,7 +518,7 @@ export default function CategoriesPage() {
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Button>
-                      {!category.isDefault && (
+                      {!category.isDefault ? (
                         <Button
                           variant="ghost"
                           size="sm"
@@ -501,6 +528,10 @@ export default function CategoriesPage() {
                           <Trash2 className="h-4 w-4 mr-1" />
                           Delete
                         </Button>
+                      ) : (
+                        <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
+                          Protected
+                        </span>
                       )}
                     </div>
                   </div>

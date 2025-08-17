@@ -269,6 +269,12 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
   app.post('/api/categories', async (req, res) => {
     try {
       const categoryData = req.body;
+      
+      // If this category is being set as default, unset all other defaults first
+      if (categoryData.isDefault) {
+        await storage.unsetAllDefaultCategories();
+      }
+      
       const category = await storage.createDocumentCategory(categoryData);
       res.json(category);
     } catch (error) {
@@ -281,6 +287,12 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const categoryData = req.body;
+      
+      // If this category is being set as default, unset all other defaults first
+      if (categoryData.isDefault) {
+        await storage.unsetAllDefaultCategories();
+      }
+      
       const category = await storage.updateDocumentCategory(id, categoryData);
       res.json(category);
     } catch (error) {
@@ -292,6 +304,13 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
   app.delete('/api/categories/:id', async (req, res) => {
     try {
       const { id } = req.params;
+      
+      // Check if this is a default category
+      const category = await storage.getDocumentCategory(id);
+      if (category?.isDefault) {
+        return res.status(400).json({ message: "Cannot delete the default category. Please set another category as default first." });
+      }
+      
       await storage.deleteDocumentCategory(id);
       res.json({ message: "Category deleted successfully" });
     } catch (error) {

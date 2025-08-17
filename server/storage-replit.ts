@@ -66,6 +66,7 @@ export interface IStorage {
   updateDocumentCategory(id: string, updates: Partial<InsertDocumentCategory>): Promise<DocumentCategory>;
   deleteDocumentCategory(id: string): Promise<void>;
   getDocumentCategory(id: string): Promise<DocumentCategory | undefined>;
+  unsetAllDefaultCategories(): Promise<void>;
 }
 
 export class ReplitDatabaseStorage implements IStorage {
@@ -436,6 +437,18 @@ export class ReplitDatabaseStorage implements IStorage {
     } catch (error) {
       console.error("Error fetching document category:", error);
       return undefined;
+    }
+  }
+
+  async unsetAllDefaultCategories(): Promise<void> {
+    try {
+      await db
+        .update(documentCategories)
+        .set({ isDefault: false, updatedAt: new Date() })
+        .where(eq(documentCategories.isDefault, true));
+    } catch (error) {
+      console.error("Error unsetting default categories:", error);
+      throw error;
     }
   }
 }
