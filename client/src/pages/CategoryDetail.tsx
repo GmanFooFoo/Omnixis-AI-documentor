@@ -424,7 +424,7 @@ export default function CategoryDetail() {
                           name="isDefault"
                           render={({ field }) => (
                             <FormItem className="space-y-3">
-                              <FormLabel className="text-base">Default</FormLabel>
+                              <FormLabel className="text-[14px]">Default</FormLabel>
                               <FormControl>
                                 <div className="flex items-center space-x-6">
                                   <div className="flex items-center space-x-2">
