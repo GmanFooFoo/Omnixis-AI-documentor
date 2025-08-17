@@ -109,7 +109,7 @@ export const documentCategories = pgTable("document_categories", {
   name: varchar("name").notNull().unique(),
   description: text("description"),
   promptTemplate: text("prompt_template").notNull(),
-  formatId: varchar("format_id").references(() => promptFormats.id), // Reference to prompt format
+  formatId: varchar("format_id").notNull().references(() => promptFormats.id), // Reference to prompt format
   isDefault: boolean("is_default").default(false).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow(),

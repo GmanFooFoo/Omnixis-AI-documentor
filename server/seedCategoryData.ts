@@ -1,5 +1,6 @@
 import { db } from "./db";
-import { documentCategories } from "@shared/schema";
+import { documentCategories, promptFormats } from "@shared/schema";
+import { eq } from "drizzle-orm";
 import { eq } from "drizzle-orm";
 
 export async function seedCategoryData() {
