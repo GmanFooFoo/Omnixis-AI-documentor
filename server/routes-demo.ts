@@ -79,7 +79,7 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
       });
 
       // Start processing queue
-      await storage.createProcessingQueueItem({
+      const queueItem = await storage.createProcessingQueueItem({
         documentId: document.id,
         status: "pending",
         step: "ocr",
@@ -87,7 +87,7 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
       });
 
       // Simulate async processing
-      processDocumentAsync(document.id, file.buffer, file.mimetype);
+      processDocumentAsync(document.id, queueItem.id, file.buffer, file.mimetype);
 
       res.json({ 
         message: "Document uploaded successfully", 
@@ -152,19 +152,19 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-async function processDocumentAsync(documentId: string, fileBuffer: Buffer, mimeType: string) {
+async function processDocumentAsync(documentId: string, queueItemId: string, fileBuffer: Buffer, mimeType: string) {
   try {
     console.log(`🔄 Starting async processing for document ${documentId}`);
     
     // Update status to processing
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(queueItemId, {
       status: "processing",
       progress: 10
     });
 
     // Simulate OCR processing
     console.log('📝 Performing OCR...');
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(queueItemId, {
       progress: 30
     });
 
@@ -181,19 +181,19 @@ Processing completed successfully in demo mode.`;
 
     // Simulate image upload
     console.log('📤 Uploading to Supabase...');
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(queueItemId, {
       progress: 60
     });
 
     // Simulate vector embeddings
     console.log('🧠 Creating vector embeddings...');
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(queueItemId, {
       progress: 90
     });
 
     // Complete processing
     await storage.updateDocumentStatus(documentId, "completed");
-    await storage.updateProcessingQueueItem(documentId, {
+    await storage.updateProcessingQueueItem(queueItemId, {
       status: "completed",
       progress: 100
     });
@@ -210,9 +210,13 @@ Processing completed successfully in demo mode.`;
   } catch (error) {
     console.error(`❌ Error processing document ${documentId}:`, error);
     await storage.updateDocumentStatus(documentId, "failed", error instanceof Error ? error.message : 'Unknown error');
-    await storage.updateProcessingQueueItem(documentId, {
-      status: "failed",
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
+    try {
+      await storage.updateProcessingQueueItem(queueItemId, {
+        status: "failed",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } catch (updateError) {
+      console.error('Failed to update processing queue item:', updateError);
+    }
   }
 }
