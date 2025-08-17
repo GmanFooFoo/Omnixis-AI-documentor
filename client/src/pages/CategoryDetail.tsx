@@ -12,9 +12,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, Save, Tag, Edit, Calendar, Info, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Save, Tag, Edit, Calendar, Info, BarChart3, Code, Eye } from 'lucide-react';
 import { Link } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import MDEditor from '@uiw/react-md-editor';
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
 import type { DocumentCategory } from '@shared/schema';
 
 const categoryFormSchema = z.object({
@@ -31,6 +37,7 @@ export default function CategoryDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const [isEditing, setIsEditing] = useState(false);
+  const [showMarkdownCode, setShowMarkdownCode] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<CategoryFormData>({
@@ -290,48 +297,20 @@ export default function CategoryDetail() {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <Textarea 
-                                placeholder={`# Document Analysis Framework
-
-Act as an expert document analyst and provide comprehensive analysis of this document.
-
-## Core Analysis Areas:
-
-### 1. Document Classification & Context
-- **Document Type**: Classify the document (contract, invoice, report, manual, etc.)
-- **Business Context**: Identify the industry/domain and purpose
-- **Stakeholders**: List all parties, roles, and relationships mentioned
-- **Timeline**: Extract all dates, deadlines, and time-sensitive information
-
-### 2. Key Information Extraction
-- **Critical Data Points**: Numbers, amounts, quantities, percentages
-- **Decisions & Actions**: Required actions, approvals, next steps
-- **Compliance & Requirements**: Standards, regulations, certifications mentioned
-- **Contact Information**: People, departments, external organizations
-
-### 3. Content Structure Analysis
-- **Main Topics**: Identify primary themes and subject areas
-- **Supporting Details**: Evidence, examples, references provided
-- **Quality Assessment**: Completeness, clarity, professional standards
-- **Dependencies**: Requirements, prerequisites, linked documents
-
-### 4. Business Intelligence
-- **Opportunities**: Potential benefits, improvements, optimizations
-- **Risks & Concerns**: Issues, gaps, potential problems identified
-- **Strategic Insights**: Broader implications and recommendations
-- **Follow-up Actions**: Suggested next steps and monitoring points
-
-## Output Requirements:
-- Structure with clear markdown headings and bullet points
-- Quote relevant passages to support findings
-- Highlight **critical information** and *important details*
-- Provide actionable recommendations with priority levels
-- Include confidence levels for key assessments
-
-Focus on practical, actionable insights that enable informed decision-making.`}
-                                className="min-h-[600px] font-mono text-sm resize-none"
-                                {...field} 
-                              />
+                              <div data-color-mode="light">
+                                <MDEditor
+                                  value={field.value}
+                                  onChange={(value) => field.onChange(value || '')}
+                                  preview="edit"
+                                  hideToolbar={false}
+                                  visibleDragbar={false}
+                                  height={400}
+                                  style={{
+                                    backgroundColor: 'transparent',
+                                    fontSize: '14px',
+                                  }}
+                                />
+                              </div>
                             </FormControl>
                             <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                               Use Markdown formatting to create structured, professional prompts. Click "Markdown Help" above for syntax reference.
@@ -341,10 +320,45 @@ Focus on practical, actionable insights that enable informed decision-making.`}
                         )}
                       />
                     ) : (
-                      <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4">
-                        <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-mono leading-relaxed">
-                          {(category as DocumentCategory).promptTemplate}
-                        </pre>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Prompt Template</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowMarkdownCode(!showMarkdownCode)}
+                            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            {showMarkdownCode ? (
+                              <>
+                                <Eye className="h-4 w-4 mr-1" />
+                                Show Rendered
+                              </>
+                            ) : (
+                              <>
+                                <Code className="h-4 w-4 mr-1" />
+                                Show Code
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                        
+                        {showMarkdownCode ? (
+                          <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4">
+                            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-mono leading-relaxed">
+                              {(category as DocumentCategory).promptTemplate}
+                            </pre>
+                          </div>
+                        ) : (
+                          <div className="prose dark:prose-invert max-w-none bg-gray-50 dark:bg-dark-bg rounded-lg p-4 text-sm">
+                            <ReactMarkdown 
+                              remarkPlugins={[remarkGfm]}
+                              rehypePlugins={[rehypeHighlight]}
+                            >
+                              {(category as DocumentCategory).promptTemplate}
+                            </ReactMarkdown>
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>
