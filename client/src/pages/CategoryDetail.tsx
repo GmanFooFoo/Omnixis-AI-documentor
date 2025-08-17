@@ -304,7 +304,7 @@ export default function CategoryDetail() {
                                   preview="edit"
                                   hideToolbar={false}
                                   visibleDragbar={false}
-                                  height={400}
+                                  height={600}
                                   style={{
                                     backgroundColor: 'transparent',
                                     fontSize: '14px',
