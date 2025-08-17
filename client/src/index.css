@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mobile-first responsive design */
+/* Accessibility and Mobile-first responsive design */
 @media (max-width: 640px) {
   /* Ensure touch targets are at least 44px */
   .touch-target {
@@ -33,6 +33,89 @@
   .mobile-spacing > * + * {
     margin-top: 8px;
   }
+}
+
+/* Accessibility Improvements */
+/* High contrast focus states for keyboard navigation */
+*:focus-visible {
+  outline: 3px solid hsl(217, 91%, 60%);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Enhanced color contrast for better accessibility */
+.text-high-contrast {
+  color: hsl(210, 25%, 8%);
+}
+
+.dark .text-high-contrast {
+  color: hsl(0, 0%, 95%);
+}
+
+/* Accessible file type icon colors with sufficient contrast */
+.icon-pdf { color: hsl(0, 84%, 45%); } /* Red with better contrast */
+.icon-word { color: hsl(217, 91%, 45%); } /* Blue with better contrast */
+.icon-excel { color: hsl(142, 76%, 36%); } /* Green with better contrast */
+.icon-powerpoint { color: hsl(25, 95%, 45%); } /* Orange with better contrast */
+.icon-image { color: hsl(271, 81%, 45%); } /* Purple with better contrast */
+.icon-text { color: hsl(210, 25%, 35%); } /* Gray with better contrast */
+
+.dark .icon-pdf { color: hsl(0, 84%, 65%); }
+.dark .icon-word { color: hsl(217, 91%, 70%); }
+.dark .icon-excel { color: hsl(142, 76%, 55%); }
+.dark .icon-powerpoint { color: hsl(25, 95%, 65%); }
+.dark .icon-image { color: hsl(271, 81%, 65%); }
+.dark .icon-text { color: hsl(210, 25%, 65%); }
+
+/* High contrast interactive states */
+.btn-accessible {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-accessible:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-accessible:active {
+  transform: translateY(0);
+}
+
+/* Status badge accessible colors */
+.status-success {
+  background-color: hsl(142, 76%, 36%);
+  color: white;
+}
+
+.status-processing {
+  background-color: hsl(25, 95%, 45%);
+  color: white;
+}
+
+.status-error {
+  background-color: hsl(0, 84%, 45%);
+  color: white;
+}
+
+/* Enhanced link contrast */
+.link-accessible {
+  color: hsl(217, 91%, 45%);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.dark .link-accessible {
+  color: hsl(217, 91%, 70%);
+}
+
+.link-accessible:hover {
+  color: hsl(217, 91%, 35%);
+  text-decoration-thickness: 2px;
+}
+
+.dark .link-accessible:hover {
+  color: hsl(217, 91%, 80%);
 }
 
 /* Tablet optimizations */

@@ -64,10 +64,10 @@ export function FileUpload() {
     
     // Validate files
     for (const file of fileArray) {
-      if (file.size > 50 * 1024 * 1024) { // 50MB limit
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
         toast({
           title: "File Too Large",
-          description: `${file.name} is larger than 50MB. Please choose a smaller file.`,
+          description: `${file.name} is larger than 10MB. Please choose a smaller file.`,
           variant: "destructive",
         });
         return;
@@ -147,7 +147,7 @@ export function FileUpload() {
         </div>
         <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Upload Documents</h4>
         <p className="text-gray-600 dark:text-gray-400 mb-4">Drag and drop files here, or click to browse</p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Supports PDF, DOCX, PNG, JPG, TIFF up to 50MB</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Supports PDF, DOCX, PNG, JPG, TIFF up to 10MB</p>
         
         <input
           ref={fileInputRef}

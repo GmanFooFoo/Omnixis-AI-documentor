@@ -218,13 +218,13 @@ export default function Dashboard() {
                             {/* Document Header with Icon */}
                             <div className="flex items-center space-x-3 mb-4">
                               <i className={`fas ${
-                                fileName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf text-red-500' :
-                                fileName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word text-blue-500' :
-                                fileName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt text-gray-500' :
-                                fileName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel text-green-500' :
-                                fileName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint text-orange-500' :
-                                fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image text-purple-500' :
-                                'fa-file text-gray-400'
+                                fileName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf icon-pdf' :
+                                fileName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word icon-word' :
+                                fileName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt icon-text' :
+                                fileName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel icon-excel' :
+                                fileName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint icon-powerpoint' :
+                                fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image icon-image' :
+                                'fa-file icon-text'
                               } text-2xl`}></i>
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-medium text-gray-900 dark:text-white truncate">{fileName}</h4>
@@ -278,13 +278,13 @@ export default function Dashboard() {
                           {/* Document Header with Icon */}
                           <div className="flex items-center space-x-3 mb-4">
                             <i className={`fas ${
-                              fileName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf text-red-500' :
-                              fileName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word text-blue-500' :
-                              fileName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt text-gray-500' :
-                              fileName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel text-green-500' :
-                              fileName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint text-orange-500' :
-                              fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image text-purple-500' :
-                              'fa-file text-gray-400'
+                              fileName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf icon-pdf' :
+                              fileName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word icon-word' :
+                              fileName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt icon-text' :
+                              fileName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel icon-excel' :
+                              fileName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint icon-powerpoint' :
+                              fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image icon-image' :
+                              'fa-file icon-text'
                             } text-2xl`}></i>
                             <div className="flex-1 min-w-0">
                               <h4 className="font-medium text-gray-900 dark:text-white truncate">{fileName}</h4>
@@ -385,13 +385,13 @@ export default function Dashboard() {
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-3">
                               <i className={`fas ${
-                                doc.originalName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf text-red-500' :
-                                doc.originalName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word text-blue-500' :
-                                doc.originalName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt text-gray-500' :
-                                doc.originalName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel text-green-500' :
-                                doc.originalName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint text-orange-500' :
-                                doc.originalName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image text-purple-500' :
-                                'fa-file text-gray-400'
+                                doc.originalName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf icon-pdf' :
+                                doc.originalName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word icon-word' :
+                                doc.originalName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt icon-text' :
+                                doc.originalName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel icon-excel' :
+                                doc.originalName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint icon-powerpoint' :
+                                doc.originalName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image icon-image' :
+                                'fa-file icon-text'
                               } text-lg`}></i>
                               <div>
                                 <p className="text-sm font-medium text-gray-900 dark:text-white">{doc.originalName}</p>

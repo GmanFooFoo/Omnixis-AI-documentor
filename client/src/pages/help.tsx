@@ -50,23 +50,23 @@ export default function Help() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                  <i className="fas fa-file-pdf text-red-500 text-base sm:text-lg flex-shrink-0"></i>
+                  <i className="fas fa-file-pdf icon-pdf text-base sm:text-lg flex-shrink-0"></i>
                   <div className="min-w-0">
                     <p className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">PDF</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Up to 50MB</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Up to 10MB</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                  <i className="fas fa-file-word text-blue-500 text-lg"></i>
+                  <i className="fas fa-file-word icon-word text-lg"></i>
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">DOCX</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Up to 50MB</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Up to 10MB</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                  <i className="fas fa-file-image text-green-500 text-lg"></i>
+                  <i className="fas fa-file-image icon-image text-lg"></i>
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">Images</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPEG, TIFF</p>
@@ -74,7 +74,7 @@ export default function Help() {
                 </div>
                 
                 <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                  <i className="fas fa-file-alt text-gray-500 text-lg"></i>
+                  <i className="fas fa-file-alt icon-text text-lg"></i>
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">Text</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">Plain text files</p>

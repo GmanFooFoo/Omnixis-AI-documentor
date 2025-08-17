@@ -8,6 +8,7 @@ DocuAI is a modern web application that provides AI-powered OCR and document pro
 
 Preferred communication style: Simple, everyday language.
 Design preferences: FontAwesome color-coded file icons strongly preferred over generic DocumentTypeIcon component for documents page (red PDF, blue Word, green Excel, etc.)
+Accessibility preference: Enhanced color contrast for file type icons and UI elements for WCAG compliance
 Navigation preference: Settings tiles sorted alphabetically (A-Z order)
 LLM Models page design: Must match Documents page layout with list view, search, and stats cards
 
@@ -58,7 +59,7 @@ LLM Models page design: Must match Documents page layout with list view, search,
 - **Supabase Storage** for secure file and image hosting with unique naming
 - Async processing queue with real-time status tracking
 - Vector embeddings generation for semantic search capabilities
-- Support for PDF, DOCX, PNG, JPEG, and TIFF files up to 50MB
+- Support for PDF, DOCX, PNG, JPEG, and TIFF files up to 10MB
 
 ### UI/UX Design
 - Modern, clean interface with dark/light theme support
@@ -87,3 +88,15 @@ LLM Models page design: Must match Documents page layout with list view, search,
 - **React Hook Form** - Form state management
 - **Zod** - Runtime type validation
 - **Class Variance Authority** - Component variant styling
+
+## Recent Changes & Features
+
+### Accessibility & File Management Updates
+- Updated file upload limit from 50MB to 10MB across all components and documentation
+- Implemented accessibility-friendly color contrast improvements for icons and UI elements throughout the application:
+  - Enhanced file type icon colors with WCAG-compliant contrast ratios
+  - Added focus states for keyboard navigation 
+  - Improved status badge colors for better visibility
+  - Created high-contrast theme variants for light and dark modes
+- Applied consistent FontAwesome color-coded file icons across all document displays
+- Enhanced mobile responsiveness and touch target sizing for accessibility

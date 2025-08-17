@@ -6,7 +6,7 @@ A sophisticated document processing web application that leverages advanced AI t
 
 ### Core Functionality
 - **AI-Powered OCR**: Advanced text extraction using Mistral AI Document AI
-- **Multi-Format Support**: PDF, DOCX, PNG, JPEG, and TIFF files up to 50MB
+- **Multi-Format Support**: PDF, DOCX, PNG, JPEG, and TIFF files up to 10MB
 - **Image Analysis**: Intelligent detection and description of charts, diagrams, signatures, and visual elements
 - **Document Classification**: Automatic categorization and structured data extraction
 - **Vector Search**: Semantic search capabilities with PostgreSQL vector embeddings
