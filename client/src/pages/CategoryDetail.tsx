@@ -53,7 +53,7 @@ export default function CategoryDetail() {
   const updateCategoryMutation = useMutation({
     mutationFn: (data: CategoryFormData) => {
       console.log('Making API request to:', `/api/categories/${id}`);
-      return apiRequest(`/api/categories/${id}`, 'PUT', JSON.stringify(data));
+      return apiRequest('PUT', `/api/categories/${id}`, data);
     },
     onSuccess: (response) => {
       console.log('Update successful:', response);
