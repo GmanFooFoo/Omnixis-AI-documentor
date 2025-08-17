@@ -217,7 +217,15 @@ export default function Dashboard() {
                           <div key={item.id} className="border border-gray-200 dark:border-dark-border rounded-lg p-6">
                             {/* Document Header with Icon */}
                             <div className="flex items-center space-x-3 mb-4">
-                              <DocumentTypeIcon fileName={fileName} size="lg" className="text-blue-600 dark:text-blue-400" />
+                              <i className={`fas ${
+                                fileName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf text-red-500' :
+                                fileName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word text-blue-500' :
+                                fileName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt text-gray-500' :
+                                fileName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel text-green-500' :
+                                fileName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint text-orange-500' :
+                                fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image text-purple-500' :
+                                'fa-file text-gray-400'
+                              } text-2xl`}></i>
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-medium text-gray-900 dark:text-white truncate">{fileName}</h4>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -269,7 +277,15 @@ export default function Dashboard() {
                         <div className="border border-gray-200 dark:border-dark-border rounded-lg p-6">
                           {/* Document Header with Icon */}
                           <div className="flex items-center space-x-3 mb-4">
-                            <DocumentTypeIcon fileName={fileName} size="lg" className="text-blue-600 dark:text-blue-400" />
+                            <i className={`fas ${
+                              fileName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf text-red-500' :
+                              fileName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word text-blue-500' :
+                              fileName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt text-gray-500' :
+                              fileName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel text-green-500' :
+                              fileName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint text-orange-500' :
+                              fileName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image text-purple-500' :
+                              'fa-file text-gray-400'
+                            } text-2xl`}></i>
                             <div className="flex-1 min-w-0">
                               <h4 className="font-medium text-gray-900 dark:text-white truncate">{fileName}</h4>
                               <p className="text-sm text-gray-500 dark:text-gray-400">
