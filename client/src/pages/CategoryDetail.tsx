@@ -84,6 +84,8 @@ export default function CategoryDetail() {
   }, [category, form]);
 
   const handleSubmit = (data: CategoryFormData) => {
+    console.log('Form submitted with data:', data);
+    console.log('Form errors:', form.formState.errors);
     updateCategoryMutation.mutate(data);
   };
 
@@ -184,7 +186,8 @@ export default function CategoryDetail() {
                   Cancel
                 </Button>
                 <Button
-                  onClick={form.handleSubmit(handleSubmit)}
+                  type="submit"
+                  form="category-edit-form"
                   disabled={updateCategoryMutation.isPending}
                   className="bg-accent-blue hover:bg-blue-600"
                 >
@@ -206,7 +209,7 @@ export default function CategoryDetail() {
 
         {/* Category Details */}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <form id="category-edit-form" onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column - Large Prompt Editor */}
               <div className="lg:col-span-2">
