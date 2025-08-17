@@ -368,7 +368,15 @@ export default function Dashboard() {
                         <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors">
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-3">
-                              <DocumentTypeIcon fileName={doc.originalName || doc.fileName} size="md" className="text-blue-600" />
+                              <i className={`fas ${
+                                doc.originalName?.toLowerCase().endsWith('.pdf') ? 'fa-file-pdf text-red-500' :
+                                doc.originalName?.toLowerCase().match(/\.(doc|docx)$/) ? 'fa-file-word text-blue-500' :
+                                doc.originalName?.toLowerCase().endsWith('.txt') ? 'fa-file-alt text-gray-500' :
+                                doc.originalName?.toLowerCase().match(/\.(xls|xlsx|csv)$/) ? 'fa-file-excel text-green-500' :
+                                doc.originalName?.toLowerCase().match(/\.(ppt|pptx)$/) ? 'fa-file-powerpoint text-orange-500' :
+                                doc.originalName?.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|tiff|svg)$/) ? 'fa-file-image text-purple-500' :
+                                'fa-file text-gray-400'
+                              } text-lg`}></i>
                               <div>
                                 <p className="text-sm font-medium text-gray-900 dark:text-white">{doc.originalName}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">{formatBytes(doc.fileSize)}</p>
