@@ -8,7 +8,8 @@ DocuAI is a modern web application that provides AI-powered OCR and document pro
 
 Preferred communication style: Simple, everyday language.
 Design preferences: FontAwesome color-coded file icons strongly preferred over generic DocumentTypeIcon component for documents page (red PDF, blue Word, green Excel, etc.)
-Navigation preference: Move Storybook/Design System to separate page under Settings navigation entry.
+Navigation preference: Settings tiles sorted alphabetically (A-Z order)
+LLM Models page design: Must match Documents page layout with list view, search, and stats cards
 
 ## System Architecture
 
@@ -34,13 +35,14 @@ Navigation preference: Move Storybook/Design System to separate page under Setti
 - User profile management with automatic session updates
 
 ### Database Design
-- **PostgreSQL** (primary) - Document metadata, user data, processing queue, vector embeddings
+- **PostgreSQL** (primary) - Document metadata, user data, processing queue, vector embeddings, LLM configurations
 - **Supabase Storage** - Cloud file storage for documents and extracted images
 - **Vector Database** - PostgreSQL with vector extension for semantic search
-- Core tables: users, documents, extracted_images, vector_embeddings, processing_queue
+- Core tables: users, documents, extracted_images, vector_embeddings, processing_queue, llm_providers, llm_models, user_llm_configs
 - Session storage table for authentication
 - Comprehensive document metadata tracking
 - Processing queue for async task management
+- LLM model management with secure API key storage
 
 ### Storage Architecture
 - **Primary Database**: Replit PostgreSQL database for all data (documents, users, vectors, files)
