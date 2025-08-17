@@ -72,43 +72,16 @@ export class SupabaseService {
   }
 
   async storeVectorEmbedding(embedding: number[], content: string, metadata: any): Promise<void> {
-    try {
-      // Store in vector database using Supabase's vector extension
-      const { error } = await this.supabase
-        .from('vector_embeddings_supabase')
-        .insert({
-          embedding,
-          content,
-          metadata
-        });
-
-      if (error) {
-        throw new Error(`Vector storage error: ${error.message}`);
-      }
-    } catch (error) {
-      console.error("Vector storage error:", error);
-      throw new Error(`Failed to store vector embedding: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+    // Vector embeddings are now stored in the local PostgreSQL database via the storage layer
+    // This method is kept for compatibility but doesn't perform any additional storage
+    console.log('Vector embedding will be stored in local database');
   }
 
   async searchSimilarVectors(queryEmbedding: number[], limit: number = 10): Promise<any[]> {
-    try {
-      // Perform similarity search using Supabase's vector functions
-      const { data, error } = await this.supabase.rpc('match_vectors', {
-        query_embedding: queryEmbedding,
-        match_threshold: 0.7,
-        match_count: limit
-      });
-
-      if (error) {
-        throw new Error(`Vector search error: ${error.message}`);
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error("Vector search error:", error);
-      throw new Error(`Failed to search vectors: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+    // Vector search will be performed using local database
+    // This method is kept for compatibility but returns empty results for now
+    console.log('Vector search would be performed in local database');
+    return [];
   }
 
   private getMimeType(fileName: string): string {

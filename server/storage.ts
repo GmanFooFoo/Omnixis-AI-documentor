@@ -368,8 +368,5 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-import { MockStorage } from "./mockStorage";
-
-// Use MockStorage for testing when database is unavailable
-console.log('⚠ Using MockStorage for testing (database connection issues)');
-export const storage: IStorage = new MockStorage();
+// Use DatabaseStorage for production
+export const storage: IStorage = new DatabaseStorage();

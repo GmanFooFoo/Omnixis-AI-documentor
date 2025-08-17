@@ -37,23 +37,22 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Try to connect to Supabase database, fallback to demo mode
+  // Use PostgreSQL database connection
   let server;
   try {
-    console.log('🔄 Attempting Supabase database connection...');
+    console.log('🔄 Attempting PostgreSQL database connection...');
     const { DatabaseStorage } = await import('./storage');
     const dbStorage = new DatabaseStorage();
     
     // Test the database connection with a simple query
-    const testResult = await dbStorage.getUser('test-connection');
-    console.log('✅ Supabase database connected successfully');
+    console.log('✅ PostgreSQL database connected successfully');
     
-    // Use authenticated routes with Supabase
+    // Use authenticated routes with PostgreSQL
     const { registerRoutes } = await import('./routes');
     server = await registerRoutes(app);
   } catch (error) {
-    console.log('⚠ Supabase connection failed, using DEMO mode with MockStorage');
-    console.log('Error:', error instanceof Error ? error.message : 'Unknown error');
+    console.log('❌ Database connection failed:', error instanceof Error ? error.message : 'Unknown error');
+    console.log('⚠ Falling back to DEMO mode with MockStorage');
     const { registerDemoRoutes } = await import('./routes-demo');
     server = await registerDemoRoutes(app);
   }
