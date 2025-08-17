@@ -162,51 +162,101 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
       progress: 10
     });
 
-    // Simulate OCR processing
-    console.log('📝 Performing OCR...');
+    // Step 1: Mistral AI OCR with Document AI annotations
+    console.log('📝 Performing OCR with Mistral Document AI...');
     await storage.updateProcessingQueueItem(queueItemId, {
       progress: 30
     });
 
-    // Simulate Mistral AI OCR (demo mode - generate mock text)
-    const mockOcrText = `Demo OCR Text for ${documentId}
-This is simulated text extracted from the document.
-The document processing includes:
-1. Automated OCR text extraction
-2. Image identification and annotation
-3. Vector embeddings for search
-4. Secure storage in Supabase
+    const ocrResult = await mistralService.extractTextAndImages(fileBuffer, `document_${documentId}`);
+    
+    console.log(`✓ OCR completed: ${ocrResult.text.length} chars, ${ocrResult.images.length} images`);
+    if (ocrResult.documentAnalysis.document_type) {
+      console.log(`✓ Document type: ${ocrResult.documentAnalysis.document_type}`);
+    }
 
-Processing completed successfully in demo mode.`;
-
-    // Simulate image upload
+    // Step 2: Upload document to Supabase
     console.log('📤 Uploading to Supabase...');
+    await storage.updateProcessingQueueItem(queueItemId, {
+      progress: 50
+    });
+
+    const supabaseUrl = await supabaseService.uploadDocument(
+      fileBuffer, 
+      `documents/${documentId}`,
+      mimeType
+    );
+    console.log(`✓ Document uploaded to Supabase: ${supabaseUrl}`);
+
+    // Step 3: Upload extracted images to Supabase
     await storage.updateProcessingQueueItem(queueItemId, {
       progress: 60
     });
 
-    // Simulate vector embeddings
+    for (let i = 0; i < ocrResult.images.length; i++) {
+      const image = ocrResult.images[i];
+      const imageUrl = await supabaseService.uploadImage(
+        image.imageData,
+        `images/${documentId}_page${image.pageNumber}_${i}`,
+        'image/jpeg'
+      );
+      
+      // Store image metadata
+      await storage.createExtractedImage({
+        documentId,
+        fileName: `image_${i}.jpg`,
+        supabaseUrl: imageUrl,
+        annotation: image.annotation,
+        pageNumber: image.pageNumber
+      });
+    }
+
+    // Step 4: Create vector embeddings
     console.log('🧠 Creating vector embeddings...');
     await storage.updateProcessingQueueItem(queueItemId, {
-      progress: 90
+      progress: 80
     });
 
-    // Complete processing
-    await storage.updateDocumentStatus(documentId, "completed");
+    const textChunks = ocrResult.text.split('\n\n').filter(chunk => chunk.trim().length > 0);
+    if (textChunks.length > 0) {
+      const embeddings = await mistralService.createEmbeddings(textChunks);
+      
+      for (let i = 0; i < textChunks.length; i++) {
+        await storage.createVectorEmbedding({
+          documentId,
+          content: textChunks[i],
+          embedding: embeddings[i] || null,
+          metadata: {
+            chunk_index: i,
+            document_type: ocrResult.documentAnalysis.document_type,
+            language: ocrResult.documentAnalysis.language
+          }
+        });
+      }
+    }
+
+    // Step 5: Complete processing
+    console.log('✅ Finalizing document processing...');
     await storage.updateProcessingQueueItem(queueItemId, {
-      status: "completed",
-      progress: 100
+      progress: 100,
+      status: "completed"
     });
 
-    // Update document with results
+    await storage.updateDocumentStatus(documentId, "completed");
+
+    // Update document with final results
     await storage.updateDocument(documentId, {
-      ocrText: mockOcrText,
-      imageCount: 2,
-      vectorCount: 5,
-      supabaseUrl: `https://demo-supabase-url.com/documents/${documentId}`
+      ocrText: ocrResult.text,
+      imageCount: ocrResult.images.length,
+      vectorCount: textChunks.length,
+      supabaseUrl: supabaseUrl
     });
 
-    console.log(`✅ Document ${documentId} processed successfully`);
+    console.log(`✅ Document ${documentId} processed successfully with Mistral AI Document AI`);
+    console.log(`   - Text extracted: ${ocrResult.text.length} characters`);
+    console.log(`   - Images annotated: ${ocrResult.images.length}`);
+    console.log(`   - Vector embeddings: ${textChunks.length}`);
+    
   } catch (error) {
     console.error(`❌ Error processing document ${documentId}:`, error);
     await storage.updateDocumentStatus(documentId, "failed", error instanceof Error ? error.message : 'Unknown error');

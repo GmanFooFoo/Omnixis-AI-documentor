@@ -39,11 +39,13 @@ Preferred communication style: Simple, everyday language.
 - Processing queue for async task management
 
 ### File Processing Pipeline
-- **Mistral AI** for OCR text extraction and image analysis
-- **Supabase Storage** for secure file and image hosting
-- Async processing queue with status tracking
-- Real-time progress updates through polling
-- Support for PDF, DOCX, PNG, JPEG, and TIFF files
+- **Mistral AI Document AI** with structured annotations for OCR text extraction and intelligent image analysis
+- BBox annotations for detecting and describing charts, diagrams, signatures, and other visual elements
+- Document annotations for extracting structured data, entities, and document classification
+- **Supabase Storage** for secure file and image hosting with unique naming
+- Async processing queue with real-time status tracking
+- Vector embeddings generation for semantic search capabilities
+- Support for PDF, DOCX, PNG, JPEG, and TIFF files up to 50MB
 
 ### UI/UX Design
 - Modern, clean interface with dark/light theme support
