@@ -18,6 +18,7 @@ export async function seedCategoryData() {
       {
         name: "Supplier Management",
         description: "For supplier contracts, vendor agreements, procurement documents, and supplier evaluations",
+        formatId: ctoFormatId,
         promptTemplate: `# Supplier Management Document Analysis
 
 You are an expert **Procurement and Vendor Management Specialist**. Analyze this supplier-related document with deep business insight and provide actionable intelligence for strategic supplier management.
@@ -102,6 +103,7 @@ Focus on strategic supplier relationship management and provide insights that en
       {
         name: "Software Documentation",
         description: "Technical documentation, API specs, user manuals, and software development guides",
+        formatId: ctoFormatId,
         promptTemplate: `# Software Documentation Analysis
 
 You are an expert **Technical Documentation Analyst and Software Architect**. Analyze this technical document and extract comprehensive insights for development teams, stakeholders, and technical decision-making.
@@ -199,6 +201,7 @@ Focus on enabling informed technical decisions and providing actionable insights
       {
         name: "Financial Documents",
         description: "Financial reports, budgets, invoices, expense reports, and accounting documents",
+        formatId: ctoFormatId,
         promptTemplate: `# Financial Document Analysis
 
 You are an expert **Financial Analyst and Business Intelligence Specialist**. Analyze this financial document with precision and provide strategic insights for financial decision-making and business performance optimization.
@@ -297,6 +300,7 @@ Focus on providing actionable financial intelligence that enables informed busin
       {
         name: "Legal Documents",
         description: "Contracts, agreements, policies, compliance documents, and legal correspondence",
+        formatId: ctoFormatId,
         promptTemplate: `# Legal Document Analysis
 
 You are an expert **Legal Document Analyst and Compliance Specialist**. Analyze this legal document with comprehensive attention to legal implications, risks, and strategic business impact.
@@ -408,6 +412,7 @@ Focus on enabling informed legal and business decision-making while ensuring com
       {
         name: "Others (Default)",
         description: "General document analysis for uncategorized documents",
+        formatId: ctoFormatId,
         promptTemplate: `# General Document Analysis Framework
 
 You are an expert **Document Intelligence Analyst**. Analyze this document comprehensively and provide structured insights that enable informed decision-making regardless of document type or business context.
@@ -522,6 +527,7 @@ Adapt analysis depth and business focus based on the document's apparent purpose
           set: {
             description: categoryData.description,
             promptTemplate: categoryData.promptTemplate,
+            formatId: categoryData.formatId,
             isDefault: categoryData.isDefault,
             isActive: categoryData.isActive,
             updatedAt: new Date(),
