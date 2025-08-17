@@ -144,20 +144,6 @@ export default function CategoryDetail() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-16">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center space-x-2 mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => setLocation('/categories')}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-0"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Categories
-          </Button>
-          <span className="text-gray-400 dark:text-gray-500">/</span>
-          <span className="text-gray-600 dark:text-gray-300">{(category as DocumentCategory).name}</span>
-        </div>
-
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
           <div className="flex items-center space-x-4 mb-4 lg:mb-0">

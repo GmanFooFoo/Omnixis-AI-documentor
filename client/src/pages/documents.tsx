@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { ArrowLeft } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -177,9 +178,25 @@ export default function Documents() {
     });
   }, [documents, searchQuery, sortBy, sortOrder]);
 
+  const [, setLocation] = useLocation();
+
   return (
     <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
       <div className="w-full max-w-none mx-auto px-4 sm:px-6 py-4 sm:py-8" style={{ width: '90vw', maxWidth: '95vw' }}>
+        {/* Breadcrumb Navigation */}
+        <div className="flex items-center space-x-2 mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation('/')}
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-0"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+          <span className="text-gray-400 dark:text-gray-500">/</span>
+          <span className="text-gray-600 dark:text-gray-300">Documents</span>
+        </div>
+
         <div className="mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Documents</h2>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Manage and search your processed documents</p>
