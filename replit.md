@@ -70,7 +70,7 @@ LLM Models page design: Must match Documents page layout with list view, search,
 - **File Management**: Enhanced drag-and-drop upload with progress tracking and visual feedback
 - **Dashboard Analytics**: KPI tiles with prominent icons and hover animations
 - **Visual Consistency**: FontAwesome color-coded file icons throughout the application with standardized sizing
-- **Icon System**: Comprehensive icon sizing system with 10 size levels and context-specific utilities
+- **Icon System**: Comprehensive icon sizing system with 10 size levels and context-specific utilities (integrated into Design System page)
 - **Micro-interactions**: Subtle animations and transitions for improved user experience
 
 ## External Dependencies

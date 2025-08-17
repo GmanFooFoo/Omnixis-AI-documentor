@@ -280,6 +280,164 @@ export default function DesignSystem() {
             </CardContent>
           </Card>
 
+          {/* Icon System */}
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Icon System</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Size Scale</h3>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  <div className="text-center">
+                    <i className="fas fa-star icon-xs text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-xs (12px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-sm text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-sm (14px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-base text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-base (16px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-lg text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-lg (18px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-xl text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-xl (20px)</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+                  <div className="text-center">
+                    <i className="fas fa-star icon-2xl text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-2xl (24px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-3xl text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-3xl (30px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-4xl text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-4xl (36px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-5xl text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-5xl (48px)</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-star icon-6xl text-accent-blue mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">icon-6xl (60px)</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">File Type Icons</h3>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                  <div className="text-center">
+                    <i className="fas fa-file-pdf icon-pdf icon-2xl mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">PDF Files</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-file-word icon-word icon-2xl mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Word Docs</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-file-excel icon-excel icon-2xl mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Excel Files</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-file-powerpoint icon-powerpoint icon-2xl mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">PowerPoint</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-file-image icon-image icon-2xl mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Images</p>
+                  </div>
+                  <div className="text-center">
+                    <i className="fas fa-file-alt icon-text icon-2xl mb-2 block"></i>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Text Files</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Context-Specific Icons</h3>
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-6 items-center">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Button Icons:</span>
+                    <Button size="sm"><i className="fas fa-plus btn-icon-sm mr-1"></i>Small</Button>
+                    <Button><i className="fas fa-save btn-icon-md mr-2"></i>Medium</Button>
+                    <Button size="lg"><i className="fas fa-download btn-icon-lg mr-2"></i>Large</Button>
+                  </div>
+                  <div className="flex flex-wrap gap-6 items-center">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Navigation:</span>
+                    <div className="flex items-center space-x-2">
+                      <i className="fas fa-home nav-icon text-accent-blue"></i>
+                      <span className="text-sm">Home</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <i className="fas fa-file-text nav-icon text-accent-blue"></i>
+                      <span className="text-sm">Documents</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <i className="fas fa-cog nav-icon text-accent-blue"></i>
+                      <span className="text-sm">Settings</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-6 items-center">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Icons:</span>
+                    <div className="flex items-center space-x-1">
+                      <i className="fas fa-check-circle status-icon text-green-500"></i>
+                      <span className="text-sm">Success</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <i className="fas fa-exclamation-triangle status-icon text-yellow-500"></i>
+                      <span className="text-sm">Warning</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <i className="fas fa-times-circle status-icon text-red-500"></i>
+                      <span className="text-sm">Error</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <i className="fas fa-spinner loading-icon status-icon text-accent-blue"></i>
+                      <span className="text-sm">Loading</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Usage Guidelines</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="text-md font-medium text-green-600 dark:text-green-400 mb-2">✓ Do</h4>
+                    <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                      <li>Use consistent sizing within components</li>
+                      <li>Apply color coding for file types</li>
+                      <li>Include proper spacing between icons and text</li>
+                      <li>Test accessibility and color contrast</li>
+                      <li>Use semantic icon choices</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-md font-medium text-red-600 dark:text-red-400 mb-2">✗ Don't</h4>
+                    <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                      <li>Mix different icon styles</li>
+                      <li>Use icons without accessibility attributes</li>
+                      <li>Rely solely on color to convey information</li>
+                      <li>Use oversized icons in small spaces</li>
+                      <li>Forget mobile touch targets (44px min)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Breadcrumb Navigation Component */}
           <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
