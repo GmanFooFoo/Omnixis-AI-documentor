@@ -112,8 +112,8 @@ export default function Dashboard() {
                       {statsLoading ? "..." : formatNumber((stats as any)?.documentsProcessed || 0)}
                     </p>
                   </div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-accent-blue/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i className="fas fa-file-text text-accent-blue text-sm sm:text-base"></i>
+                  <div className="flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-file-text text-accent-blue text-2xl sm:text-3xl"></i>
                   </div>
                 </div>
               </CardContent>
@@ -128,8 +128,8 @@ export default function Dashboard() {
                       {statsLoading ? "..." : formatNumber((stats as any)?.imagesExtracted || 0)}
                     </p>
                   </div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-accent-green/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i className="fas fa-image text-accent-green text-sm sm:text-base"></i>
+                  <div className="flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-image text-accent-green text-2xl sm:text-3xl"></i>
                   </div>
                 </div>
               </CardContent>
@@ -144,8 +144,8 @@ export default function Dashboard() {
                       {statsLoading ? "..." : formatNumber((stats as any)?.vectorEmbeddings || 0)}
                     </p>
                   </div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i className="fas fa-vector-square text-purple-500 text-sm sm:text-base"></i>
+                  <div className="flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-vector-square text-purple-500 text-2xl sm:text-3xl"></i>
                   </div>
                 </div>
               </CardContent>
@@ -160,8 +160,8 @@ export default function Dashboard() {
                       {statsLoading ? "..." : formatBytes((stats as any)?.storageUsed || 0)}
                     </p>
                   </div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-accent-orange/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i className="fas fa-database text-accent-orange text-sm sm:text-base"></i>
+                  <div className="flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-database text-accent-orange text-2xl sm:text-3xl"></i>
                   </div>
                 </div>
               </CardContent>
