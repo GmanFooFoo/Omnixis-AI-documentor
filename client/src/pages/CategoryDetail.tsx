@@ -51,9 +51,12 @@ export default function CategoryDetail() {
 
   // Update category mutation
   const updateCategoryMutation = useMutation({
-    mutationFn: (data: CategoryFormData) => 
-      apiRequest(`/api/categories/${id}`, 'PUT', JSON.stringify(data)),
-    onSuccess: () => {
+    mutationFn: (data: CategoryFormData) => {
+      console.log('Making API request to:', `/api/categories/${id}`);
+      return apiRequest(`/api/categories/${id}`, 'PUT', JSON.stringify(data));
+    },
+    onSuccess: (response) => {
+      console.log('Update successful:', response);
       queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
       queryClient.invalidateQueries({ queryKey: ['/api/categories', id] });
       setIsEditing(false);
@@ -63,6 +66,7 @@ export default function CategoryDetail() {
       });
     },
     onError: (error: any) => {
+      console.error('Update error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to update category",
@@ -87,6 +91,7 @@ export default function CategoryDetail() {
   const handleSubmit = (data: CategoryFormData) => {
     console.log('Form submitted with data:', data);
     console.log('Form errors:', form.formState.errors);
+    console.log('Submitting to category ID:', id);
     updateCategoryMutation.mutate(data);
   };
 
