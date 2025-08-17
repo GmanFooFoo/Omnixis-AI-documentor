@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export class SupabaseService {
   private supabase: any;
-  private bucketName = 'document-images';
+  private bucketName = 'DocuAI';
 
   constructor() {
     const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_URL_ENV_VAR || "default_url";
@@ -49,7 +49,7 @@ export class SupabaseService {
       const uniqueFileName = `documents/${timestamp}_${randomString}_${fileName}`;
 
       const { data, error } = await this.supabase.storage
-        .from('documents')
+        .from(this.bucketName)
         .upload(uniqueFileName, documentData, {
           contentType: this.getMimeType(fileName),
           upsert: false
@@ -61,7 +61,7 @@ export class SupabaseService {
 
       // Get public URL
       const { data: urlData } = this.supabase.storage
-        .from('documents')
+        .from(this.bucketName)
         .getPublicUrl(uniqueFileName);
 
       return urlData.publicUrl;

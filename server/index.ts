@@ -37,10 +37,26 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Use demo routes for testing when authentication is not available
-  console.log('🚀 Starting in DEMO mode - authentication bypassed for testing');
-  const { registerDemoRoutes } = await import('./routes-demo');
-  const server = await registerDemoRoutes(app);
+  // Try to connect to Supabase database, fallback to demo mode
+  let server;
+  try {
+    console.log('🔄 Attempting Supabase database connection...');
+    const { DatabaseStorage } = await import('./storage');
+    const dbStorage = new DatabaseStorage();
+    
+    // Test the database connection
+    await dbStorage.getUser('test');
+    console.log('✅ Supabase database connected successfully');
+    
+    // Use authenticated routes with Supabase
+    const { registerRoutes } = await import('./routes');
+    server = await registerRoutes(app);
+  } catch (error) {
+    console.log('⚠ Supabase connection failed, using DEMO mode with MockStorage');
+    console.log('Error:', error instanceof Error ? error.message : 'Unknown error');
+    const { registerDemoRoutes } = await import('./routes-demo');
+    server = await registerDemoRoutes(app);
+  }
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
