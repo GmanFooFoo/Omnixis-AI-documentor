@@ -126,8 +126,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDocument(id: string): Promise<Document | undefined> {
-    const [document] = await db.select().from(documents).where(eq(documents.id, id));
-    return document;
+    try {
+      const [document] = await db.select().from(documents).where(eq(documents.id, id));
+      return document;
+    } catch (error) {
+      console.log('Using Supabase REST API for getDocument');
+      const { data, error: supabaseError } = await this.supabase
+        .from('documents')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (supabaseError && supabaseError.code !== 'PGRST116') {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      return data || undefined;
+    }
   }
 
   async updateDocument(id: string, updates: Partial<InsertDocument>): Promise<Document> {
@@ -140,22 +155,53 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserDocuments(userId: string): Promise<Document[]> {
-    return await db
-      .select()
-      .from(documents)
-      .where(eq(documents.userId, userId))
-      .orderBy(desc(documents.createdAt));
+    try {
+      return await db
+        .select()
+        .from(documents)
+        .where(eq(documents.userId, userId))
+        .orderBy(desc(documents.createdAt));
+    } catch (error) {
+      console.log('Using Supabase REST API for getUserDocuments');
+      const { data, error: supabaseError } = await this.supabase
+        .from('documents')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      return data || [];
+    }
   }
 
   async updateDocumentStatus(id: string, status: string, error?: string): Promise<void> {
-    await db
-      .update(documents)
-      .set({ 
-        status, 
-        processingError: error,
-        updatedAt: new Date() 
-      })
-      .where(eq(documents.id, id));
+    try {
+      await db
+        .update(documents)
+        .set({ 
+          status, 
+          processingError: error,
+          updatedAt: new Date() 
+        })
+        .where(eq(documents.id, id));
+    } catch (dbError) {
+      console.log('Using Supabase REST API for updateDocumentStatus');
+      const { error: supabaseError } = await this.supabase
+        .from('documents')
+        .update({
+          status,
+          processing_error: error,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id);
+      
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+    }
   }
 
   // Extracted images operations
@@ -186,42 +232,114 @@ export class DatabaseStorage implements IStorage {
 
   // Processing queue operations
   async createProcessingQueueItem(item: InsertProcessingQueueItem): Promise<ProcessingQueueItem> {
-    const [newItem] = await db.insert(processingQueue).values(item).returning();
-    return newItem;
+    try {
+      const [newItem] = await db.insert(processingQueue).values(item).returning();
+      return newItem;
+    } catch (error) {
+      console.log('Using Supabase REST API for createProcessingQueueItem');
+      const { data, error: supabaseError } = await this.supabase
+        .from('processing_queue')
+        .insert(item)
+        .select()
+        .single();
+      
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      return data;
+    }
   }
 
   async updateProcessingQueueItem(id: string, updates: Partial<InsertProcessingQueueItem>): Promise<ProcessingQueueItem> {
-    const [item] = await db
-      .update(processingQueue)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(processingQueue.id, id))
-      .returning();
-    return item;
+    try {
+      const [item] = await db
+        .update(processingQueue)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(processingQueue.id, id))
+        .returning();
+      return item;
+    } catch (error) {
+      console.log('Using Supabase REST API for updateProcessingQueueItem');
+      const { data, error: supabaseError } = await this.supabase
+        .from('processing_queue')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      return data;
+    }
   }
 
   async getActiveProcessingItems(userId: string): Promise<ProcessingQueueItem[]> {
-    return await db
-      .select({
-        id: processingQueue.id,
-        documentId: processingQueue.documentId,
-        status: processingQueue.status,
-        step: processingQueue.step,
-        progress: processingQueue.progress,
-        error: processingQueue.error,
-        createdAt: processingQueue.createdAt,
-        updatedAt: processingQueue.updatedAt,
-        fileName: documents.fileName,
-        originalName: documents.originalName,
-      })
-      .from(processingQueue)
-      .innerJoin(documents, eq(processingQueue.documentId, documents.id))
-      .where(
-        and(
-          eq(documents.userId, userId),
-          eq(processingQueue.status, "processing")
+    try {
+      return await db
+        .select({
+          id: processingQueue.id,
+          documentId: processingQueue.documentId,
+          status: processingQueue.status,
+          step: processingQueue.step,
+          progress: processingQueue.progress,
+          error: processingQueue.error,
+          createdAt: processingQueue.createdAt,
+          updatedAt: processingQueue.updatedAt,
+          fileName: documents.fileName,
+          originalName: documents.originalName,
+        })
+        .from(processingQueue)
+        .innerJoin(documents, eq(processingQueue.documentId, documents.id))
+        .where(
+          and(
+            eq(documents.userId, userId),
+            eq(processingQueue.status, "processing")
+          )
         )
-      )
-      .orderBy(desc(processingQueue.createdAt));
+        .orderBy(desc(processingQueue.createdAt));
+    } catch (error) {
+      console.log('Using Supabase REST API for getActiveProcessingItems');
+      const { data, error: supabaseError } = await this.supabase
+        .from('processing_queue')
+        .select(`
+          id,
+          document_id,
+          status,
+          step,
+          progress,
+          error,
+          created_at,
+          updated_at,
+          documents!inner(file_name, original_name)
+        `)
+        .eq('documents.user_id', userId)
+        .eq('status', 'processing')
+        .order('created_at', { ascending: false });
+      
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      // Transform the data to match the expected format
+      return (data || []).map((item: any) => ({
+        id: item.id,
+        documentId: item.document_id,
+        status: item.status,
+        step: item.step,
+        progress: item.progress,
+        error: item.error,
+        createdAt: new Date(item.created_at),
+        updatedAt: new Date(item.updated_at),
+        fileName: item.documents?.file_name,
+        originalName: item.documents?.original_name,
+      }));
+    }
   }
 
   // Analytics operations
