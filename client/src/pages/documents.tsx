@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,8 @@ export default function Documents() {
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [sortBy, setSortBy] = useState<'name' | 'size' | 'createdAt' | 'status'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   // Check screen size and force tiles on mobile/tablet
   useEffect(() => {
@@ -128,9 +130,52 @@ export default function Documents() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const filteredDocuments = (documents as any[])?.filter((doc: any) =>
-    doc.originalName.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
+  const handleSort = (column: 'name' | 'size' | 'createdAt' | 'status') => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortOrder('asc');
+    }
+  };
+
+  const filteredDocuments = useMemo(() => {
+    if (!documents || !Array.isArray(documents)) return [];
+    
+    let filtered = (documents as any[]).filter((doc: any) =>
+      doc.originalName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Sort the filtered results
+    return filtered.sort((a: any, b: any) => {
+      let aValue, bValue;
+      
+      switch (sortBy) {
+        case 'name':
+          aValue = a.originalName.toLowerCase();
+          bValue = b.originalName.toLowerCase();
+          break;
+        case 'size':
+          aValue = a.size || 0;
+          bValue = b.size || 0;
+          break;
+        case 'createdAt':
+          aValue = new Date(a.createdAt || 0).getTime();
+          bValue = new Date(b.createdAt || 0).getTime();
+          break;
+        case 'status':
+          aValue = a.status || 'pending';
+          bValue = b.status || 'pending';
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [documents, searchQuery, sortBy, sortOrder]);
 
   return (
     <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
@@ -261,9 +306,39 @@ export default function Documents() {
                           />
                         </th>
                       )}
-                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Document</th>
-                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Status</th>
-                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Size</th>
+                      <th 
+                        className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-border select-none"
+                        onClick={() => handleSort('name')}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <span>Document</span>
+                          {sortBy === 'name' && (
+                            <i className={`fas ${sortOrder === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs text-accent-blue`}></i>
+                          )}
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-border select-none"
+                        onClick={() => handleSort('status')}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <span>Status</span>
+                          {sortBy === 'status' && (
+                            <i className={`fas ${sortOrder === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs text-accent-blue`}></i>
+                          )}
+                        </div>
+                      </th>
+                      <th 
+                        className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-border select-none"
+                        onClick={() => handleSort('size')}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <span>Size</span>
+                          {sortBy === 'size' && (
+                            <i className={`fas ${sortOrder === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs text-accent-blue`}></i>
+                          )}
+                        </div>
+                      </th>
                       <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hidden sm:table-cell">Images</th>
                       <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hidden sm:table-cell">Vectors</th>
                       <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hidden lg:table-cell">Processed</th>

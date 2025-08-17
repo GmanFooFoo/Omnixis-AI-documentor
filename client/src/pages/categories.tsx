@@ -31,6 +31,8 @@ export default function CategoriesPage() {
   const [viewMode, setViewMode] = useState<'table' | 'tiles'>('tiles'); // Default to tiles
   const [searchQuery, setSearchQuery] = useState('');
   const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [sortBy, setSortBy] = useState<'name' | 'createdAt' | 'status'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   // Check screen size and force tiles on mobile/tablet
   useEffect(() => {
@@ -65,18 +67,57 @@ export default function CategoriesPage() {
     queryKey: ['/api/categories'],
   });
 
-  // Filter categories based on search query
+  const handleSort = (column: 'name' | 'createdAt' | 'status') => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortOrder('asc');
+    }
+  };
+
+  // Filter and sort categories
   const filteredCategories = useMemo(() => {
     if (!categories || !Array.isArray(categories)) return [];
-    if (!searchQuery.trim()) return categories as DocumentCategory[];
     
-    const query = searchQuery.toLowerCase();
-    return (categories as DocumentCategory[]).filter((category: DocumentCategory) =>
-      category.name.toLowerCase().includes(query) ||
-      category.description?.toLowerCase().includes(query) ||
-      category.promptTemplate.toLowerCase().includes(query)
-    );
-  }, [categories, searchQuery]);
+    let filtered = categories as DocumentCategory[];
+    
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((category: DocumentCategory) =>
+        category.name.toLowerCase().includes(query) ||
+        category.description?.toLowerCase().includes(query) ||
+        category.promptTemplate.toLowerCase().includes(query)
+      );
+    }
+
+    // Sort the filtered results
+    return filtered.sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (sortBy) {
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'createdAt':
+          aValue = new Date(a.createdAt || 0).getTime();
+          bValue = new Date(b.createdAt || 0).getTime();
+          break;
+        case 'status':
+          aValue = a.isDefault ? 'default' : 'active';
+          bValue = b.isDefault ? 'default' : 'active';
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [categories, searchQuery, sortBy, sortOrder]);
 
   // Create category mutation
   const createCategoryMutation = useMutation({
@@ -330,10 +371,30 @@ export default function CategoriesPage() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gray-50 dark:bg-dark-bg">
-                  <TableHead className="font-semibold text-gray-900 dark:text-white">Category</TableHead>
+                  <TableHead 
+                    className="font-semibold text-gray-900 dark:text-white cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-border select-none"
+                    onClick={() => handleSort('name')}
+                  >
+                    <div className="flex items-center space-x-1">
+                      <span>Category</span>
+                      {sortBy === 'name' && (
+                        <i className={`fas ${sortOrder === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs text-accent-blue`}></i>
+                      )}
+                    </div>
+                  </TableHead>
                   <TableHead className="font-semibold text-gray-900 dark:text-white">Description</TableHead>
                   <TableHead className="font-semibold text-gray-900 dark:text-white">AI Prompt Preview</TableHead>
-                  <TableHead className="font-semibold text-gray-900 dark:text-white w-24">Status</TableHead>
+                  <TableHead 
+                    className="font-semibold text-gray-900 dark:text-white w-24 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-border select-none"
+                    onClick={() => handleSort('status')}
+                  >
+                    <div className="flex items-center space-x-1">
+                      <span>Status</span>
+                      {sortBy === 'status' && (
+                        <i className={`fas ${sortOrder === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs text-accent-blue`}></i>
+                      )}
+                    </div>
+                  </TableHead>
                   <TableHead className="font-semibold text-gray-900 dark:text-white w-24">Actions</TableHead>
                 </TableRow>
               </TableHeader>
