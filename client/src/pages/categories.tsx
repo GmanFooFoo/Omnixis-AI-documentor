@@ -154,132 +154,131 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Document Categories</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Manage document categories and their AI analysis prompts
-            </p>
-          </div>
-          
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => handleOpenDialog()} className="bg-accent-blue hover:bg-blue-600">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Category
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingCategory ? 'Edit Category' : 'Create New Category'}
-                </DialogTitle>
-                <DialogDescription>
-                  {editingCategory 
-                    ? 'Update the category details and AI analysis prompt.'
-                    : 'Create a new document category with a custom AI analysis prompt.'
-                  }
-                </DialogDescription>
-              </DialogHeader>
-              
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Category Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Supplier Management" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description (Optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Brief description of this category" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="promptTemplate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>AI Analysis Prompt</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Act as an expert supplier manager and analyze if this document is a RFP, Offer, Contract, etc. Provide detailed analysis of..."
-                            className="min-h-[120px]"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="flex items-center justify-between pt-4">
-                    <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={createCategoryMutation.isPending || updateCategoryMutation.isPending}
-                      className="bg-accent-blue hover:bg-blue-600"
-                    >
-                      {editingCategory ? 'Update Category' : 'Create Category'}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
+    <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Categories</h2>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Manage document categories and their AI analysis prompts</p>
         </div>
 
-        {/* Search and View Controls */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6">
-          <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search categories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-white dark:bg-dark-surface border-gray-200 dark:border-dark-border"
-            />
-          </div>
+        {/* Search Bar, View Toggle, and Add Category */}
+        <div className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="relative flex-1">
+              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+              <Input
+                placeholder="Search categories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 sm:pl-10 text-sm sm:text-base"
+              />
+            </div>
           
-          <div className="flex items-center space-x-2">
-            <Button
-              variant={viewMode === 'table' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('table')}
-              className="hidden lg:flex"
-            >
-              <List className="h-4 w-4 mr-2" />
-              Table
-            </Button>
-            <Button
-              variant={viewMode === 'tiles' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('tiles')}
-            >
-              <Grid className="h-4 w-4 mr-2" />
-              Tiles
-            </Button>
+            <div className="flex items-center space-x-2 overflow-x-auto">
+              <Button
+                variant={viewMode === 'table' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('table')}
+                className="whitespace-nowrap hidden md:inline-flex"
+              >
+                <i className="fas fa-table mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+                <span className="text-xs sm:text-sm">Table</span>
+              </Button>
+              <Button
+                variant={viewMode === 'tiles' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('tiles')}
+                className="whitespace-nowrap"
+              >
+                <i className="fas fa-th-large mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+                <span className="text-xs sm:text-sm">Tiles</span>
+              </Button>
+              
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-accent-blue hover:bg-blue-600 whitespace-nowrap">
+                    <Plus className="mr-1 sm:mr-2 h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Add Category</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingCategory ? 'Edit Category' : 'Create New Category'}
+                    </DialogTitle>
+                    <DialogDescription>
+                      {editingCategory 
+                        ? 'Update the category details and AI analysis prompt.'
+                        : 'Create a new document category with a custom AI analysis prompt.'
+                      }
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Category Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g., Supplier Management" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description (Optional)</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Brief description of this category" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="promptTemplate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>AI Analysis Prompt</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Act as an expert supplier manager and analyze if this document is a RFP, Offer, Contract, etc. Provide detailed analysis of..."
+                                className="min-h-[120px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <div className="flex items-center justify-between pt-4">
+                        <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="submit" 
+                          disabled={createCategoryMutation.isPending || updateCategoryMutation.isPending}
+                          className="bg-accent-blue hover:bg-blue-600"
+                        >
+                          {editingCategory ? 'Update Category' : 'Create Category'}
+                        </Button>
+                      </div>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
 
