@@ -43,12 +43,22 @@ function TopNavigation() {
           <a href="/" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             Dashboard
           </a>
-          <a href="/documents" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
-            Documents
-          </a>
-          <a href="/categories" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
-            Categories
-          </a>
+          <div className="relative group">
+            <a href="/documents" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border">
+              <i className="fas fa-file-alt text-lg"></i>
+            </a>
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+              Documents
+            </div>
+          </div>
+          <div className="relative group">
+            <a href="/categories" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border">
+              <i className="fas fa-tags text-lg"></i>
+            </a>
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+              Categories
+            </div>
+          </div>
           <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             Analytics
           </a>
