@@ -207,11 +207,23 @@ function TopNavigation() {
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  // Show loading spinner only during initial auth check
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <TopNavigation />
       <Switch>
-        {isLoading || !isAuthenticated ? (
+        {!isAuthenticated ? (
           <Route path="/" component={Landing} />
         ) : (
           <>
