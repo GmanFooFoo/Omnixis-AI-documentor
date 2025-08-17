@@ -230,38 +230,40 @@ export default function Dashboard() {
                   </Badge>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3 min-h-[120px] flex flex-col">
                   {processingLoading ? (
-                    <div className="text-center py-4">
+                    <div className="text-center py-4 flex-1 flex items-center justify-center">
                       <div className="w-6 h-6 border-2 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
                     </div>
                   ) : activeProcessing?.length > 0 ? (
-                    activeProcessing.map((item: any) => (
-                      <div key={item.id} className="p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                            {item.originalName || item.fileName}
-                          </span>
-                          <Badge 
-                            variant={item.step === 'ocr' ? 'default' : item.step === 'storage' ? 'secondary' : 'outline'}
-                            className="text-xs"
-                          >
-                            {item.step === 'ocr' ? 'OCR' : item.step === 'storage' ? 'Storage' : 'Vectorizing'}
-                          </Badge>
+                    <div className="flex-1">
+                      {activeProcessing.map((item: any) => (
+                        <div key={item.id} className="p-3 bg-gray-50 dark:bg-dark-bg rounded-lg mb-3 last:mb-0">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                              {item.originalName || item.fileName}
+                            </span>
+                            <Badge 
+                              variant={item.step === 'ocr' ? 'default' : item.step === 'storage' ? 'secondary' : 'outline'}
+                              className="text-xs"
+                            >
+                              {item.step === 'ocr' ? 'OCR' : item.step === 'storage' ? 'Storage' : 'Vectorizing'}
+                            </Badge>
+                          </div>
+                          <Progress value={item.progress || 0} className="h-2" />
+                          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <span>
+                              {item.step === 'ocr' ? 'Extracting text...' : 
+                               item.step === 'storage' ? 'Storing images...' : 
+                               'Creating vectors...'}
+                            </span>
+                            <span>{item.progress || 0}%</span>
+                          </div>
                         </div>
-                        <Progress value={item.progress || 0} className="h-2" />
-                        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          <span>
-                            {item.step === 'ocr' ? 'Extracting text...' : 
-                             item.step === 'storage' ? 'Storing images...' : 
-                             'Creating vectors...'}
-                          </span>
-                          <span>{item.progress || 0}%</span>
-                        </div>
-                      </div>
-                    ))
+                      ))}
+                    </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <div className="text-center py-4 flex-1 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
                       <i className="fas fa-clock text-2xl mb-2"></i>
                       <p className="text-sm">No active processing</p>
                     </div>
