@@ -133,11 +133,11 @@ export default function DocumentDetail() {
           <div className="flex items-center space-x-4">
             <Button 
               variant="ghost" 
-              onClick={() => setLocation('/')}
+              onClick={() => setLocation('/documents')}
               className="text-gray-600 dark:text-gray-300 hover:text-accent-blue"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
+              Back to Documents
             </Button>
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{document.originalName}</h1>
