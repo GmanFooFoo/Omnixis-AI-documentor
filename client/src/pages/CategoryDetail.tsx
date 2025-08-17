@@ -556,7 +556,7 @@ export default function CategoryDetail() {
                         </div>
 
                         <div className="flex items-center justify-between mt-2">
-                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Prompt Format</span>
+                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Format</span>
                           <div className="text-right">
                             <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs mb-1">
                               {(category as any).formatName || 'CTO'}
