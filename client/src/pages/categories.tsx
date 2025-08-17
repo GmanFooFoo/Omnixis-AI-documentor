@@ -519,9 +519,14 @@ export default function CategoriesPage() {
                       </p>
                     </TableCell>
                     <TableCell>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md truncate">
-                        {category.promptTemplate}
-                      </p>
+                      <div className="space-y-1">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md truncate">
+                          {category.promptTemplate}
+                        </p>
+                        <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">
+                          {(category as any).formatName || 'CTO'}
+                        </Badge>
+                      </div>
                     </TableCell>
                     <TableCell className="w-24">
                       {category.isDefault ? (
@@ -688,9 +693,14 @@ export default function CategoriesPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-3">
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
-                      AI Prompt Preview:
-                    </p>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        AI Prompt Preview:
+                      </p>
+                      <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">
+                        {(category as any).formatName || 'CTO'}
+                      </Badge>
+                    </div>
                     <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
                       {category.promptTemplate}
                     </p>

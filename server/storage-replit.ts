@@ -5,6 +5,7 @@ import {
   vectorEmbeddings,
   processingQueue,
   documentCategories,
+  promptFormats,
   type User,
   type UpsertUser,
   type Document,
@@ -17,6 +18,7 @@ import {
   type InsertProcessingQueueItem,
   type DocumentCategory,
   type InsertDocumentCategory,
+  type PromptFormat,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -386,9 +388,28 @@ export class ReplitDatabaseStorage implements IStorage {
   }
 
   // Document categories operations
-  async getDocumentCategories(): Promise<DocumentCategory[]> {
+  async getDocumentCategories(): Promise<any[]> {
     try {
-      const categories = await db.select().from(documentCategories).orderBy(desc(documentCategories.createdAt));
+      const categories = await db
+        .select({
+          id: documentCategories.id,
+          name: documentCategories.name,
+          description: documentCategories.description,
+          promptTemplate: documentCategories.promptTemplate,
+          formatId: documentCategories.formatId,
+          isDefault: documentCategories.isDefault,
+          isActive: documentCategories.isActive,
+          createdAt: documentCategories.createdAt,
+          updatedAt: documentCategories.updatedAt,
+          formatName: promptFormats.name,
+          formatDescription: promptFormats.description,
+          formatStructure: promptFormats.structure,
+          formatBestFor: promptFormats.bestFor,
+          formatPurpose: promptFormats.purpose,
+        })
+        .from(documentCategories)
+        .leftJoin(promptFormats, eq(documentCategories.formatId, promptFormats.id))
+        .orderBy(desc(documentCategories.createdAt));
       return categories;
     } catch (error) {
       console.error("Error fetching document categories:", error);
@@ -432,9 +453,28 @@ export class ReplitDatabaseStorage implements IStorage {
     }
   }
 
-  async getDocumentCategory(id: string): Promise<DocumentCategory | undefined> {
+  async getDocumentCategory(id: string): Promise<any | undefined> {
     try {
-      const [category] = await db.select().from(documentCategories).where(eq(documentCategories.id, id));
+      const [category] = await db
+        .select({
+          id: documentCategories.id,
+          name: documentCategories.name,
+          description: documentCategories.description,
+          promptTemplate: documentCategories.promptTemplate,
+          formatId: documentCategories.formatId,
+          isDefault: documentCategories.isDefault,
+          isActive: documentCategories.isActive,
+          createdAt: documentCategories.createdAt,
+          updatedAt: documentCategories.updatedAt,
+          formatName: promptFormats.name,
+          formatDescription: promptFormats.description,
+          formatStructure: promptFormats.structure,
+          formatBestFor: promptFormats.bestFor,
+          formatPurpose: promptFormats.purpose,
+        })
+        .from(documentCategories)
+        .leftJoin(promptFormats, eq(documentCategories.formatId, promptFormats.id))
+        .where(eq(documentCategories.id, id));
       return category;
     } catch (error) {
       console.error("Error fetching document category:", error);
