@@ -41,8 +41,9 @@ function TopNavigation() {
 
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-          <a href="/" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
-            Dashboard
+          <a href="/" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
+            <i className="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
           </a>
           <a href="/documents" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             <i className="fas fa-file-alt"></i>
