@@ -19,6 +19,7 @@ import {
   type DocumentCategory,
   type InsertDocumentCategory,
   type PromptFormat,
+  type InsertPromptFormat,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -524,6 +525,69 @@ export class ReplitDatabaseStorage implements IStorage {
       return updatedCategory;
     } catch (error) {
       console.error("Error deactivating category:", error);
+      throw error;
+    }
+  }
+
+  // Prompt formats operations
+  async getPromptFormats(): Promise<PromptFormat[]> {
+    try {
+      const formats = await db
+        .select()
+        .from(promptFormats)
+        .orderBy(desc(promptFormats.createdAt));
+      return formats;
+    } catch (error) {
+      console.error("Error fetching prompt formats:", error);
+      throw error;
+    }
+  }
+
+  async getPromptFormat(id: string): Promise<PromptFormat | undefined> {
+    try {
+      const [format] = await db
+        .select()
+        .from(promptFormats)
+        .where(eq(promptFormats.id, id));
+      return format;
+    } catch (error) {
+      console.error("Error fetching prompt format:", error);
+      throw error;
+    }
+  }
+
+  async createPromptFormat(formatData: InsertPromptFormat): Promise<PromptFormat> {
+    try {
+      const [format] = await db
+        .insert(promptFormats)
+        .values(formatData)
+        .returning();
+      return format;
+    } catch (error) {
+      console.error("Error creating prompt format:", error);
+      throw error;
+    }
+  }
+
+  async updatePromptFormat(id: string, updates: Partial<InsertPromptFormat>): Promise<PromptFormat> {
+    try {
+      const [format] = await db
+        .update(promptFormats)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(promptFormats.id, id))
+        .returning();
+      return format;
+    } catch (error) {
+      console.error("Error updating prompt format:", error);
+      throw error;
+    }
+  }
+
+  async deletePromptFormat(id: string): Promise<void> {
+    try {
+      await db.delete(promptFormats).where(eq(promptFormats.id, id));
+    } catch (error) {
+      console.error("Error deleting prompt format:", error);
       throw error;
     }
   }

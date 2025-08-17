@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { Settings as SettingsIcon, Palette, User, Shield, Bell, Database, Brain } from "lucide-react";
+import { Settings as SettingsIcon, Palette, User, Shield, Bell, Database, Brain, FileText } from "lucide-react";
 
 export default function Settings() {
   return (
@@ -157,6 +157,30 @@ export default function Settings() {
               <Button variant="outline" className="w-full" disabled>
                 Coming Soon
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Prompt Formats */}
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-indigo-500" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">Prompt Formats</CardTitle>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Manage structured prompt formats for AI document analysis.
+              </p>
+              <Link href="/settings/prompt-formats">
+                <Button variant="outline" className="w-full">
+                  Manage Formats
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 

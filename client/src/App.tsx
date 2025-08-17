@@ -19,6 +19,7 @@ import CategoryDetail from "@/pages/CategoryDetail";
 import Settings from "@/pages/settings";
 import DesignSystem from "@/pages/DesignSystem";
 import LlmSettings from "@/pages/LlmSettings";
+import PromptFormatsPage from "@/pages/PromptFormatsPage";
 import Analytics from "@/pages/Analytics";
 
 function TopNavigation() {
@@ -225,6 +226,7 @@ function Router() {
             <Route path="/settings" component={Settings} />
             <Route path="/settings/design-system" component={DesignSystem} />
             <Route path="/settings/llm" component={LlmSettings} />
+            <Route path="/settings/prompt-formats" component={PromptFormatsPage} />
           </>
         )}
         <Route component={NotFound} />

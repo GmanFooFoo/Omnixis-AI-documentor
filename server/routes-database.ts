@@ -350,6 +350,65 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Prompt Formats endpoints
+  app.get('/api/prompt-formats', async (req, res) => {
+    try {
+      const formats = await storage.getPromptFormats();
+      res.json(formats);
+    } catch (error) {
+      console.error('❌ Error fetching prompt formats:', error);
+      res.status(500).json({ message: "Failed to fetch prompt formats" });
+    }
+  });
+
+  app.get('/api/prompt-formats/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const format = await storage.getPromptFormat(id);
+      if (!format) {
+        return res.status(404).json({ message: "Prompt format not found" });
+      }
+      res.json(format);
+    } catch (error) {
+      console.error('❌ Error fetching prompt format:', error);
+      res.status(500).json({ message: "Failed to fetch prompt format" });
+    }
+  });
+
+  app.post('/api/prompt-formats', async (req, res) => {
+    try {
+      const formatData = req.body;
+      const format = await storage.createPromptFormat(formatData);
+      res.json(format);
+    } catch (error) {
+      console.error('❌ Error creating prompt format:', error);
+      res.status(500).json({ message: "Failed to create prompt format" });
+    }
+  });
+
+  app.put('/api/prompt-formats/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const formatData = req.body;
+      const format = await storage.updatePromptFormat(id, formatData);
+      res.json(format);
+    } catch (error) {
+      console.error('❌ Error updating prompt format:', error);
+      res.status(500).json({ message: "Failed to update prompt format" });
+    }
+  });
+
+  app.delete('/api/prompt-formats/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deletePromptFormat(id);
+      res.json({ message: "Prompt format deleted successfully" });
+    } catch (error) {
+      console.error('❌ Error deleting prompt format:', error);
+      res.status(500).json({ message: "Failed to delete prompt format" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
