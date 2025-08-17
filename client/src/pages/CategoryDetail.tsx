@@ -383,7 +383,7 @@ export default function CategoryDetail() {
                           name="name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Category Name</FormLabel>
+                              <FormLabel>Name</FormLabel>
                               <FormControl>
                                 <Input placeholder="e.g., Supplier Management" {...field} />
                               </FormControl>
