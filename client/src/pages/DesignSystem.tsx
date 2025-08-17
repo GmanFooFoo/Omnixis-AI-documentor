@@ -1,36 +1,28 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft } from "lucide-react";
-import { useLocation } from "wouter";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { Link } from "wouter";
 
-export default function Storybook() {
-  const [, setLocation] = useLocation();
-
+export default function DesignSystem() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-16">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-20">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center space-x-2 mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => setLocation('/help')}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-0"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Help
-          </Button>
-          <span className="text-gray-400 dark:text-gray-500">/</span>
+        {/* Breadcrumb */}
+        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <Link href="/" className="hover:text-accent-blue">Home</Link>
+          <span>/</span>
+          <Link href="/settings" className="hover:text-accent-blue">Settings</Link>
+          <span>/</span>
           <span className="text-gray-600 dark:text-gray-300">Design System</span>
         </div>
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Storybook - Design System</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Design System</h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             A comprehensive guide to our UI components, design patterns, and visual language.
           </p>
@@ -108,8 +100,8 @@ export default function Storybook() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                <h1 className="font-bold dark:text-white text-[32px] text-[#3B82F6]">Heading 1 - 4xl Bold</h1>
-                <h2 className="font-bold text-gray-900 dark:text-white text-[28px]">Heading 2 - 3xl Bold</h2>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Heading 1 - 4xl Bold</h1>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Heading 2 - 3xl Bold</h2>
                 <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">Heading 3 - 2xl Semibold</h3>
                 <h4 className="text-xl font-semibold text-gray-900 dark:text-white">Heading 4 - xl Semibold</h4>
                 <h5 className="text-lg font-medium text-gray-900 dark:text-white">Heading 5 - lg Medium</h5>

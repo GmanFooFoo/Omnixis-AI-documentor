@@ -7,6 +7,8 @@ DocuAI is a modern web application that provides AI-powered OCR and document pro
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Design preferences: FontAwesome color-coded file icons strongly preferred over generic DocumentTypeIcon component for documents page (red PDF, blue Word, green Excel, etc.)
+Navigation preference: Move Storybook/Design System to separate page under Settings navigation entry.
 
 ## System Architecture
 
