@@ -159,7 +159,10 @@ export async function seedLlmData() {
 
     console.log("✅ LLM providers and models seeded successfully");
     
-    // Also seed document categories with enhanced prompts
+    // Also seed prompt formats first, then categories
+    const { seedPromptFormats } = await import("./seedPromptFormats");
+    await seedPromptFormats();
+    
     await seedCategoryData();
   } catch (error) {
     console.error("❌ Error seeding LLM data:", error);

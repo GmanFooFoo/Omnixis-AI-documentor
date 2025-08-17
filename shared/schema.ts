@@ -90,12 +90,26 @@ export const processingQueue = pgTable("processing_queue", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Prompt formats table for storing different prompt structure templates
+export const promptFormats = pgTable("prompt_formats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull().unique(),
+  description: text("description"),
+  structure: text("structure").notNull(),
+  bestFor: text("best_for").notNull(),
+  purpose: text("purpose").notNull(),
+  isDefault: boolean("is_default").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Document categories table for categorizing documents with AI prompts
 export const documentCategories = pgTable("document_categories", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: varchar("name").notNull().unique(),
   description: text("description"),
   promptTemplate: text("prompt_template").notNull(),
+  formatId: varchar("format_id").references(() => promptFormats.id), // Reference to prompt format
   isDefault: boolean("is_default").default(false).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
@@ -154,6 +168,9 @@ export type InsertVectorEmbedding = typeof vectorEmbeddings.$inferInsert;
 export type ProcessingQueueItem = typeof processingQueue.$inferSelect;
 export type InsertProcessingQueueItem = typeof processingQueue.$inferInsert;
 
+export type PromptFormat = typeof promptFormats.$inferSelect;
+export type InsertPromptFormat = typeof promptFormats.$inferInsert;
+
 export type DocumentCategory = typeof documentCategories.$inferSelect;
 export type InsertDocumentCategory = typeof documentCategories.$inferInsert;
 
@@ -183,6 +200,12 @@ export const insertVectorEmbeddingSchema = createInsertSchema(vectorEmbeddings).
 });
 
 export const insertProcessingQueueItemSchema = createInsertSchema(processingQueue).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPromptFormatSchema = createInsertSchema(promptFormats).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
