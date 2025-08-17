@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import { storage } from "./storage-replit";
 import { mistralService } from "./services/mistralService";
-import { supabaseService } from "./services/supabaseService";
+// Removed supabaseService - now using unified Replit database storage
 
 // Configure multer for file uploads
 const upload = multer({
@@ -199,7 +199,7 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
       
       // Search similar vectors in PostgreSQL (placeholder for now)
       // Future: implement vector similarity search with pgvector
-      const results = [];
+      const results: any[] = [];
       
       res.json(results);
     } catch (error) {
