@@ -97,6 +97,7 @@ export const documentCategories = pgTable("document_categories", {
   description: text("description"),
   promptTemplate: text("prompt_template").notNull(),
   isDefault: boolean("is_default").default(false).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

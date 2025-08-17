@@ -67,6 +67,8 @@ export interface IStorage {
   deleteDocumentCategory(id: string): Promise<void>;
   getDocumentCategory(id: string): Promise<DocumentCategory | undefined>;
   unsetAllDefaultCategories(): Promise<void>;
+  activateCategory(id: string): Promise<DocumentCategory>;
+  deactivateCategory(id: string): Promise<DocumentCategory>;
 }
 
 export class ReplitDatabaseStorage implements IStorage {
@@ -448,6 +450,40 @@ export class ReplitDatabaseStorage implements IStorage {
         .where(eq(documentCategories.isDefault, true));
     } catch (error) {
       console.error("Error unsetting default categories:", error);
+      throw error;
+    }
+  }
+
+  async activateCategory(id: string): Promise<DocumentCategory> {
+    try {
+      const [category] = await db
+        .update(documentCategories)
+        .set({ isActive: true, updatedAt: new Date() })
+        .where(eq(documentCategories.id, id))
+        .returning();
+      return category;
+    } catch (error) {
+      console.error("Error activating category:", error);
+      throw error;
+    }
+  }
+
+  async deactivateCategory(id: string): Promise<DocumentCategory> {
+    try {
+      // Check if this is a default category
+      const category = await this.getDocumentCategory(id);
+      if (category?.isDefault) {
+        throw new Error("Cannot deactivate the default category. Please set another category as default first.");
+      }
+
+      const [updatedCategory] = await db
+        .update(documentCategories)
+        .set({ isActive: false, updatedAt: new Date() })
+        .where(eq(documentCategories.id, id))
+        .returning();
+      return updatedCategory;
+    } catch (error) {
+      console.error("Error deactivating category:", error);
       throw error;
     }
   }

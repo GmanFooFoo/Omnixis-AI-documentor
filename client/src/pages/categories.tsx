@@ -21,6 +21,7 @@ const categoryFormSchema = z.object({
   description: z.string().optional(),
   promptTemplate: z.string().min(1, 'Prompt template is required'),
   isDefault: z.boolean().default(false),
+  isActive: z.boolean().default(true),
 });
 
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
@@ -59,6 +60,7 @@ export default function CategoriesPage() {
       description: '',
       promptTemplate: '',
       isDefault: false,
+      isActive: true,
     },
   });
 
@@ -106,8 +108,8 @@ export default function CategoriesPage() {
           bValue = new Date(b.createdAt || 0).getTime();
           break;
         case 'status':
-          aValue = a.isDefault ? 'default' : 'active';
-          bValue = b.isDefault ? 'default' : 'active';
+          aValue = a.isDefault ? 'default' : a.isActive ? 'active' : 'inactive';
+          bValue = b.isDefault ? 'default' : b.isActive ? 'active' : 'inactive';
           break;
         default:
           return 0;
@@ -182,6 +184,44 @@ export default function CategoriesPage() {
     },
   });
 
+  // Activate category mutation
+  const activateCategoryMutation = useMutation({
+    mutationFn: (id: string) => apiRequest(`/api/categories/${id}/activate`, 'POST'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
+      toast({
+        title: "Category activated",
+        description: "The category has been activated successfully.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to activate category",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Deactivate category mutation
+  const deactivateCategoryMutation = useMutation({
+    mutationFn: (id: string) => apiRequest(`/api/categories/${id}/deactivate`, 'POST'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
+      toast({
+        title: "Category deactivated",
+        description: "The category has been deactivated successfully.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to deactivate category",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleOpenDialog = (category?: DocumentCategory) => {
     if (category) {
       setEditingCategory(category);
@@ -190,6 +230,7 @@ export default function CategoriesPage() {
         description: category.description || '',
         promptTemplate: category.promptTemplate,
         isDefault: category.isDefault,
+        isActive: category.isActive,
       });
     } else {
       setEditingCategory(null);
@@ -209,6 +250,16 @@ export default function CategoriesPage() {
   const handleDelete = (id: string) => {
     if (confirm('Are you sure you want to delete this category?')) {
       deleteCategoryMutation.mutate(id);
+    }
+  };
+
+  const handleActivate = (id: string) => {
+    activateCategoryMutation.mutate(id);
+  };
+
+  const handleDeactivate = (id: string) => {
+    if (confirm('Are you sure you want to deactivate this category? Deactivated categories will not be available for new documents.')) {
+      deactivateCategoryMutation.mutate(id);
     }
   };
 
@@ -343,6 +394,29 @@ export default function CategoriesPage() {
                           </FormItem>
                         )}
                       />
+
+                      <FormField
+                        control={form.control}
+                        name="isActive"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base">Active Category</FormLabel>
+                              <FormDescription>
+                                Active categories are available for document assignment. Inactive categories are hidden from users but preserved for existing documents.
+                              </FormDescription>
+                            </div>
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
                       
                       <div className="flex items-center justify-between pt-4">
                         <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
@@ -449,36 +523,75 @@ export default function CategoriesPage() {
                         {category.promptTemplate}
                       </p>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="text-accent-green border-accent-green">
-                        Active
-                      </Badge>
+                    <TableCell className="w-24">
+                      {category.isDefault ? (
+                        <Badge variant="secondary" className="bg-accent-green text-white">
+                          Default
+                        </Badge>
+                      ) : category.isActive ? (
+                        <Badge variant="outline" className="border-green-500 text-green-600">
+                          Active
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="border-red-500 text-red-600">
+                          Inactive
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => window.location.href = `/categories/${category.id}`}
                           className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-dark-bg"
                         >
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
+                          <Edit className="h-4 w-4" />
                         </Button>
+                        
+                        {category.isActive ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeactivate(category.id)}
+                            disabled={category.isDefault}
+                            className="text-orange-500 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={category.isDefault ? "Cannot deactivate default category" : "Deactivate category"}
+                          >
+                            <i className="fas fa-pause h-3 w-3"></i>
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleActivate(category.id)}
+                            className="text-green-500 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
+                            title="Activate category"
+                          >
+                            <i className="fas fa-play h-3 w-3"></i>
+                          </Button>
+                        )}
+
                         {!category.isDefault ? (
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(category.id)}
                             className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                            title="Delete category"
                           >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            Delete
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         ) : (
-                          <span className="text-xs text-gray-400 dark:text-gray-500 px-2 py-1">
-                            Default category cannot be deleted
-                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled
+                            className="text-gray-400 cursor-not-allowed opacity-50"
+                            title="Cannot delete default category"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         )}
                       </div>
                     </TableCell>
@@ -500,11 +613,18 @@ export default function CategoriesPage() {
                       </div>
                       <div>
                         <CardTitle className="text-lg">{category.name}</CardTitle>
-                        {category.isDefault && (
-                          <Badge variant="secondary" className="mt-1 bg-accent-green text-white">
-                            Default
-                          </Badge>
-                        )}
+                        <div className="flex items-center space-x-2 mt-1">
+                          {category.isDefault && (
+                            <Badge variant="secondary" className="bg-accent-green text-white text-xs">
+                              Default
+                            </Badge>
+                          )}
+                          {!category.isActive && (
+                            <Badge variant="outline" className="border-red-500 text-red-600 text-xs">
+                              Inactive
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
                     
@@ -518,6 +638,31 @@ export default function CategoriesPage() {
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Button>
+                      {category.isActive ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeactivate(category.id)}
+                          disabled={category.isDefault}
+                          className="text-orange-500 hover:text-orange-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                          title={category.isDefault ? "Cannot deactivate default category" : "Deactivate category"}
+                        >
+                          <i className="fas fa-pause h-4 w-4 mr-1"></i>
+                          Pause
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleActivate(category.id)}
+                          className="text-green-500 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20"
+                          title="Activate category"
+                        >
+                          <i className="fas fa-play h-4 w-4 mr-1"></i>
+                          Activate
+                        </Button>
+                      )}
+
                       {!category.isDefault ? (
                         <Button
                           variant="ghost"

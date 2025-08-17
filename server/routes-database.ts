@@ -319,6 +319,28 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post('/api/categories/:id/activate', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const category = await storage.activateCategory(id);
+      res.json(category);
+    } catch (error) {
+      console.error('❌ Error activating category:', error);
+      res.status(500).json({ message: "Failed to activate category" });
+    }
+  });
+
+  app.post('/api/categories/:id/deactivate', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const category = await storage.deactivateCategory(id);
+      res.json(category);
+    } catch (error) {
+      console.error('❌ Error deactivating category:', error);
+      res.status(500).json({ message: error.message || "Failed to deactivate category" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
