@@ -62,11 +62,15 @@ LLM Models page design: Must match Documents page layout with list view, search,
 - Support for PDF, DOCX, PNG, JPEG, and TIFF files up to 10MB
 
 ### UI/UX Design
-- Modern, clean interface with dark/light theme support
-- Responsive design optimized for desktop and mobile
-- Real-time processing status indicators
-- Drag-and-drop file upload with progress tracking
-- Dashboard with analytics and document management
+- **Modern Interface**: Clean, accessible design with comprehensive dark/light theme support
+- **Responsive Design**: Mobile-first approach optimized for desktop, tablet, and mobile devices
+- **Interactive Elements**: Fully clickable document lists and cards with proper hover states
+- **Accessibility**: WCAG-compliant color contrast, keyboard navigation, and screen reader support
+- **Real-time Features**: Live processing status indicators with semantic color coding
+- **File Management**: Enhanced drag-and-drop upload with progress tracking and visual feedback
+- **Dashboard Analytics**: KPI tiles with prominent icons and hover animations
+- **Visual Consistency**: FontAwesome color-coded file icons throughout the application
+- **Micro-interactions**: Subtle animations and transitions for improved user experience
 
 ## External Dependencies
 
@@ -91,12 +95,24 @@ LLM Models page design: Must match Documents page layout with list view, search,
 
 ## Recent Changes & Features
 
-### Accessibility & File Management Updates
-- Updated file upload limit from 50MB to 10MB across all components and documentation
-- Implemented accessibility-friendly color contrast improvements for icons and UI elements throughout the application:
-  - Enhanced file type icon colors with WCAG-compliant contrast ratios
-  - Added focus states for keyboard navigation 
-  - Improved status badge colors for better visibility
-  - Created high-contrast theme variants for light and dark modes
-- Applied consistent FontAwesome color-coded file icons across all document displays
-- Enhanced mobile responsiveness and touch target sizing for accessibility
+### Design System & Accessibility Updates
+- **File Management**: Updated file upload limit from 50MB to 10MB across all components and documentation
+- **Accessibility Enhancements**: Implemented WCAG-compliant color contrast improvements:
+  - Enhanced file type icon colors with sufficient contrast ratios for both light and dark themes
+  - Added comprehensive focus states for keyboard navigation (3px blue outline with offset)
+  - Improved status badge colors with better visibility and contrast
+  - Created high-contrast theme variants with accessible color schemes
+- **Interactive Elements**: Enhanced clickable functionality across the application:
+  - Made document table rows and tiles fully clickable to navigate to detail pages
+  - Added hover states and cursor indicators for better user experience
+  - Implemented proper event propagation handling for nested interactive elements
+- **Visual Design System**: Updated component styling and consistency:
+  - Applied consistent FontAwesome color-coded file icons across all document displays
+  - Removed background colors from KPI tiles and increased icon sizes for better prominence
+  - Enhanced card hover effects with subtle animations and shadows
+  - Improved mobile responsiveness and touch target sizing (minimum 44px)
+- **Design Tokens**: Established comprehensive CSS custom properties for:
+  - Accessible color palettes for file type icons
+  - Interactive states (hover, focus, active)
+  - Status indicators with semantic colors
+  - Animation utilities for smooth transitions

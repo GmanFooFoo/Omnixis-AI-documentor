@@ -118,6 +118,227 @@
   color: hsl(217, 91%, 80%);
 }
 
+/* Interactive elements and clickable states */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.clickable-row:hover {
+  background-color: hsl(210, 25%, 98%);
+}
+
+.dark .clickable-row:hover {
+  background-color: hsl(210, 25%, 12%);
+}
+
+.clickable-card {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.clickable-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.dark .clickable-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* KPI tiles design updates */
+.kpi-tile {
+  background: white;
+  border: 1px solid hsl(220, 13%, 91%);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.dark .kpi-tile {
+  background: hsl(210, 25%, 8%);
+  border: 1px solid hsl(210, 25%, 20%);
+}
+
+.kpi-tile:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .kpi-tile:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.kpi-icon {
+  font-size: 2rem;
+  margin-left: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .kpi-icon {
+    font-size: 3rem;
+  }
+}
+
+/* File upload enhancements */
+.upload-zone {
+  border: 2px dashed hsl(220, 13%, 75%);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background: hsl(0, 0%, 99%);
+}
+
+.dark .upload-zone {
+  border-color: hsl(210, 25%, 35%);
+  background: hsl(210, 25%, 6%);
+}
+
+.upload-zone:hover,
+.upload-zone.drag-active {
+  border-color: hsl(217, 91%, 60%);
+  background: hsl(217, 91%, 98%);
+  transform: translateY(-1px);
+}
+
+.dark .upload-zone:hover,
+.dark .upload-zone.drag-active {
+  border-color: hsl(217, 91%, 60%);
+  background: hsl(217, 91%, 8%);
+}
+
+/* Enhanced status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-completed {
+  background-color: hsl(142, 76%, 36%);
+  color: white;
+}
+
+.status-processing {
+  background-color: hsl(25, 95%, 45%);
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.status-failed {
+  background-color: hsl(0, 84%, 45%);
+  color: white;
+}
+
+.status-pending {
+  background-color: hsl(210, 25%, 65%);
+  color: white;
+}
+
+/* File type icon system */
+.file-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.file-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Document grid and list improvements */
+.document-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .document-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.document-card {
+  background: white;
+  border: 1px solid hsl(220, 13%, 91%);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.dark .document-card {
+  background: hsl(210, 25%, 8%);
+  border: 1px solid hsl(210, 25%, 20%);
+}
+
+.document-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.document-list-table th {
+  text-align: left;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid hsl(220, 13%, 91%);
+  font-weight: 500;
+  color: hsl(210, 25%, 45%);
+  font-size: 0.875rem;
+}
+
+.dark .document-list-table th {
+  border-bottom-color: hsl(210, 25%, 20%);
+  color: hsl(210, 25%, 65%);
+}
+
+.document-list-table td {
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid hsl(220, 13%, 95%);
+  vertical-align: middle;
+}
+
+.dark .document-list-table td {
+  border-bottom-color: hsl(210, 25%, 15%);
+}
+
+/* Animation utilities */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Tablet optimizations */
 @media (min-width: 641px) and (max-width: 1024px) {
   .tablet-grid {
