@@ -126,132 +126,175 @@ export default function DocumentDetail() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={() => setLocation('/')}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold">{document.originalName}</h1>
-            <p className="text-muted-foreground">Document Details</p>
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-20">
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => setLocation('/')}
+              className="text-gray-600 dark:text-gray-300 hover:text-accent-blue"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Dashboard
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{document.originalName}</h1>
+              <p className="text-gray-600 dark:text-gray-400">Document Details</p>
+            </div>
           </div>
+          <Badge 
+            className={document.status === 'completed' ? 'bg-accent-green text-white' :
+                       document.status === 'processing' ? 'bg-accent-orange text-white' : 
+                       document.status === 'failed' ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'}
+          >
+            {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
+          </Badge>
         </div>
-        <Badge className={getStatusColor(document.status)}>
-          {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
-        </Badge>
-      </div>
 
-      {/* Document Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <FileText className="mr-2 h-5 w-5" />
-            Document Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Calendar className="mr-2 h-4 w-4" />
-                Uploaded
-              </div>
-              <p className="font-medium">
-                {formatDistanceToNow(new Date(document.createdAt), { addSuffix: true })}
-              </p>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <HardDrive className="mr-2 h-4 w-4" />
-                File Size
-              </div>
-              <p className="font-medium">{formatFileSize(document.fileSize)}</p>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <ImageIcon className="mr-2 h-4 w-4" />
-                Images Extracted
-              </div>
-              <p className="font-medium">{document.imageCount}</p>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Brain className="mr-2 h-4 w-4" />
-                Vector Embeddings
-              </div>
-              <p className="font-medium">{document.vectorCount}</p>
-            </div>
-          </div>
-          
-          {document.processingError && (
-            <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-              <p className="text-red-800 dark:text-red-200 text-sm">
-                <strong>Processing Error:</strong> {document.processingError}
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Tabs for Different Views */}
-      <Tabs defaultValue="text" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="text" className="flex items-center">
-            <FileText className="mr-2 h-4 w-4" />
-            Extracted Text
-          </TabsTrigger>
-          <TabsTrigger value="images" className="flex items-center">
-            <ImageIcon className="mr-2 h-4 w-4" />
-            Images ({document.imageCount})
-          </TabsTrigger>
-          <TabsTrigger value="vectors" className="flex items-center">
-            <Brain className="mr-2 h-4 w-4" />
-            Vectors ({document.vectorCount})
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Text Content Tab */}
-        <TabsContent value="text">
-          <Card>
-            <CardHeader>
-              <CardTitle>Extracted Text Content</CardTitle>
-              <CardDescription>
-                OCR-extracted text from the document ({document.ocrText?.length || 0} characters)
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {document.ocrText ? (
-                <ScrollArea className="h-96 w-full rounded-md border p-4">
-                  <pre className="whitespace-pre-wrap text-sm leading-relaxed">
-                    {document.ocrText}
-                  </pre>
-                </ScrollArea>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <FileText className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No text content extracted from this document.</p>
+        {/* Document Overview Stats - Dashboard Style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Uploaded</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                    {formatDistanceToNow(new Date(document.createdAt), { addSuffix: true })}
+                  </p>
                 </div>
-              )}
+                <div className="w-12 h-12 bg-accent-blue/10 rounded-lg flex items-center justify-center">
+                  <Calendar className="h-6 w-6 text-accent-blue" />
+                </div>
+              </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* Images Tab */}
-        <TabsContent value="images">
-          <Card>
-            <CardHeader>
-              <CardTitle>Extracted Images</CardTitle>
-              <CardDescription>
-                Images and visual elements extracted from the document
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">File Size</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                    {formatFileSize(document.fileSize)}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-accent-orange/10 rounded-lg flex items-center justify-center">
+                  <HardDrive className="h-6 w-6 text-accent-orange" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Images Extracted</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                    {document.imageCount}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-accent-green/10 rounded-lg flex items-center justify-center">
+                  <ImageIcon className="h-6 w-6 text-accent-green" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Vector Embeddings</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">
+                    {document.vectorCount}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                  <Brain className="h-6 w-6 text-purple-500" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {document.processingError && (
+          <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-red-800 dark:text-red-200 text-sm">
+              <strong>Processing Error:</strong> {document.processingError}
+            </p>
+          </div>
+        )}
+
+        {/* Tabs for Different Views */}
+        <Tabs defaultValue="text" className="space-y-6">
+          <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg p-1">
+            <TabsList className="grid w-full grid-cols-3 bg-transparent">
+              <TabsTrigger 
+                value="text" 
+                className="flex items-center data-[state=active]:bg-accent-blue data-[state=active]:text-white"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Extracted Text
+              </TabsTrigger>
+              <TabsTrigger 
+                value="images" 
+                className="flex items-center data-[state=active]:bg-accent-green data-[state=active]:text-white"
+              >
+                <ImageIcon className="mr-2 h-4 w-4" />
+                Images ({document.imageCount})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="vectors" 
+                className="flex items-center data-[state=active]:bg-purple-500 data-[state=active]:text-white"
+              >
+                <Brain className="mr-2 h-4 w-4" />
+                Vectors ({document.vectorCount})
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* Text Content Tab */}
+          <TabsContent value="text">
+            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Extracted Text Content</h3>
+                  <Badge variant="secondary" className="bg-accent-blue/10 text-accent-blue">
+                    {document.ocrText?.length || 0} characters
+                  </Badge>
+                </div>
+                {document.ocrText ? (
+                  <div className="bg-gray-50 dark:bg-dark-bg rounded-lg border border-gray-200 dark:border-dark-border">
+                    <ScrollArea className="h-96 w-full p-4">
+                      <pre className="whitespace-pre-wrap text-sm leading-relaxed text-gray-900 dark:text-white">
+                        {document.ocrText}
+                      </pre>
+                    </ScrollArea>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                    <FileText className="mx-auto h-16 w-16 mb-4 opacity-50" />
+                    <p className="text-lg font-medium">No text content extracted</p>
+                    <p className="text-sm">This document doesn't contain extractable text.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Images Tab */}
+          <TabsContent value="images">
+            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Extracted Images</h3>
+                  <Badge variant="secondary" className="bg-accent-green/10 text-accent-green">
+                    {images.length} images found
+                  </Badge>
+                </div>
               {imagesLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[...Array(3)].map((_, i) => (
@@ -263,10 +306,10 @@ export default function DocumentDetail() {
                   ))}
                 </div>
               ) : images.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {images.map((image) => (
-                    <Card key={image.id} className="overflow-hidden">
-                      <div className="aspect-video bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <Card key={image.id} className="overflow-hidden bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                      <div className="aspect-video bg-gray-50 dark:bg-dark-bg flex items-center justify-center border-b border-gray-200 dark:border-dark-border">
                         {image.supabaseUrl?.startsWith('data:') ? (
                           <img
                             src={image.supabaseUrl}
@@ -274,22 +317,22 @@ export default function DocumentDetail() {
                             className="max-w-full max-h-full object-contain"
                           />
                         ) : (
-                          <div className="text-center text-muted-foreground">
+                          <div className="text-center text-gray-500 dark:text-gray-400">
                             <ImageIcon className="mx-auto h-8 w-8 mb-2" />
                             <p className="text-sm">Image Preview</p>
                           </div>
                         )}
                       </div>
-                      <CardContent className="p-3">
-                        <h4 className="font-medium text-sm mb-1">{image.fileName}</h4>
+                      <CardContent className="p-4">
+                        <h4 className="font-medium text-sm mb-2 text-gray-900 dark:text-white">{image.fileName}</h4>
                         {image.annotation && (
-                          <p className="text-xs text-muted-foreground mb-2">
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
                             {image.annotation}
                           </p>
                         )}
-                        <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span>Page {image.pageNumber || 'N/A'}</span>
-                          <Button variant="ghost" size="sm" className="h-6 px-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">Page {image.pageNumber || 'N/A'}</span>
+                          <Button variant="ghost" size="sm" className="h-7 px-3 text-accent-blue hover:bg-accent-blue/10">
                             <Eye className="h-3 w-3 mr-1" />
                             View
                           </Button>
@@ -299,25 +342,26 @@ export default function DocumentDetail() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <ImageIcon className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No images were extracted from this document.</p>
+                <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                  <ImageIcon className="mx-auto h-16 w-16 mb-4 opacity-50" />
+                  <p className="text-lg font-medium">No images extracted</p>
+                  <p className="text-sm">This document doesn't contain extractable images.</p>
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {/* Vectors Tab */}
-        <TabsContent value="vectors">
-          <Card>
-            <CardHeader>
-              <CardTitle>Vector Embeddings</CardTitle>
-              <CardDescription>
-                Semantic embeddings created for search and analysis
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          {/* Vectors Tab */}
+          <TabsContent value="vectors">
+            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Vector Embeddings</h3>
+                  <Badge variant="secondary" className="bg-purple-500/10 text-purple-500">
+                    {vectors.length} embeddings
+                  </Badge>
+                </div>
               {vectorsLoading ? (
                 <div className="space-y-3">
                   {[...Array(5)].map((_, i) => (
@@ -328,42 +372,46 @@ export default function DocumentDetail() {
                     </div>
                   ))}
                 </div>
-              ) : vectors.length > 0 ? (
-                <ScrollArea className="h-96">
-                  <div className="space-y-4">
-                    {vectors.map((vector, index) => (
-                      <Card key={vector.id} className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <Badge variant="outline" className="text-xs">
-                            Chunk {index + 1}
-                          </Badge>
-                          <div className="flex items-center text-xs text-muted-foreground">
-                            <Hash className="mr-1 h-3 w-3" />
-                            {vector.embedding?.length || 0} dimensions
-                          </div>
-                        </div>
-                        <p className="text-sm leading-relaxed mb-2">
-                          {vector.content}
-                        </p>
-                        {vector.metadata && (
-                          <div className="text-xs text-muted-foreground">
-                            <strong>Metadata:</strong> {JSON.stringify(vector.metadata, null, 2)}
-                          </div>
-                        )}
-                      </Card>
-                    ))}
+                ) : vectors.length > 0 ? (
+                  <div className="bg-gray-50 dark:bg-dark-bg rounded-lg border border-gray-200 dark:border-dark-border">
+                    <ScrollArea className="h-96 p-4">
+                      <div className="space-y-4">
+                        {vectors.map((vector, index) => (
+                          <Card key={vector.id} className="p-4 bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                            <div className="flex items-start justify-between mb-3">
+                              <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-500 border-purple-500/20">
+                                Chunk {index + 1}
+                              </Badge>
+                              <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                <Hash className="mr-1 h-3 w-3" />
+                                {vector.embedding?.length || 0} dimensions
+                              </div>
+                            </div>
+                            <p className="text-sm leading-relaxed mb-3 text-gray-900 dark:text-white">
+                              {vector.content}
+                            </p>
+                            {vector.metadata && (
+                              <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-dark-bg p-2 rounded">
+                                <strong>Metadata:</strong> {JSON.stringify(vector.metadata, null, 2)}
+                              </div>
+                            )}
+                          </Card>
+                        ))}
+                      </div>
+                    </ScrollArea>
                   </div>
-                </ScrollArea>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Brain className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                  <p>No vector embeddings were created for this document.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                ) : (
+                  <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                    <Brain className="mx-auto h-16 w-16 mb-4 opacity-50" />
+                    <p className="text-lg font-medium">No vector embeddings found</p>
+                    <p className="text-sm">Vector embeddings weren't created for this document.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
