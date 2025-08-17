@@ -104,6 +104,15 @@ export const promptFormats = pgTable("prompt_formats", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Prompt format elements table for normalized element storage
+export const promptFormatElements = pgTable("prompt_format_elements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  formatId: varchar("format_id").notNull().references(() => promptFormats.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Document categories table for categorizing documents with AI prompts
 export const documentCategories = pgTable("document_categories", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -172,6 +181,9 @@ export type InsertProcessingQueueItem = typeof processingQueue.$inferInsert;
 export type PromptFormat = typeof promptFormats.$inferSelect;
 export type InsertPromptFormat = typeof promptFormats.$inferInsert;
 
+export type PromptFormatElement = typeof promptFormatElements.$inferSelect;
+export type InsertPromptFormatElement = typeof promptFormatElements.$inferInsert;
+
 export type DocumentCategory = typeof documentCategories.$inferSelect;
 export type InsertDocumentCategory = typeof documentCategories.$inferInsert;
 
@@ -207,6 +219,12 @@ export const insertProcessingQueueItemSchema = createInsertSchema(processingQueu
 });
 
 export const insertPromptFormatSchema = createInsertSchema(promptFormats).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPromptFormatElementSchema = createInsertSchema(promptFormatElements).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
