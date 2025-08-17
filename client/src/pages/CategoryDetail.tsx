@@ -335,7 +335,7 @@ Please provide detailed analysis with specific insights relevant to supplier man
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
                       <i className="fas fa-cog text-accent-blue"></i>
-                      <span>Category Settings</span>
+                      <span className="text-[16px]">Category Settings</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -433,12 +433,16 @@ Please provide detailed analysis with specific insights relevant to supplier man
                           </p>
                         </div>
 
-                        <div className="flex items-center space-x-2 mt-2">
-                          {(category as DocumentCategory).isDefault && (
-                            <Badge variant="secondary" className="bg-accent-green text-white text-xs">
-                              Default
-                            </Badge>
-                          )}
+                        <div className="flex items-center justify-between mt-4">
+                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Type</span>
+                          <Badge variant={(category as DocumentCategory).isDefault ? "default" : "outline"} 
+                                 className={(category as DocumentCategory).isDefault ? "bg-accent-green text-white text-xs" : "text-xs"}>
+                            {(category as DocumentCategory).isDefault ? 'Default' : 'Custom'}
+                          </Badge>
+                        </div>
+
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</span>
                           {(category as DocumentCategory).isActive ? (
                             <Badge variant="outline" className="border-green-500 text-green-600 text-xs">
                               Active
@@ -463,27 +467,6 @@ Please provide detailed analysis with specific insights relevant to supplier man
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Status</span>
-                      {(category as DocumentCategory).isActive ? (
-                        <Badge variant="outline" className="border-green-500 text-green-600 text-xs">
-                          Active
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="border-red-500 text-red-600 text-xs">
-                          Inactive
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Type</span>
-                      <Badge variant={(category as DocumentCategory).isDefault ? "default" : "outline"} 
-                             className={(category as DocumentCategory).isDefault ? "bg-accent-green text-white text-xs" : "text-xs"}>
-                        {(category as DocumentCategory).isDefault ? 'Default' : 'Custom'}
-                      </Badge>
-                    </div>
-                    
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500 dark:text-gray-400">Created</span>
                       <div className="flex items-center text-gray-900 dark:text-white">
