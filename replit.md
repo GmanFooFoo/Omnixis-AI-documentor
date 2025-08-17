@@ -41,10 +41,11 @@ Preferred communication style: Simple, everyday language.
 - Processing queue for async task management
 
 ### Storage Architecture
-- **Primary Database**: PostgreSQL via DATABASE_URL for all structured data
-- **File Storage**: Supabase Storage for documents and images (requires SUPABASE_URL/SUPABASE_ANON_KEY)
-- **Vector Storage**: PostgreSQL with pgvector extension for embeddings
-- **Fallback**: Simple in-memory storage when external services unavailable
+- **Primary Database**: Replit PostgreSQL database for all data (documents, users, vectors, files)
+- **File Storage**: PostgreSQL BYTEA fields for document and image storage (base64 encoded)
+- **Vector Storage**: PostgreSQL with vector embeddings stored as real arrays
+- **Session Storage**: PostgreSQL table for authentication sessions
+- **Unified Storage**: Everything stored in single Replit database for simplicity
 
 ### File Processing Pipeline
 - **Mistral AI Document AI** with structured annotations for OCR text extraction and intelligent image analysis

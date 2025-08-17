@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
-import { storage } from "./storage-simple";
+import { storage } from "./storage-replit";
 import { mistralService } from "./services/mistralService";
 import { supabaseService } from "./services/supabaseService";
 
@@ -194,8 +194,9 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
       // Create embedding for the search query
       const [queryEmbedding] = await mistralService.createEmbeddings([query]);
       
-      // Search similar vectors in Supabase
-      const results = await supabaseService.searchSimilarVectors(queryEmbedding);
+      // Search similar vectors in PostgreSQL (placeholder for now)
+      // Future: implement vector similarity search with pgvector
+      const results = [];
       
       res.json(results);
     } catch (error) {
@@ -239,20 +240,21 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
       throw ocrError;
     }
 
-    // Step 2: Upload document to Supabase Storage
-    console.log('📤 Uploading document to Supabase Storage...');
+    // Step 2: Store document in Replit Database
+    console.log('💾 Storing document in Replit Database...');
     await storage.updateProcessingQueueItem(queueItemId, {
       progress: 50
     });
 
     const fileExtension = mimeType.split('/')[1] || 'bin';
-    const supabaseUrl = await supabaseService.uploadDocument(
-      fileBuffer, 
-      `documents/${documentId}.${fileExtension}`
+    const filePath = await storage.storeDocumentFile(
+      documentId, 
+      fileBuffer,
+      `${originalName}.${fileExtension}`
     );
-    console.log(`✓ Document uploaded to Supabase: ${supabaseUrl}`);
+    console.log(`✓ Document stored in database: ${filePath}`);
 
-    // Step 3: Process and upload extracted images
+    // Step 3: Process and store extracted images
     console.log('🖼️ Processing extracted images...');
     await storage.updateProcessingQueueItem(queueItemId, {
       progress: 60
@@ -261,9 +263,10 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
     for (let i = 0; i < ocrResult.images.length; i++) {
       const image = ocrResult.images[i];
       try {
-        const imageUrl = await supabaseService.uploadImage(
+        const imageUrl = await storage.storeImageFile(
+          documentId,
           image.imageData,
-          `images/${documentId}_page${image.pageNumber}_${i}.jpg`
+          `image_${i}.jpg`
         );
         
         // Store image metadata in database
@@ -310,17 +313,7 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
               }
             });
             
-            // Also store in Supabase vector database for search
-            await supabaseService.storeVectorEmbedding(
-              embeddings[i],
-              textChunks[i],
-              { 
-                documentId, 
-                chunkIndex: i, 
-                fileName: originalName,
-                documentType: ocrResult.documentAnalysis?.document_type
-              }
-            );
+            // Vector embeddings are now stored in PostgreSQL
             
             vectorCount++;
           }
@@ -343,7 +336,6 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
       ocrText: ocrResult.text,
       imageCount: ocrResult.images.length,
       vectorCount: vectorCount,
-      supabaseUrl: supabaseUrl,
       status: "completed"
     });
 
