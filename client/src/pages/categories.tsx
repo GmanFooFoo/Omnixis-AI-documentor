@@ -359,18 +359,20 @@ export default function CategoriesPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleOpenDialog(category)}
-                          className="text-gray-500 hover:text-gray-700"
+                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-dark-bg"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
                         </Button>
                         {!category.isDefault && (
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(category.id)}
-                            className="text-red-500 hover:text-red-700"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
                           </Button>
                         )}
                       </div>
@@ -406,18 +408,20 @@ export default function CategoriesPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleOpenDialog(category)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-dark-bg"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
                       </Button>
                       {!category.isDefault && (
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(category.id)}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
                         </Button>
                       )}
                     </div>
