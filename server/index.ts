@@ -44,16 +44,18 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Use demo routes temporarily (authentication disabled)
+  // Use database routes with authentication disabled
   let server;
   try {
-    console.log('🔄 Starting in DEMO mode (authentication disabled)');
+    console.log('🔄 Starting with database storage (authentication disabled)');
+    const { registerDatabaseRoutes } = await import('./routes-database');
+    server = await registerDatabaseRoutes(app);
+    console.log('✅ Database routes registered successfully');
+  } catch (error) {
+    console.log('❌ Database connection failed, falling back to demo mode:', error instanceof Error ? error.message : 'Unknown error');
+    console.log('⚠ Using demo routes with mock storage');
     const { registerDemoRoutes } = await import('./routes-demo');
     server = await registerDemoRoutes(app);
-    console.log('✅ Demo routes registered successfully');
-  } catch (error) {
-    console.log('❌ Failed to register demo routes:', error instanceof Error ? error.message : 'Unknown error');
-    throw error;
   }
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
