@@ -599,6 +599,16 @@
   margin-right: 0.25rem;
 }
 
+/* Page navigation styles */
+.page-nav-link {
+  scroll-margin-top: 6rem;
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Breadcrumb dropdown for long paths */
 .breadcrumb-dropdown {
   position: relative;

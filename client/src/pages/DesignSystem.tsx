@@ -25,14 +25,51 @@ export default function DesignSystem() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Design System</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
             A comprehensive guide to our UI components, design patterns, and visual language.
           </p>
+          
+          {/* Page Navigation */}
+          <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg p-4">
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Quick Navigation</h3>
+            <div className="flex flex-wrap gap-2">
+              <a href="#colors" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-palette icon-xs mr-1"></i>Colors
+              </a>
+              <a href="#typography" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-font icon-xs mr-1"></i>Typography
+              </a>
+              <a href="#buttons" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-mouse-pointer icon-xs mr-1"></i>Buttons
+              </a>
+              <a href="#forms" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-edit icon-xs mr-1"></i>Form Components
+              </a>
+              <a href="#badges" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-tag icon-xs mr-1"></i>Badges & Status
+              </a>
+              <a href="#cards" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-square icon-xs mr-1"></i>Cards
+              </a>
+              <a href="#icons" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-star icon-xs mr-1"></i>Icon System
+              </a>
+              <a href="#breadcrumbs" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-sitemap icon-xs mr-1"></i>Breadcrumbs
+              </a>
+              <a href="#principles" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-lightbulb icon-xs mr-1"></i>Design Principles
+              </a>
+              <a href="#spacing" className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md hover:bg-accent-blue hover:text-white transition-colors">
+                <i className="fas fa-ruler icon-xs mr-1"></i>Spacing & Layout
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-8">
           {/* Color Palette */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="colors" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Color Palette</CardTitle>
             </CardHeader>
@@ -96,7 +133,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Typography */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="typography" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Typography</CardTitle>
             </CardHeader>
@@ -118,7 +155,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Buttons */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="buttons" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Buttons</CardTitle>
             </CardHeader>
@@ -153,7 +190,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Form Components */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="forms" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Form Components</CardTitle>
             </CardHeader>
@@ -188,7 +225,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Badges and Status */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="badges" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Badges & Status</CardTitle>
             </CardHeader>
@@ -215,7 +252,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Cards */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="cards" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Cards</CardTitle>
             </CardHeader>
@@ -246,7 +283,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Design Principles */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="principles" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Design Principles</CardTitle>
             </CardHeader>
@@ -281,7 +318,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Icon System */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="icons" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Icon System</CardTitle>
             </CardHeader>
@@ -439,7 +476,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Breadcrumb Navigation Component */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="breadcrumbs" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Breadcrumb Navigation</CardTitle>
             </CardHeader>
@@ -488,7 +525,7 @@ export default function DesignSystem() {
           </Card>
 
           {/* Spacing & Layout */}
-          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+          <Card id="spacing" className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardHeader>
               <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Spacing & Layout</CardTitle>
             </CardHeader>
