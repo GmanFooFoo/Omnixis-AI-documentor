@@ -535,6 +535,18 @@ export default function CategoryDetail() {
                         </div>
 
                         <div className="flex items-center justify-between mt-4">
+                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Format</span>
+                          <div className="flex items-center space-x-2">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {(category as any).formatDescription || '(Context → Task → Output)'}
+                            </p>
+                            <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">
+                              {(category as any).formatName || 'CTO'}
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between mt-2">
                           <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Type</span>
                           <Badge variant={(category as DocumentCategory).isDefault ? "default" : "outline"} 
                                  className={(category as DocumentCategory).isDefault ? "bg-accent-green text-white text-xs" : "text-xs"}>
@@ -553,18 +565,6 @@ export default function CategoryDetail() {
                               Inactive
                             </Badge>
                           )}
-                        </div>
-
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Format</span>
-                          <div className="text-right">
-                            <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs mb-1">
-                              {(category as any).formatName || 'CTO'}
-                            </Badge>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {(category as any).formatDescription || '(Context → Task → Output)'}
-                            </p>
-                          </div>
                         </div>
                       </div>
                     )}
