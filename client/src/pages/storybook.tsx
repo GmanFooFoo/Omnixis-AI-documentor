@@ -30,7 +30,7 @@ export default function Storybook() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">DocuAI Design System</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Storybook - Design System</h1>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             A comprehensive guide to our UI components, design patterns, and visual language.
           </p>
