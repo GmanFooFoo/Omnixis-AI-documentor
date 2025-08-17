@@ -32,11 +32,19 @@ Preferred communication style: Simple, everyday language.
 - User profile management with automatic session updates
 
 ### Database Design
-- **PostgreSQL** with Drizzle ORM schema definitions
+- **PostgreSQL** (primary) - Document metadata, user data, processing queue, vector embeddings
+- **Supabase Storage** - Cloud file storage for documents and extracted images
+- **Vector Database** - PostgreSQL with vector extension for semantic search
 - Core tables: users, documents, extracted_images, vector_embeddings, processing_queue
 - Session storage table for authentication
 - Comprehensive document metadata tracking
 - Processing queue for async task management
+
+### Storage Architecture
+- **Primary Database**: PostgreSQL via DATABASE_URL for all structured data
+- **File Storage**: Supabase Storage for documents and images (requires SUPABASE_URL/SUPABASE_ANON_KEY)
+- **Vector Storage**: PostgreSQL with pgvector extension for embeddings
+- **Fallback**: Simple in-memory storage when external services unavailable
 
 ### File Processing Pipeline
 - **Mistral AI Document AI** with structured annotations for OCR text extraction and intelligent image analysis
