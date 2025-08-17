@@ -52,8 +52,9 @@ function TopNavigation() {
             <i className="fas fa-tags"></i>
             <span>Categories</span>
           </a>
-          <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
-            Analytics
+          <a href="#" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
+            <i className="fas fa-chart-bar"></i>
+            <span>Analytics</span>
           </a>
           <a href="/help" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             Help
