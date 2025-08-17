@@ -531,3 +531,18 @@ function splitTextIntoChunks(text: string, maxChunkSize: number): string[] {
 
   return chunks.filter(chunk => chunk.length > 0);
 }
+
+// Import and register LLM routes
+import { llmRouter } from "./routes-llm";
+import { seedLlmData } from "./seedLlmData";
+
+// Add LLM routes to the app before returning the server
+app.use('/api/llm', llmRouter);
+
+// Seed LLM data on startup
+seedLlmData().catch(console.error);
+
+return server;
+}
+
+export { registerDatabaseRoutes };

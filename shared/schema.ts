@@ -102,6 +102,43 @@ export const documentCategories = pgTable("document_categories", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// LLM providers table for available AI models
+export const llmProviders = pgTable("llm_providers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull().unique(), // e.g., "OpenAI", "Anthropic", "Mistral"
+  displayName: varchar("display_name").notNull(), // e.g., "OpenAI GPT"
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// LLM models table for specific model configurations
+export const llmModels = pgTable("llm_models", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  providerId: varchar("provider_id").notNull().references(() => llmProviders.id),
+  name: varchar("name").notNull(), // e.g., "gpt-4o", "claude-3-sonnet"
+  displayName: varchar("display_name").notNull(), // e.g., "ChatGPT 4o", "Claude 3 Sonnet"
+  description: text("description"),
+  maxTokens: integer("max_tokens"),
+  costPer1kTokens: real("cost_per_1k_tokens"), // Cost in USD
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User LLM configurations table for storing user's API keys and preferences
+export const userLlmConfigs = pgTable("user_llm_configs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  providerId: varchar("provider_id").notNull().references(() => llmProviders.id),
+  modelId: varchar("model_id").notNull().references(() => llmModels.id),
+  apiKey: text("api_key").notNull(), // Encrypted API key
+  isEnabled: boolean("is_enabled").default(true).notNull(),
+  isPrimary: boolean("is_primary").default(false).notNull(), // Primary model for processing
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
@@ -119,6 +156,15 @@ export type InsertProcessingQueueItem = typeof processingQueue.$inferInsert;
 
 export type DocumentCategory = typeof documentCategories.$inferSelect;
 export type InsertDocumentCategory = typeof documentCategories.$inferInsert;
+
+export type LlmProvider = typeof llmProviders.$inferSelect;
+export type InsertLlmProvider = typeof llmProviders.$inferInsert;
+
+export type LlmModel = typeof llmModels.$inferSelect;
+export type InsertLlmModel = typeof llmModels.$inferInsert;
+
+export type UserLlmConfig = typeof userLlmConfigs.$inferSelect;
+export type InsertUserLlmConfig = typeof userLlmConfigs.$inferInsert;
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({
   id: true,
@@ -143,6 +189,24 @@ export const insertProcessingQueueItemSchema = createInsertSchema(processingQueu
 });
 
 export const insertDocumentCategorySchema = createInsertSchema(documentCategories).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertLlmProviderSchema = createInsertSchema(llmProviders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertLlmModelSchema = createInsertSchema(llmModels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertUserLlmConfigSchema = createInsertSchema(userLlmConfigs).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
