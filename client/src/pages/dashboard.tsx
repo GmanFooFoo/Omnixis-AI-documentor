@@ -190,19 +190,19 @@ export default function Dashboard() {
 
           {/* Monitoring Panel */}
           <div className="space-y-6">
-            {/* Active Processing / Uploader Status */}
+            {/* Processing Status / Uploader Status */}
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {(activeProcessing as any[])?.length > 0 ? "Uploader Status" : "Active Processing"}
+                    {(activeProcessing as any[])?.length > 0 ? "Uploader Status" : "Processing Status"}
                   </h3>
                   <Badge variant="secondary">
                     {processingLoading ? "..." : `${(activeProcessing as any[])?.length || 0} items`}
                   </Badge>
                 </div>
 
-                <div className="space-y-3 min-h-[120px] flex flex-col">
+                <div className="space-y-3 min-h-[200px] flex flex-col">
                   {processingLoading ? (
                     <div className="text-center py-8">
                       <LoadingAnimation fileName="Loading..." status="processing" size="md" showProgress={false} />
@@ -260,7 +260,7 @@ export default function Dashboard() {
                       })}
                     </div>
                   ) : (
-                    <div className="text-center py-8">
+                    <div className="text-center py-12 flex-1 flex flex-col justify-center">
                       <div className="w-16 h-16 bg-gray-100 dark:bg-dark-bg rounded-full flex items-center justify-center mx-auto mb-4">
                         <i className="fas fa-check text-2xl text-accent-green"></i>
                       </div>
