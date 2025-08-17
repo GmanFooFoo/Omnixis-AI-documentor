@@ -424,9 +424,9 @@ export default function CategoryDetail() {
                           name="isDefault"
                           render={({ field }) => (
                             <FormItem className="space-y-3">
-                              <FormLabel className="text-base">Category Type</FormLabel>
+                              <FormLabel className="text-base">Default</FormLabel>
                               <FormControl>
-                                <div className="space-y-2">
+                                <div className="flex items-center space-x-6">
                                   <div className="flex items-center space-x-2">
                                     <input
                                       type="radio"
@@ -438,7 +438,7 @@ export default function CategoryDetail() {
                                       className="text-blue-600 border-gray-300 focus:ring-blue-500"
                                     />
                                     <label htmlFor="default-yes" className="text-sm font-medium text-gray-900 dark:text-white">
-                                      Default Category
+                                      Yes
                                     </label>
                                   </div>
                                   <div className="flex items-center space-x-2">
@@ -452,7 +452,7 @@ export default function CategoryDetail() {
                                       className="text-blue-600 border-gray-300 focus:ring-blue-500"
                                     />
                                     <label htmlFor="default-no" className="text-sm font-medium text-gray-900 dark:text-white">
-                                      Custom Category
+                                      No
                                     </label>
                                   </div>
                                 </div>
@@ -471,7 +471,7 @@ export default function CategoryDetail() {
                             <FormItem className="space-y-3">
                               <FormLabel className="text-base">Category Status</FormLabel>
                               <FormControl>
-                                <div className="space-y-2">
+                                <div className="flex items-center space-x-6">
                                   <div className="flex items-center space-x-2">
                                     <input
                                       type="radio"
