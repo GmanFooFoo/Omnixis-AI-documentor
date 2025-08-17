@@ -291,22 +291,44 @@ export default function CategoryDetail() {
                           <FormItem>
                             <FormControl>
                               <Textarea 
-                                placeholder={`# AI Analysis Instructions
+                                placeholder={`# Document Analysis Framework
 
-Act as an expert **supplier manager** and analyze this document thoroughly.
+Act as an expert document analyst and provide comprehensive analysis of this document.
 
-## Analysis Requirements:
-1. **Document Type**: Identify if this is a RFP, Offer, Contract, Invoice, etc.
-2. **Key Information**: Extract important dates, amounts, parties involved
-3. **Risk Assessment**: Highlight any potential risks or concerns
-4. **Recommendations**: Provide actionable recommendations
+## Core Analysis Areas:
 
-## Output Format:
-- Use clear headings and bullet points
-- Include relevant quotes from the document
-- Highlight critical information in **bold**
+### 1. Document Classification & Context
+- **Document Type**: Classify the document (contract, invoice, report, manual, etc.)
+- **Business Context**: Identify the industry/domain and purpose
+- **Stakeholders**: List all parties, roles, and relationships mentioned
+- **Timeline**: Extract all dates, deadlines, and time-sensitive information
 
-Please provide detailed analysis with specific insights relevant to supplier management.`}
+### 2. Key Information Extraction
+- **Critical Data Points**: Numbers, amounts, quantities, percentages
+- **Decisions & Actions**: Required actions, approvals, next steps
+- **Compliance & Requirements**: Standards, regulations, certifications mentioned
+- **Contact Information**: People, departments, external organizations
+
+### 3. Content Structure Analysis
+- **Main Topics**: Identify primary themes and subject areas
+- **Supporting Details**: Evidence, examples, references provided
+- **Quality Assessment**: Completeness, clarity, professional standards
+- **Dependencies**: Requirements, prerequisites, linked documents
+
+### 4. Business Intelligence
+- **Opportunities**: Potential benefits, improvements, optimizations
+- **Risks & Concerns**: Issues, gaps, potential problems identified
+- **Strategic Insights**: Broader implications and recommendations
+- **Follow-up Actions**: Suggested next steps and monitoring points
+
+## Output Requirements:
+- Structure with clear markdown headings and bullet points
+- Quote relevant passages to support findings
+- Highlight **critical information** and *important details*
+- Provide actionable recommendations with priority levels
+- Include confidence levels for key assessments
+
+Focus on practical, actionable insights that enable informed decision-making.`}
                                 className="min-h-[600px] font-mono text-sm resize-none"
                                 {...field} 
                               />

@@ -1,6 +1,7 @@
 import { db } from "./db";
 import { llmProviders, llmModels } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { seedCategoryData } from "./seedCategoryData";
 
 export async function seedLlmData() {
   try {
@@ -157,6 +158,9 @@ export async function seedLlmData() {
     }
 
     console.log("✅ LLM providers and models seeded successfully");
+    
+    // Also seed document categories with enhanced prompts
+    await seedCategoryData();
   } catch (error) {
     console.error("❌ Error seeding LLM data:", error);
   }
