@@ -69,7 +69,8 @@ LLM Models page design: Must match Documents page layout with list view, search,
 - **Real-time Features**: Live processing status indicators with semantic color coding
 - **File Management**: Enhanced drag-and-drop upload with progress tracking and visual feedback
 - **Dashboard Analytics**: KPI tiles with prominent icons and hover animations
-- **Visual Consistency**: FontAwesome color-coded file icons throughout the application
+- **Visual Consistency**: FontAwesome color-coded file icons throughout the application with standardized sizing
+- **Icon System**: Comprehensive icon sizing system with 10 size levels and context-specific utilities
 - **Micro-interactions**: Subtle animations and transitions for improved user experience
 
 ## External Dependencies
@@ -116,3 +117,9 @@ LLM Models page design: Must match Documents page layout with list view, search,
   - Interactive states (hover, focus, active)
   - Status indicators with semantic colors
   - Animation utilities for smooth transitions
+- **Icon System**: Implemented comprehensive icon sizing and usage guidelines:
+  - Standardized icon sizes from xs (12px) to 6xl (60px)
+  - Context-specific icon classes for buttons, navigation, tables, and cards
+  - Spacing utilities for consistent icon-text relationships
+  - Accessibility helpers for better user experience
+  - Loading and animation states for interactive elements

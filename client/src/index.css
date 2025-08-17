@@ -242,6 +242,28 @@
   color: white;
 }
 
+/* Icon System - Comprehensive sizing and usage guidelines */
+
+/* Icon size utilities */
+.icon-xs { font-size: 0.75rem; } /* 12px */
+.icon-sm { font-size: 0.875rem; } /* 14px */
+.icon-base { font-size: 1rem; } /* 16px */
+.icon-lg { font-size: 1.125rem; } /* 18px */
+.icon-xl { font-size: 1.25rem; } /* 20px */
+.icon-2xl { font-size: 1.5rem; } /* 24px */
+.icon-3xl { font-size: 1.875rem; } /* 30px */
+.icon-4xl { font-size: 2.25rem; } /* 36px */
+.icon-5xl { font-size: 3rem; } /* 48px */
+.icon-6xl { font-size: 3.75rem; } /* 60px */
+
+/* Icon spacing utilities */
+.icon-mr-1 { margin-right: 0.25rem; }
+.icon-mr-2 { margin-right: 0.5rem; }
+.icon-mr-3 { margin-right: 0.75rem; }
+.icon-ml-1 { margin-left: 0.25rem; }
+.icon-ml-2 { margin-left: 0.5rem; }
+.icon-ml-3 { margin-left: 0.75rem; }
+
 /* File type icon system */
 .file-icon-wrapper {
   display: flex;
@@ -256,6 +278,104 @@
 .file-icon {
   font-size: 1.5rem;
   line-height: 1;
+}
+
+/* Icon containers for different contexts */
+.icon-container-sm {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-container-md {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-container-lg {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-container-xl {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Button icon sizing */
+.btn-icon-sm { font-size: 0.875rem; }
+.btn-icon-md { font-size: 1rem; }
+.btn-icon-lg { font-size: 1.125rem; }
+
+/* Navigation and UI icons */
+.nav-icon { font-size: 1.125rem; }
+.menu-icon { font-size: 1.25rem; }
+.action-icon { font-size: 1rem; }
+.status-icon { font-size: 0.875rem; }
+
+/* Loading and state icons */
+.loading-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Icon accessibility helpers */
+.icon-accessible {
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.icon-accessible:hover {
+  opacity: 1;
+}
+
+/* Icon alignment utilities */
+.icon-align-top { vertical-align: top; }
+.icon-align-middle { vertical-align: middle; }
+.icon-align-bottom { vertical-align: bottom; }
+.icon-align-text-top { vertical-align: text-top; }
+.icon-align-text-bottom { vertical-align: text-bottom; }
+
+/* Context-specific icon styles */
+.sidebar-icon {
+  font-size: 1.125rem;
+  margin-right: 0.75rem;
+  width: 1.25rem;
+  text-align: center;
+}
+
+.card-icon {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+.table-icon {
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+.header-icon {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
 }
 
 /* Document grid and list improvements */
