@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { LoadingAnimation, ProcessingSteps, DocumentTypeIcon } from "@/components/LoadingAnimation";
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -32,16 +33,6 @@ export default function Dashboard() {
   const { data: stats = {}, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/analytics/stats"],
     retry: false,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Session expired",
-          description: "Please log in again",
-          variant: "destructive",
-        });
-        setTimeout(() => window.location.href = "/api/login", 500);
-      }
-    },
   });
 
   // Fetch active processing items
@@ -49,32 +40,12 @@ export default function Dashboard() {
     queryKey: ["/api/processing/active"],
     retry: false,
     refetchInterval: 2000, // Refresh every 2 seconds for real-time updates
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Session expired",
-          description: "Please log in again",
-          variant: "destructive",
-        });
-        setTimeout(() => window.location.href = "/api/login", 500);
-      }
-    },
   });
 
   // Fetch recent documents
   const { data: documents = [], isLoading: documentsLoading } = useQuery({
     queryKey: ["/api/documents"],
     retry: false,
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Session expired",
-          description: "Please log in again",
-          variant: "destructive",
-        });
-        setTimeout(() => window.location.href = "/api/login", 500);
-      }
-    },
   });
 
   if (isLoading) {
@@ -262,40 +233,68 @@ export default function Dashboard() {
 
                 <div className="space-y-3 min-h-[120px] flex flex-col">
                   {processingLoading ? (
-                    <div className="text-center py-4 flex-1 flex items-center justify-center">
-                      <div className="w-6 h-6 border-2 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <div className="text-center py-8">
+                      <LoadingAnimation fileName="Loading..." status="processing" size="md" showProgress={false} />
                     </div>
                   ) : (activeProcessing as any[])?.length > 0 ? (
-                    <div className="flex-1">
-                      {(activeProcessing as any[]).map((item: any) => (
-                        <div key={item.id} className="p-3 bg-gray-50 dark:bg-dark-bg rounded-lg mb-3 last:mb-0">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                              {item.originalName || item.fileName}
-                            </span>
-                            <Badge 
-                              variant={item.step === 'ocr' ? 'default' : item.step === 'storage' ? 'secondary' : 'outline'}
-                              className="text-xs"
-                            >
-                              {item.step === 'ocr' ? 'OCR' : item.step === 'storage' ? 'Storage' : 'Vectorizing'}
-                            </Badge>
+                    <div className="space-y-6">
+                      {(activeProcessing as any[]).map((item: any) => {
+                        const document = (documents as any[]).find((doc: any) => doc.id === item.documentId);
+                        const fileName = document?.originalName || document?.fileName || "Document";
+                        
+                        return (
+                          <div key={item.id} className="border border-gray-200 dark:border-dark-border rounded-lg p-6">
+                            {/* Document Header with Icon */}
+                            <div className="flex items-center space-x-3 mb-4">
+                              <DocumentTypeIcon fileName={fileName} size="lg" className="text-blue-600 dark:text-blue-400" />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-medium text-gray-900 dark:text-white truncate">{fileName}</h4>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                  {document?.fileSize ? `${Math.round(document.fileSize / 1024)} KB` : ''}
+                                </p>
+                              </div>
+                              <Badge variant="secondary" className="bg-accent-blue text-white">
+                                {item.step || "Processing"}
+                              </Badge>
+                            </div>
+
+                            {/* Animated Loading Animation */}
+                            <div className="mb-6">
+                              <LoadingAnimation 
+                                fileName={fileName}
+                                status={item.step || "processing"}
+                                progress={item.progress || 0}
+                                size="md"
+                                showProgress={true}
+                              />
+                            </div>
+
+                            {/* Processing Steps */}
+                            <ProcessingSteps 
+                              currentStep={item.step || "upload"}
+                              progress={item.progress || 0}
+                            />
+
+                            {/* Error Display */}
+                            {item.error && (
+                              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                                <p className="text-sm text-red-600 dark:text-red-400">
+                                  <i className="fas fa-exclamation-triangle mr-2"></i>
+                                  {item.error}
+                                </p>
+                              </div>
+                            )}
                           </div>
-                          <Progress value={item.progress || 0} className="h-2" />
-                          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            <span>
-                              {item.step === 'ocr' ? 'Extracting text...' : 
-                               item.step === 'storage' ? 'Storing images...' : 
-                               'Creating vectors...'}
-                            </span>
-                            <span>{item.progress || 0}%</span>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ) : (
-                    <div className="text-center py-4 flex-1 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
-                      <i className="fas fa-clock text-2xl mb-2"></i>
-                      <p className="text-sm">No active processing</p>
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-gray-100 dark:bg-dark-bg rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i className="fas fa-check text-2xl text-accent-green"></i>
+                      </div>
+                      <p className="text-gray-600 dark:text-gray-400">No active processing</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Upload a document to get started</p>
                     </div>
                   )}
                 </div>
@@ -372,9 +371,7 @@ export default function Dashboard() {
                         <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors">
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-3">
-                              <i className={`fas ${doc.mimeType?.includes('pdf') ? 'fa-file-pdf text-red-500' : 
-                                           doc.mimeType?.includes('word') ? 'fa-file-word text-blue-500' : 
-                                           'fa-file-image text-green-500'}`}></i>
+                              <DocumentTypeIcon fileName={doc.originalName || doc.fileName} size="md" className="text-blue-600" />
                               <div>
                                 <p className="text-sm font-medium text-gray-900 dark:text-white">{doc.originalName}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">{formatBytes(doc.fileSize)}</p>

@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
-import { storage } from "./storage";
+import { storage } from "./storage-simple";
 import { mistralService } from "./services/mistralService";
 import { supabaseService } from "./services/supabaseService";
 
