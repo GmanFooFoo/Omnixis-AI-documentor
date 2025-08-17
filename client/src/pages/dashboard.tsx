@@ -174,7 +174,7 @@ export default function Dashboard() {
           {/* File Upload Section */}
           <div className="lg:col-span-2">
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardContent className="p-6">
+              <CardContent className="p-6 min-h-[268px] flex flex-col">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Document Processing</h3>
                   <div className="flex items-center space-x-2">
@@ -183,7 +183,9 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <FileUpload />
+                <div className="flex-1">
+                  <FileUpload />
+                </div>
               </CardContent>
             </Card>
           </div>
