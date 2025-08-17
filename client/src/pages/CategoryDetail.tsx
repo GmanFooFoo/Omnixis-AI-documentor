@@ -382,21 +382,43 @@ Please provide detailed analysis with specific insights relevant to supplier man
                           control={form.control}
                           name="isDefault"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">Default Category</FormLabel>
-                                <CardDescription className="text-xs">
-                                  Default for new documents
-                                </CardDescription>
-                              </div>
+                            <FormItem className="space-y-3">
+                              <FormLabel className="text-base">Category Type</FormLabel>
                               <FormControl>
-                                <input
-                                  type="checkbox"
-                                  checked={field.value}
-                                  onChange={field.onChange}
-                                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                />
+                                <div className="space-y-2">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="default-yes"
+                                      name="isDefault"
+                                      value="true"
+                                      checked={field.value === true}
+                                      onChange={() => field.onChange(true)}
+                                      className="text-blue-600 border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <label htmlFor="default-yes" className="text-sm font-medium text-gray-900 dark:text-white">
+                                      Default Category
+                                    </label>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="default-no"
+                                      name="isDefault"
+                                      value="false"
+                                      checked={field.value === false}
+                                      onChange={() => field.onChange(false)}
+                                      className="text-blue-600 border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <label htmlFor="default-no" className="text-sm font-medium text-gray-900 dark:text-white">
+                                      Custom Category
+                                    </label>
+                                  </div>
+                                </div>
                               </FormControl>
+                              <CardDescription className="text-xs">
+                                Default categories are automatically assigned to new documents
+                              </CardDescription>
                             </FormItem>
                           )}
                         />
