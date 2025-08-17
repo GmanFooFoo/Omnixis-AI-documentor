@@ -1,11 +1,18 @@
 import { db } from "./db";
 import { documentCategories, promptFormats } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { eq } from "drizzle-orm";
 
 export async function seedCategoryData() {
   try {
     console.log("🌱 Seeding document categories...");
+    
+    // Get the CTO format ID
+    const ctoFormat = await db.select().from(promptFormats).where(eq(promptFormats.name, "CTO")).limit(1);
+    if (!ctoFormat.length) {
+      throw new Error("CTO prompt format not found. Please seed prompt formats first.");
+    }
+    
+    const ctoFormatId = ctoFormat[0].id;
 
     const defaultCategories = [
       {
