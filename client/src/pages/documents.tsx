@@ -115,46 +115,52 @@ export default function Documents() {
   ) || [];
 
   return (
-    <div className="pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Documents</h2>
-          <p className="text-gray-600 dark:text-gray-400">Manage and search your processed documents</p>
+    <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Documents</h2>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Manage and search your processed documents</p>
         </div>
 
         {/* Search Bar, View Toggle, and Bulk Actions */}
-        <div className="mb-6 space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <div className="mb-4 sm:mb-6 space-y-3 sm:space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="relative flex-1">
-              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
               <Input
                 placeholder="Search documents..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-9 sm:pl-10 text-sm sm:text-base"
               />
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 overflow-x-auto">
               <Button
                 variant={viewMode === 'table' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('table')}
+                className="whitespace-nowrap"
               >
-                <i className="fas fa-table mr-2"></i>Table
+                <i className="fas fa-table mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+                <span className="text-xs sm:text-sm">Table</span>
               </Button>
               <Button
                 variant={viewMode === 'tiles' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('tiles')}
+                className="whitespace-nowrap"
               >
-                <i className="fas fa-th-large mr-2"></i>Tiles
+                <i className="fas fa-th-large mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+                <span className="text-xs sm:text-sm">Tiles</span>
               </Button>
               <Button
                 variant={isSelectMode ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setIsSelectMode(!isSelectMode)}
+                className="whitespace-nowrap"
               >
-                <i className="fas fa-check-square mr-2"></i>Select
+                <i className="fas fa-check-square mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+                <span className="text-xs sm:text-sm">Select</span>
               </Button>
             </div>
           </div>
@@ -220,15 +226,15 @@ export default function Documents() {
 
         {/* Documents Display */}
         <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-6">
             {viewMode === 'table' ? (
               /* Table View */
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[640px]">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-dark-border">
                       {isSelectMode && (
-                        <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
                           <input
                             type="checkbox"
                             checked={selectedDocuments.length === filteredDocuments.length && filteredDocuments.length > 0}
@@ -237,13 +243,13 @@ export default function Documents() {
                           />
                         </th>
                       )}
-                      <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Document</th>
-                      <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Status</th>
-                      <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Size</th>
-                      <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Images</th>
-                      <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Vectors</th>
-                      <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Processed</th>
-                      <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Actions</th>
+                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Document</th>
+                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Status</th>
+                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Size</th>
+                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hidden sm:table-cell">Images</th>
+                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hidden sm:table-cell">Vectors</th>
+                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hidden lg:table-cell">Processed</th>
+                      <th className="text-left py-2 sm:py-3 px-1 sm:px-2 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-dark-border">
@@ -347,7 +353,7 @@ export default function Documents() {
               </div>
             ) : (
               /* Tiles View */
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
                 {isLoading ? (
                   // Loading skeleton
                   Array.from({ length: 6 }).map((_, i) => (

@@ -84,84 +84,84 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
         
         {/* Dashboard Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">Automated OCR & Document Processing</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">Automated OCR & Document Processing</p>
             </div>
-            <div className="flex items-center space-x-3">
-              <Button variant="outline">
-                <i className="fas fa-download mr-2"></i>Export Data
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <Button variant="outline" size="sm" className="sm:text-sm text-xs">
+                <i className="fas fa-download mr-1 sm:mr-2"></i>Export Data
               </Button>
             </div>
           </div>
 
           {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Documents Processed</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm truncate">Documents Processed</p>
+                    <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                       {statsLoading ? "..." : formatNumber((stats as any)?.documentsProcessed || 0)}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-accent-blue/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-file-text text-accent-blue"></i>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-accent-blue/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-file-text text-accent-blue text-sm sm:text-base"></i>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Images Extracted</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm truncate">Images Extracted</p>
+                    <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                       {statsLoading ? "..." : formatNumber((stats as any)?.imagesExtracted || 0)}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-accent-green/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-image text-accent-green"></i>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-accent-green/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-image text-accent-green text-sm sm:text-base"></i>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Vector Embeddings</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm truncate">Vector Embeddings</p>
+                    <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                       {statsLoading ? "..." : formatNumber((stats as any)?.vectorEmbeddings || 0)}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-vector-square text-purple-500"></i>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-vector-square text-purple-500 text-sm sm:text-base"></i>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">Storage Used</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm truncate">Storage Used</p>
+                    <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">
                       {statsLoading ? "..." : formatBytes((stats as any)?.storageUsed || 0)}
                     </p>
                   </div>
-                  <div className="w-12 h-12 bg-accent-orange/10 rounded-lg flex items-center justify-center">
-                    <i className="fas fa-database text-accent-orange"></i>
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-accent-orange/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i className="fas fa-database text-accent-orange text-sm sm:text-base"></i>
                   </div>
                 </div>
               </CardContent>
