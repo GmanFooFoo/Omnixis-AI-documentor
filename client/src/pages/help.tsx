@@ -127,10 +127,7 @@ export default function Help() {
                   <i className="fas fa-book"></i>
                   <span className="text-sm">Documentation & Guides</span>
                 </div>
-                <a href="/storybook" className="flex items-center space-x-2 text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 transition-colors">
-                  <i className="fas fa-palette"></i>
-                  <span className="text-sm">Design System Storybook</span>
-                </a>
+
                 <div className="flex items-center space-x-2 text-blue-700 dark:text-blue-300">
                   <i className="fas fa-comments"></i>
                   <span className="text-sm">Live Chat Support</span>
