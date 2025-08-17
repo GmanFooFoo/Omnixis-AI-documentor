@@ -227,7 +227,7 @@ export default function CategoryDetail() {
                     <CardTitle className="font-semibold tracking-tight flex items-center justify-between text-[16px]">
                       <div className="flex items-center space-x-2">
                         <i className="fab fa-markdown text-accent-blue"></i>
-                        <span>AI Analysis Prompt</span>
+                        <span>Document Analysis Prompt (Format)</span>
                       </div>
                       <Dialog>
                         <DialogTrigger asChild>
