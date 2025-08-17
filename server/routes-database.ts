@@ -540,10 +540,3 @@ function splitTextIntoChunks(text: string, maxChunkSize: number): string[] {
 
   return chunks.filter(chunk => chunk.length > 0);
 }
-
-  // Add this at the end of the function, before the closing brace
-  const server = createServer(app);
-  return server;
-}
-
-export { registerDatabaseRoutes };
