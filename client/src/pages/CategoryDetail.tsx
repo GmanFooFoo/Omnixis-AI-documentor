@@ -617,9 +617,7 @@ export default function CategoryDetail() {
                     <div className="border-t pt-3 mt-3">
                       <div className="text-center">
                         <Tag className="h-4 w-4 text-gray-300 dark:text-gray-600 mx-auto mb-1" />
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          Document usage stats coming soon
-                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Catgories usage stats coming soon</p>
                       </div>
                     </div>
                   </CardContent>
