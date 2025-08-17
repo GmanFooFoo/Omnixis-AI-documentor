@@ -1,4 +1,4 @@
-# DocuAI - AI-Powered Document Processing Platform
+# Omnixis AI - Documentor - AI-Powered Document Processing Platform
 
 A sophisticated document processing web application that leverages advanced AI technologies for intelligent document analysis and extraction, with comprehensive LLM model management and multilingual support.
 

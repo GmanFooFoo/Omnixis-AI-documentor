@@ -1,8 +1,8 @@
-# DocuAI - Automated OCR & Document Processing Platform
+# Omnixis AI - Documentor - Automated OCR & Document Processing Platform
 
 ## Overview
 
-DocuAI is a modern web application that provides AI-powered OCR and document processing capabilities. The platform allows users to upload documents (PDF, DOCX, images), automatically extract text and images using Mistral AI, store files securely in Supabase, and manage the entire processing pipeline through a clean React-based interface. Built with a full-stack TypeScript architecture, the application emphasizes real-time processing updates and enterprise-grade document management.
+"Omnixis AI - Documentor" is a modern web application that provides AI-powered OCR and document processing capabilities. The platform allows users to upload documents (PDF, DOCX, images), automatically extract text and images using Mistral AI, store files securely in Supabase, and manage the entire processing pipeline through a clean React-based interface. Built with a full-stack TypeScript architecture, the application emphasizes real-time processing updates and enterprise-grade document management.
 
 ## User Preferences
 
