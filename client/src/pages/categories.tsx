@@ -155,7 +155,7 @@ export default function CategoriesPage() {
 
   return (
     <div className="pt-16 sm:pt-20 min-h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+      <div className="max-w-none mx-auto px-4 sm:px-6 py-4 sm:py-8" style={{ maxWidth: '1920px' }}>
         <div className="mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Categories</h2>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Manage document categories and their AI analysis prompts</p>
