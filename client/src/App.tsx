@@ -13,6 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import Documents from "@/pages/documents";
 import DocumentDetail from "@/pages/DocumentDetail";
 import Help from "@/pages/help";
+import Categories from "@/pages/categories";
 
 function TopNavigation() {
   const { user, isAuthenticated } = useAuth();
@@ -43,6 +44,9 @@ function TopNavigation() {
           </a>
           <a href="/documents" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             Documents
+          </a>
+          <a href="/categories" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
+            Categories
           </a>
           <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             Analytics
@@ -129,6 +133,13 @@ function TopNavigation() {
               <i className="fas fa-file-text mr-3 w-4"></i>Documents
             </a>
             <a 
+              href="/categories" 
+              className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <i className="fas fa-tag mr-3 w-4"></i>Categories
+            </a>
+            <a 
               href="#" 
               className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg"
               onClick={() => setMobileMenuOpen(false)}
@@ -195,6 +206,7 @@ function Router() {
             <Route path="/" component={Dashboard} />
             <Route path="/documents" component={Documents} />
             <Route path="/documents/:id" component={DocumentDetail} />
+            <Route path="/categories" component={Categories} />
             <Route path="/help" component={Help} />
           </>
         )}

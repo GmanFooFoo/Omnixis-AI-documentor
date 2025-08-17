@@ -45,8 +45,10 @@ export const documents = pgTable("documents", {
   originalName: varchar("original_name").notNull(),
   fileSize: integer("file_size").notNull(),
   mimeType: varchar("mime_type").notNull(),
+  categoryId: varchar("category_id").references(() => documentCategories.id),
   status: varchar("status").notNull().default("uploaded"), // uploaded, processing, completed, failed
   ocrText: text("ocr_text"),
+  aiAnalysis: text("ai_analysis"), // AI analysis result based on category prompt
   imageCount: integer("image_count").default(0),
   vectorCount: integer("vector_count").default(0),
   supabaseUrl: varchar("supabase_url"),
@@ -88,6 +90,17 @@ export const processingQueue = pgTable("processing_queue", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Document categories table for categorizing documents with AI prompts
+export const documentCategories = pgTable("document_categories", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull().unique(),
+  description: text("description"),
+  promptTemplate: text("prompt_template").notNull(),
+  isDefault: boolean("is_default").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
@@ -102,6 +115,9 @@ export type InsertVectorEmbedding = typeof vectorEmbeddings.$inferInsert;
 
 export type ProcessingQueueItem = typeof processingQueue.$inferSelect;
 export type InsertProcessingQueueItem = typeof processingQueue.$inferInsert;
+
+export type DocumentCategory = typeof documentCategories.$inferSelect;
+export type InsertDocumentCategory = typeof documentCategories.$inferInsert;
 
 export const insertDocumentSchema = createInsertSchema(documents).omit({
   id: true,
@@ -120,6 +136,12 @@ export const insertVectorEmbeddingSchema = createInsertSchema(vectorEmbeddings).
 });
 
 export const insertProcessingQueueItemSchema = createInsertSchema(processingQueue).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertDocumentCategorySchema = createInsertSchema(documentCategories).omit({
   id: true,
   createdAt: true,
   updatedAt: true,

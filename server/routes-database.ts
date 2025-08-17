@@ -241,6 +241,51 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Categories endpoints
+  app.get('/api/categories', async (req, res) => {
+    try {
+      const categories = await storage.getDocumentCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error('❌ Error fetching categories:', error);
+      res.status(500).json({ message: "Failed to fetch categories" });
+    }
+  });
+
+  app.post('/api/categories', async (req, res) => {
+    try {
+      const categoryData = req.body;
+      const category = await storage.createDocumentCategory(categoryData);
+      res.json(category);
+    } catch (error) {
+      console.error('❌ Error creating category:', error);
+      res.status(500).json({ message: "Failed to create category" });
+    }
+  });
+
+  app.put('/api/categories/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const categoryData = req.body;
+      const category = await storage.updateDocumentCategory(id, categoryData);
+      res.json(category);
+    } catch (error) {
+      console.error('❌ Error updating category:', error);
+      res.status(500).json({ message: "Failed to update category" });
+    }
+  });
+
+  app.delete('/api/categories/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteDocumentCategory(id);
+      res.json({ message: "Category deleted successfully" });
+    } catch (error) {
+      console.error('❌ Error deleting category:', error);
+      res.status(500).json({ message: "Failed to delete category" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

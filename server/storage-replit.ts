@@ -4,6 +4,7 @@ import {
   extractedImages,
   vectorEmbeddings,
   processingQueue,
+  documentCategories,
   type User,
   type UpsertUser,
   type Document,
@@ -14,6 +15,8 @@ import {
   type InsertVectorEmbedding,
   type ProcessingQueueItem,
   type InsertProcessingQueueItem,
+  type DocumentCategory,
+  type InsertDocumentCategory,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -56,6 +59,13 @@ export interface IStorage {
   storeDocumentFile(documentId: string, fileData: Buffer, fileName: string): Promise<string>;
   storeImageFile(documentId: string, imageData: Buffer, fileName: string): Promise<string>;
   getFileData(filePath: string): Promise<Buffer>;
+
+  // Document categories operations
+  getDocumentCategories(): Promise<DocumentCategory[]>;
+  createDocumentCategory(category: InsertDocumentCategory): Promise<DocumentCategory>;
+  updateDocumentCategory(id: string, updates: Partial<InsertDocumentCategory>): Promise<DocumentCategory>;
+  deleteDocumentCategory(id: string): Promise<void>;
+  getDocumentCategory(id: string): Promise<DocumentCategory | undefined>;
 }
 
 export class ReplitDatabaseStorage implements IStorage {
@@ -369,6 +379,63 @@ export class ReplitDatabaseStorage implements IStorage {
     } catch (error) {
       console.error("Error getting file data:", error);
       throw error;
+    }
+  }
+
+  // Document categories operations
+  async getDocumentCategories(): Promise<DocumentCategory[]> {
+    try {
+      const categories = await db.select().from(documentCategories).orderBy(desc(documentCategories.createdAt));
+      return categories;
+    } catch (error) {
+      console.error("Error fetching document categories:", error);
+      throw error;
+    }
+  }
+
+  async createDocumentCategory(categoryData: InsertDocumentCategory): Promise<DocumentCategory> {
+    try {
+      const [category] = await db
+        .insert(documentCategories)
+        .values(categoryData)
+        .returning();
+      return category;
+    } catch (error) {
+      console.error("Error creating document category:", error);
+      throw error;
+    }
+  }
+
+  async updateDocumentCategory(id: string, updates: Partial<InsertDocumentCategory>): Promise<DocumentCategory> {
+    try {
+      const [category] = await db
+        .update(documentCategories)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(documentCategories.id, id))
+        .returning();
+      return category;
+    } catch (error) {
+      console.error("Error updating document category:", error);
+      throw error;
+    }
+  }
+
+  async deleteDocumentCategory(id: string): Promise<void> {
+    try {
+      await db.delete(documentCategories).where(eq(documentCategories.id, id));
+    } catch (error) {
+      console.error("Error deleting document category:", error);
+      throw error;
+    }
+  }
+
+  async getDocumentCategory(id: string): Promise<DocumentCategory | undefined> {
+    try {
+      const [category] = await db.select().from(documentCategories).where(eq(documentCategories.id, id));
+      return category;
+    } catch (error) {
+      console.error("Error fetching document category:", error);
+      return undefined;
     }
   }
 }
