@@ -37,24 +37,16 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Use PostgreSQL database connection
+  // Use demo routes temporarily (authentication disabled)
   let server;
   try {
-    console.log('🔄 Attempting PostgreSQL database connection...');
-    const { DatabaseStorage } = await import('./storage');
-    const dbStorage = new DatabaseStorage();
-    
-    // Test the database connection with a simple query
-    console.log('✅ PostgreSQL database connected successfully');
-    
-    // Use authenticated routes with PostgreSQL
-    const { registerRoutes } = await import('./routes');
-    server = await registerRoutes(app);
-  } catch (error) {
-    console.log('❌ Database connection failed:', error instanceof Error ? error.message : 'Unknown error');
-    console.log('⚠ Falling back to DEMO mode with MockStorage');
+    console.log('🔄 Starting in DEMO mode (authentication disabled)');
     const { registerDemoRoutes } = await import('./routes-demo');
     server = await registerDemoRoutes(app);
+    console.log('✅ Demo routes registered successfully');
+  } catch (error) {
+    console.log('❌ Failed to register demo routes:', error instanceof Error ? error.message : 'Unknown error');
+    throw error;
   }
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {

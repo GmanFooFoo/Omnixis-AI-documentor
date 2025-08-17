@@ -112,8 +112,8 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user stats
-  app.get('/api/stats', async (req, res) => {
+  // Get analytics stats (matching the frontend route)
+  app.get('/api/analytics/stats', async (req, res) => {
     try {
       const userId = 'demo-user-123';
       const stats = await storage.getUserStats(userId);
@@ -124,8 +124,8 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get processing queue status
-  app.get('/api/processing', async (req, res) => {
+  // Get active processing items (matching the frontend route)
+  app.get('/api/processing/active', async (req, res) => {
     try {
       const userId = 'demo-user-123';
       const activeItems = await storage.getActiveProcessingItems(userId);
