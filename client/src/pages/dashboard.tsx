@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { Eye } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -396,9 +398,12 @@ export default function Dashboard() {
                           </td>
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-2">
-                              <Button variant="ghost" size="sm" className="text-accent-blue hover:text-blue-600">
-                                View
-                              </Button>
+                              <Link href={`/documents/${doc.id}`}>
+                                <Button variant="ghost" size="sm" className="text-accent-blue hover:text-blue-600">
+                                  <Eye className="mr-1 h-3 w-3" />
+                                  View
+                                </Button>
+                              </Link>
                               <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                                 Download
                               </Button>

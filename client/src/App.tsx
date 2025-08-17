@@ -10,6 +10,7 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import Documents from "@/pages/documents";
+import DocumentDetail from "@/pages/DocumentDetail";
 
 function TopNavigation() {
   const { user, isAuthenticated } = useAuth();
@@ -102,6 +103,7 @@ function Router() {
           <>
             <Route path="/" component={Dashboard} />
             <Route path="/documents" component={Documents} />
+            <Route path="/documents/:id" component={DocumentDetail} />
           </>
         )}
         <Route component={NotFound} />

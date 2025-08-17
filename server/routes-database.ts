@@ -185,6 +185,18 @@ export async function registerDatabaseRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get document vectors
+  app.get('/api/documents/:id/vectors', async (req, res) => {
+    try {
+      const documentId = req.params.id;
+      const vectors = await storage.getDocumentVectors(documentId);
+      res.json(vectors);
+    } catch (error) {
+      console.error("Error fetching document vectors:", error);
+      res.status(500).json({ message: "Failed to fetch document vectors" });
+    }
+  });
+
   // Search documents using vector similarity
   app.post('/api/documents/search', async (req, res) => {
     try {
