@@ -1,16 +1,17 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Edit, Trash2, Settings, Tag } from 'lucide-react';
+import { Plus, Edit, Trash2, Settings, Tag, Search, Grid, List } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import type { DocumentCategory } from '@shared/schema';
@@ -27,6 +28,8 @@ type CategoryFormData = z.infer<typeof categoryFormSchema>;
 export default function CategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<DocumentCategory | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'table' | 'tiles'>('table'); // Default to table on desktop
+  const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
 
   const form = useForm<CategoryFormData>({
@@ -43,6 +46,19 @@ export default function CategoriesPage() {
   const { data: categories, isLoading } = useQuery({
     queryKey: ['/api/categories'],
   });
+
+  // Filter categories based on search query
+  const filteredCategories = useMemo(() => {
+    if (!categories || !Array.isArray(categories)) return [];
+    if (!searchQuery.trim()) return categories as DocumentCategory[];
+    
+    const query = searchQuery.toLowerCase();
+    return (categories as DocumentCategory[]).filter((category: DocumentCategory) =>
+      category.name.toLowerCase().includes(query) ||
+      category.description?.toLowerCase().includes(query) ||
+      category.promptTemplate.toLowerCase().includes(query)
+    );
+  }, [categories, searchQuery]);
 
   // Create category mutation
   const createCategoryMutation = useMutation({
@@ -160,6 +176,12 @@ export default function CategoriesPage() {
                 <DialogTitle>
                   {editingCategory ? 'Edit Category' : 'Create New Category'}
                 </DialogTitle>
+                <DialogDescription>
+                  {editingCategory 
+                    ? 'Update the category details and AI analysis prompt.'
+                    : 'Create a new document category with a custom AI analysis prompt.'
+                  }
+                </DialogDescription>
               </DialogHeader>
               
               <Form {...form}>
@@ -228,24 +250,149 @@ export default function CategoriesPage() {
           </Dialog>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading ? (
-            <div className="col-span-full text-center py-12">
-              <div className="w-8 h-8 border-2 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
-              <p className="text-gray-500 dark:text-gray-400 mt-4">Loading categories...</p>
-            </div>
-          ) : (categories as DocumentCategory[])?.length > 0 ? (
-            (categories as DocumentCategory[]).map((category) => (
+        {/* Search and View Controls */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6">
+          <div className="relative flex-1 max-w-lg">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-white dark:bg-dark-surface border-gray-200 dark:border-dark-border"
+            />
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <Button
+              variant={viewMode === 'table' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('table')}
+              className="hidden lg:flex"
+            >
+              <List className="h-4 w-4 mr-2" />
+              Table
+            </Button>
+            <Button
+              variant={viewMode === 'tiles' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('tiles')}
+            >
+              <Grid className="h-4 w-4 mr-2" />
+              Tiles
+            </Button>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="w-8 h-8 border-2 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="text-gray-500 dark:text-gray-400 mt-4">Loading categories...</p>
+          </div>
+        ) : filteredCategories.length === 0 ? (
+          <div className="text-center py-12">
+            <Tag className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              {searchQuery ? 'No categories found' : 'No categories yet'}
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">
+              {searchQuery 
+                ? `No categories match "${searchQuery}". Try a different search term.`
+                : 'Create your first document category to get started with AI-powered document analysis.'
+              }
+            </p>
+            {!searchQuery && (
+              <Button onClick={() => handleOpenDialog()} className="bg-accent-blue hover:bg-blue-600">
+                <Plus className="mr-2 h-4 w-4" />
+                Create Category
+              </Button>
+            )}
+          </div>
+        ) : viewMode === 'table' ? (
+          /* Table View */
+          <div className="bg-white dark:bg-dark-surface rounded-lg border border-gray-200 dark:border-dark-border overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-50 dark:bg-dark-bg">
+                  <TableHead className="font-semibold text-gray-900 dark:text-white">Category</TableHead>
+                  <TableHead className="font-semibold text-gray-900 dark:text-white">Description</TableHead>
+                  <TableHead className="font-semibold text-gray-900 dark:text-white">AI Prompt Preview</TableHead>
+                  <TableHead className="font-semibold text-gray-900 dark:text-white w-24">Status</TableHead>
+                  <TableHead className="font-semibold text-gray-900 dark:text-white w-24">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredCategories.map((category) => (
+                  <TableRow key={category.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg">
+                    <TableCell>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-accent-blue/10 rounded-lg flex items-center justify-center">
+                          <Tag className="h-4 w-4 text-accent-blue" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-white">{category.name}</p>
+                          {category.isDefault && (
+                            <Badge variant="secondary" className="mt-1 bg-accent-green text-white text-xs">
+                              Default
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate">
+                        {category.description || 'No description'}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-md truncate">
+                        {category.promptTemplate}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-accent-green border-accent-green">
+                        Active
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleOpenDialog(category)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        {!category.isDefault && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(category.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          /* Tiles View */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCategories.map((category) => (
               <Card key={category.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-accent-blue/10 rounded-lg flex items-center justify-center">
                         <Tag className="h-5 w-5 text-accent-blue" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">{category.name}</h3>
+                        <CardTitle className="text-lg">{category.name}</CardTitle>
                         {category.isDefault && (
                           <Badge variant="secondary" className="mt-1 bg-accent-green text-white">
                             Default
@@ -275,13 +422,13 @@ export default function CategoriesPage() {
                       )}
                     </div>
                   </div>
-                  
                   {category.description && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    <CardDescription className="mt-2">
                       {category.description}
-                    </p>
+                    </CardDescription>
                   )}
-                  
+                </CardHeader>
+                <CardContent>
                   <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-3">
                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                       AI Prompt Preview:
@@ -296,23 +443,9 @@ export default function CategoriesPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 dark:bg-dark-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                <Settings className="h-8 w-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No categories yet</h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Create your first document category to get started with AI-powered document analysis.
-              </p>
-              <Button onClick={() => handleOpenDialog()} className="bg-accent-blue hover:bg-blue-600">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Category
-              </Button>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
