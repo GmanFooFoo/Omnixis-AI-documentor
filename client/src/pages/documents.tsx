@@ -22,6 +22,8 @@ import { apiRequest } from "@/lib/queryClient";
 export default function Documents() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<'table' | 'tiles'>('table');
+  const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
+  const [isSelectMode, setIsSelectMode] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -32,10 +34,13 @@ export default function Documents() {
 
   const deleteMutation = useMutation({
     mutationFn: async (documentId: string) => {
-      const response = await apiRequest(`/api/documents/${documentId}`, {
+      const response = await fetch(`/api/documents/${documentId}`, {
         method: 'DELETE',
       });
-      return response;
+      if (!response.ok) {
+        throw new Error('Failed to delete document');
+      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
@@ -58,6 +63,45 @@ export default function Documents() {
     deleteMutation.mutate(documentId);
   };
 
+  const handleSelectDocument = (documentId: string) => {
+    setSelectedDocuments(prev => 
+      prev.includes(documentId) 
+        ? prev.filter(id => id !== documentId)
+        : [...prev, documentId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedDocuments.length === filteredDocuments.length) {
+      setSelectedDocuments([]);
+    } else {
+      setSelectedDocuments(filteredDocuments.map((doc: any) => doc.id));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    for (const docId of selectedDocuments) {
+      try {
+        await fetch(`/api/documents/${docId}`, { method: 'DELETE' });
+      } catch (error) {
+        console.error(`Failed to delete document ${docId}:`, error);
+      }
+    }
+    setSelectedDocuments([]);
+    setIsSelectMode(false);
+    queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/analytics/stats"] });
+    toast({
+      title: "Documents deleted",
+      description: `${selectedDocuments.length} documents have been removed successfully.`,
+    });
+  };
+
+  const handleCancelSelection = () => {
+    setSelectedDocuments([]);
+    setIsSelectMode(false);
+  };
+
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -78,33 +122,100 @@ export default function Documents() {
           <p className="text-gray-600 dark:text-gray-400">Manage and search your processed documents</p>
         </div>
 
-        {/* Search Bar and View Toggle */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <Input
-              placeholder="Search documents..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+        {/* Search Bar, View Toggle, and Bulk Actions */}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <Input
+                placeholder="Search documents..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant={viewMode === 'table' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('table')}
+              >
+                <i className="fas fa-table mr-2"></i>Table
+              </Button>
+              <Button
+                variant={viewMode === 'tiles' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('tiles')}
+              >
+                <i className="fas fa-th-large mr-2"></i>Tiles
+              </Button>
+              <Button
+                variant={isSelectMode ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setIsSelectMode(!isSelectMode)}
+              >
+                <i className="fas fa-check-square mr-2"></i>Select
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant={viewMode === 'table' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('table')}
-            >
-              <i className="fas fa-table mr-2"></i>Table
-            </Button>
-            <Button
-              variant={viewMode === 'tiles' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('tiles')}
-            >
-              <i className="fas fa-th-large mr-2"></i>Tiles
-            </Button>
-          </div>
+
+          {/* Bulk Actions Bar */}
+          {isSelectMode && (
+            <div className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                  {selectedDocuments.length} selected
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSelectAll}
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400"
+                >
+                  {selectedDocuments.length === filteredDocuments.length ? 'Deselect All' : 'Select All'}
+                </Button>
+              </div>
+              <div className="flex items-center space-x-2">
+                {selectedDocuments.length > 0 && (
+                  <>
+                    <Button variant="outline" size="sm" disabled className="text-gray-500">
+                      <i className="fas fa-download mr-2"></i>Download {selectedDocuments.length}
+                    </Button>
+                    <Button variant="outline" size="sm" disabled className="text-gray-500">
+                      <i className="fas fa-archive mr-2"></i>Archive {selectedDocuments.length}
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm">
+                          <i className="fas fa-trash mr-2"></i>Delete {selectedDocuments.length}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Multiple Documents</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete {selectedDocuments.length} documents? This will permanently remove all selected documents and their related content including extracted images and vector embeddings. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleBulkDelete}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            Delete All
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </>
+                )}
+                <Button variant="outline" size="sm" onClick={handleCancelSelection}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Documents Display */}
@@ -116,6 +227,16 @@ export default function Documents() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-dark-border">
+                      {isSelectMode && (
+                        <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+                          <input
+                            type="checkbox"
+                            checked={selectedDocuments.length === filteredDocuments.length && filteredDocuments.length > 0}
+                            onChange={handleSelectAll}
+                            className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                          />
+                        </th>
+                      )}
                       <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Document</th>
                       <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Status</th>
                       <th className="text-left py-3 px-2 text-sm font-medium text-gray-600 dark:text-gray-400">Size</th>
@@ -135,6 +256,16 @@ export default function Documents() {
                     ) : filteredDocuments.length > 0 ? (
                       filteredDocuments.map((doc: any) => (
                         <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors">
+                          {isSelectMode && (
+                            <td className="py-4 px-2">
+                              <input
+                                type="checkbox"
+                                checked={selectedDocuments.includes(doc.id)}
+                                onChange={() => handleSelectDocument(doc.id)}
+                                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                              />
+                            </td>
+                          )}
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-3">
                               <i className={`fas ${doc.mimeType?.includes('pdf') ? 'fa-file-pdf text-red-500' : 
@@ -204,7 +335,7 @@ export default function Documents() {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">
+                        <td colSpan={isSelectMode ? 8 : 7} className="py-8 text-center text-gray-500 dark:text-gray-400">
                           <i className="fas fa-file-text text-2xl mb-2"></i>
                           <p>{searchQuery ? 'No documents found' : 'No documents yet'}</p>
                           <p className="text-sm">{searchQuery ? 'Try adjusting your search terms' : 'Upload your first document to get started'}</p>
@@ -230,8 +361,20 @@ export default function Documents() {
                   ))
                 ) : filteredDocuments.length > 0 ? (
                   filteredDocuments.map((doc: any) => (
-                    <Card key={doc.id} className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow">
+                    <Card key={doc.id} className={`bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow ${
+                      isSelectMode && selectedDocuments.includes(doc.id) ? 'ring-2 ring-blue-500 border-blue-500' : ''
+                    }`}>
                       <CardContent className="p-6">
+                        {isSelectMode && (
+                          <div className="flex items-center justify-between mb-4">
+                            <input
+                              type="checkbox"
+                              checked={selectedDocuments.includes(doc.id)}
+                              onChange={() => handleSelectDocument(doc.id)}
+                              className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                            />
+                          </div>
+                        )}
                         <div className="flex items-start space-x-3 mb-4">
                           <i className={`fas ${doc.mimeType?.includes('pdf') ? 'fa-file-pdf text-red-500' : 
                                          doc.mimeType?.includes('word') ? 'fa-file-word text-blue-500' : 
