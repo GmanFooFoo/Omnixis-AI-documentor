@@ -168,11 +168,16 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
       progress: 30
     });
 
-    const ocrResult = await mistralService.extractTextAndImages(fileBuffer, `document_${documentId}`);
-    
-    console.log(`✓ OCR completed: ${ocrResult.text.length} chars, ${ocrResult.images.length} images`);
-    if (ocrResult.documentAnalysis.document_type) {
-      console.log(`✓ Document type: ${ocrResult.documentAnalysis.document_type}`);
+    let ocrResult;
+    try {
+      ocrResult = await mistralService.extractTextAndImages(fileBuffer, `document_${documentId}`);
+      console.log(`✓ OCR completed: ${ocrResult.text.length} chars, ${ocrResult.images.length} images`);
+      if (ocrResult.documentAnalysis && ocrResult.documentAnalysis.document_type) {
+        console.log(`✓ Document type: ${ocrResult.documentAnalysis.document_type}`);
+      }
+    } catch (ocrError) {
+      console.error(`❌ OCR failed for document ${documentId}:`, ocrError);
+      throw ocrError;
     }
 
     // Step 2: Upload document to Supabase
@@ -183,8 +188,7 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
 
     const supabaseUrl = await supabaseService.uploadDocument(
       fileBuffer, 
-      `documents/${documentId}`,
-      mimeType
+      `document_${documentId}.${mimeType.split('/')[1]}`
     );
     console.log(`✓ Document uploaded to Supabase: ${supabaseUrl}`);
 
@@ -197,8 +201,7 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
       const image = ocrResult.images[i];
       const imageUrl = await supabaseService.uploadImage(
         image.imageData,
-        `images/${documentId}_page${image.pageNumber}_${i}`,
-        'image/jpeg'
+        `${documentId}_page${image.pageNumber}_${i}.jpg`
       );
       
       // Store image metadata

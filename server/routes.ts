@@ -179,6 +179,8 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
   let processingQueueItem: any = null;
   
   try {
+    console.log(`🔄 Starting async processing for document ${documentId}`);
+    
     // Update status to processing
     await storage.updateDocumentStatus(documentId, "processing");
     
@@ -190,7 +192,15 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
       progress: 10
     });
 
-    const ocrResult = await mistralService.extractTextAndImages(fileBuffer, fileName);
+    console.log('📝 Performing OCR with Mistral Document AI...');
+    let ocrResult;
+    try {
+      ocrResult = await mistralService.extractTextAndImages(fileBuffer, fileName);
+      console.log(`✓ OCR completed: ${ocrResult.text.length} chars, ${ocrResult.images.length} images`);
+    } catch (ocrError) {
+      console.error(`❌ OCR failed for document ${documentId}:`, ocrError);
+      throw ocrError;
+    }
     
     // Update document with OCR text
     await storage.updateDocument(documentId, {
@@ -199,6 +209,7 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     });
 
     // Step 2: Store images in Supabase
+    console.log('📤 Uploading extracted images to Supabase...');
     await storage.updateProcessingQueueItem(processingQueueItem.id, {
       step: "storage",
       progress: 40
@@ -223,6 +234,7 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     }
 
     // Step 3: Create embeddings and store in vector database
+    console.log('🧠 Creating vector embeddings...');
     await storage.updateProcessingQueueItem(processingQueueItem.id, {
       step: "vectorization",
       progress: 70
@@ -262,13 +274,18 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     });
 
     // Mark processing as completed
+    console.log(`✅ Document ${documentId} processed successfully`);
+    console.log(`   - Text extracted: ${ocrResult.text.length} characters`);
+    console.log(`   - Images extracted: ${ocrResult.images.length}`);
+    console.log(`   - Vector embeddings: ${vectorCount}`);
+    
     await storage.updateProcessingQueueItem(processingQueueItem.id, {
       status: "completed",
       progress: 100
     });
 
   } catch (error) {
-    console.error("Document processing error:", error);
+    console.error(`❌ Error processing document ${documentId}:`, error);
     
     // Update document with error status
     await storage.updateDocumentStatus(
@@ -279,10 +296,14 @@ async function processDocumentAsync(documentId: string, fileBuffer: Buffer, file
     
     // Mark processing as failed
     if (processingQueueItem) {
-      await storage.updateProcessingQueueItem(processingQueueItem.id, {
-        status: "failed",
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
+      try {
+        await storage.updateProcessingQueueItem(processingQueueItem.id, {
+          status: "failed",
+          error: error instanceof Error ? error.message : 'Unknown error'
+        });
+      } catch (updateError) {
+        console.error('Failed to update processing queue item:', updateError);
+      }
     }
   }
 }
