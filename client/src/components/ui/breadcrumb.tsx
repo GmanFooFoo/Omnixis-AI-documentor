@@ -37,10 +37,10 @@ export function Breadcrumb({ items, showBackToTop = true, className = "" }: Brea
 
   return (
     <>
-      <nav className={`breadcrumb-nav ${className}`} aria-label="Breadcrumb">
-        <ol className="flex items-center flex-wrap gap-1">
+      <div className={`breadcrumb-nav ${className}`}>
+        <div className="flex items-center flex-wrap gap-1">
           {items.map((item, index) => (
-            <li key={index} className="breadcrumb-item">
+            <div key={index} className="breadcrumb-item">
               {index > 0 && (
                 <span className="breadcrumb-separator" aria-hidden="true">
                   <i className="fas fa-chevron-right text-xs"></i>
@@ -61,10 +61,10 @@ export function Breadcrumb({ items, showBackToTop = true, className = "" }: Brea
                   {item.label}
                 </span>
               )}
-            </li>
+            </div>
           ))}
-        </ol>
-      </nav>
+        </div>
+      </div>
 
       {showBackToTop && (
         <button
