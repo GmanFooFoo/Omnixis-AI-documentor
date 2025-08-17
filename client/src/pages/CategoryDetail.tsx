@@ -20,6 +20,7 @@ const categoryFormSchema = z.object({
   description: z.string().optional(),
   promptTemplate: z.string().min(1, 'Prompt template is required'),
   isDefault: z.boolean().default(false),
+  isActive: z.boolean().default(true),
 });
 
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
@@ -37,6 +38,7 @@ export default function CategoryDetail() {
       description: '',
       promptTemplate: '',
       isDefault: false,
+      isActive: true,
     },
   });
 
@@ -76,6 +78,7 @@ export default function CategoryDetail() {
         description: category.description || '',
         promptTemplate: category.promptTemplate,
         isDefault: category.isDefault,
+        isActive: category.isActive,
       });
     }
   }, [category, form]);
@@ -91,6 +94,7 @@ export default function CategoryDetail() {
         description: category.description || '',
         promptTemplate: category.promptTemplate,
         isDefault: category.isDefault,
+        isActive: category.isActive,
       });
     }
     setIsEditing(false);
@@ -201,179 +205,288 @@ export default function CategoryDetail() {
         </div>
 
         {/* Category Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Basic Information Card */}
-            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Category Information
-                </CardTitle>
-                <CardDescription>
-                  Basic details about this document category
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isEditing ? (
-                  <Form {...form}>
-                    <div className="space-y-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Large Prompt Editor */}
+              <div className="lg:col-span-2">
+                <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <i className="fab fa-markdown text-accent-blue"></i>
+                      <span>AI Analysis Prompt</span>
+                    </CardTitle>
+                    <CardDescription>
+                      Create detailed prompts using Markdown formatting. This prompt will guide the AI analysis for documents in this category.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {isEditing ? (
                       <FormField
                         control={form.control}
-                        name="name"
+                        name="promptTemplate"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Category Name</FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g., Supplier Management" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Description (Optional)</FormLabel>
                             <FormControl>
                               <Textarea 
-                                placeholder="Brief description of this category"
-                                className="min-h-[80px]"
+                                placeholder={`# AI Analysis Instructions
+
+Act as an expert **supplier manager** and analyze this document thoroughly.
+
+## Analysis Requirements:
+1. **Document Type**: Identify if this is a RFP, Offer, Contract, Invoice, etc.
+2. **Key Information**: Extract important dates, amounts, parties involved
+3. **Risk Assessment**: Highlight any potential risks or concerns
+4. **Recommendations**: Provide actionable recommendations
+
+## Output Format:
+- Use clear headings and bullet points
+- Include relevant quotes from the document
+- Highlight critical information in **bold**
+
+Please provide detailed analysis with specific insights relevant to supplier management.`}
+                                className="min-h-[600px] font-mono text-sm resize-none"
                                 {...field} 
                               />
                             </FormControl>
+                            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-4">
+                              <span className="flex items-center">
+                                <i className="fab fa-markdown mr-1"></i>
+                                Supports Markdown formatting
+                              </span>
+                              <span>**bold**, *italic*, # headings, - lists, etc.</span>
+                            </div>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                    ) : (
+                      <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4">
+                        <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-mono leading-relaxed">
+                          {(category as DocumentCategory).promptTemplate}
+                        </pre>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right Column - Category Settings */}
+              <div className="lg:col-span-1 space-y-6">
+                {/* Category Settings Card */}
+                <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <i className="fas fa-cog text-accent-blue"></i>
+                      <span>Category Settings</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {isEditing ? (
+                      <div className="space-y-6">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Category Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="e.g., Supplier Management" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Description</FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  placeholder="Brief description of this category and its purpose"
+                                  className="min-h-[80px]"
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="isDefault"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                              <div className="space-y-0.5">
+                                <FormLabel className="text-base">Default Category</FormLabel>
+                                <CardDescription className="text-xs">
+                                  Default for new documents
+                                </CardDescription>
+                              </div>
+                              <FormControl>
+                                <input
+                                  type="checkbox"
+                                  checked={field.value}
+                                  onChange={field.onChange}
+                                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="isActive"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                              <div className="space-y-0.5">
+                                <FormLabel className="text-base">Active Category</FormLabel>
+                                <CardDescription className="text-xs">
+                                  Available for selection
+                                </CardDescription>
+                              </div>
+                              <FormControl>
+                                <input
+                                  type="checkbox"
+                                  checked={field.value}
+                                  onChange={field.onChange}
+                                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Category Name</label>
+                          <p className="text-gray-900 dark:text-white font-medium">{(category as DocumentCategory).name}</p>
+                        </div>
+                        
+                        <div>
+                          <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+                          <p className="text-gray-900 dark:text-white">
+                            {(category as DocumentCategory).description || 'No description provided'}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center space-x-2 mt-2">
+                          {(category as DocumentCategory).isDefault && (
+                            <Badge variant="secondary" className="bg-accent-green text-white text-xs">
+                              Default
+                            </Badge>
+                          )}
+                          {(category as DocumentCategory).isActive ? (
+                            <Badge variant="outline" className="border-green-500 text-green-600 text-xs">
+                              Active
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="border-red-500 text-red-600 text-xs">
+                              Inactive
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Markdown Reference Card */}
+                <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2 text-sm">
+                      <i className="fab fa-markdown text-accent-blue"></i>
+                      <span>Markdown Reference</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-xs space-y-2">
+                    <div className="grid grid-cols-1 gap-2">
+                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded"># Heading</code> - Large heading</div>
+                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">## Subheading</code> - Medium heading</div>
+                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">**bold**</code> - Bold text</div>
+                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">*italic*</code> - Italic text</div>
+                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">- item</code> - Bullet list</div>
+                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">1. item</code> - Numbered list</div>
+                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">`code`</code> - Inline code</div>
                     </div>
-                  </Form>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Category Name</label>
-                      <p className="text-gray-900 dark:text-white font-medium">{(category as DocumentCategory).name}</p>
+                  </CardContent>
+                </Card>
+
+                {/* Metadata Card */}
+                <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-semibold text-gray-900 dark:text-white">
+                      Metadata
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Status</span>
+                      {(category as DocumentCategory).isActive ? (
+                        <Badge variant="outline" className="border-green-500 text-green-600 text-xs">
+                          Active
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="border-red-500 text-red-600 text-xs">
+                          Inactive
+                        </Badge>
+                      )}
                     </div>
                     
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
-                      <p className="text-gray-900 dark:text-white">
-                        {(category as DocumentCategory).description || 'No description provided'}
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Type</span>
+                      <Badge variant={(category as DocumentCategory).isDefault ? "default" : "outline"} 
+                             className={(category as DocumentCategory).isDefault ? "bg-accent-green text-white text-xs" : "text-xs"}>
+                        {(category as DocumentCategory).isDefault ? 'Default' : 'Custom'}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Created</span>
+                      <div className="flex items-center text-gray-900 dark:text-white">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        {new Date((category as DocumentCategory).createdAt!).toLocaleDateString()}
+                      </div>
+                    </div>
+                    
+                    {(category as DocumentCategory).updatedAt && (category as DocumentCategory).updatedAt !== (category as DocumentCategory).createdAt && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-500 dark:text-gray-400">Updated</span>
+                        <div className="flex items-center text-gray-900 dark:text-white">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          {new Date((category as DocumentCategory).updatedAt!).toLocaleDateString()}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Usage Statistics Card (placeholder for future) */}
+                <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-semibold text-gray-900 dark:text-white">
+                      Usage Statistics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-4">
+                      <Tag className="h-6 w-6 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Usage stats coming soon
                       </p>
                     </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* AI Prompt Template Card */}
-            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-                  AI Analysis Prompt
-                </CardTitle>
-                <CardDescription>
-                  The prompt template used by AI to analyze documents in this category
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isEditing ? (
-                  <Form {...form}>
-                    <FormField
-                      control={form.control}
-                      name="promptTemplate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Prompt Template</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Act as an expert and analyze this document..."
-                              className="min-h-[200px]"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </Form>
-                ) : (
-                  <div className="bg-gray-50 dark:bg-dark-bg rounded-lg p-4">
-                    <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 font-mono">
-                      {(category as DocumentCategory).promptTemplate}
-                    </pre>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Metadata Card */}
-            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Category Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Status</span>
-                  <Badge variant="outline" className="text-accent-green border-accent-green">
-                    Active
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Type</span>
-                  <Badge variant={(category as DocumentCategory).isDefault ? "default" : "outline"} 
-                         className={(category as DocumentCategory).isDefault ? "bg-accent-green text-white" : ""}>
-                    {(category as DocumentCategory).isDefault ? 'Default' : 'Custom'}
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Created</span>
-                  <div className="flex items-center text-sm text-gray-900 dark:text-white">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    {new Date((category as DocumentCategory).createdAt!).toLocaleDateString()}
-                  </div>
-                </div>
-                
-                {(category as DocumentCategory).updatedAt && (category as DocumentCategory).updatedAt !== (category as DocumentCategory).createdAt && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Last Updated</span>
-                    <div className="flex items-center text-sm text-gray-900 dark:text-white">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {new Date((category as DocumentCategory).updatedAt!).toLocaleDateString()}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Usage Statistics Card (placeholder for future) */}
-            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Usage Statistics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-6">
-                  <Tag className="h-8 w-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Usage statistics will be available soon
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </form>
+        </Form>
       </div>
     </div>
   );
