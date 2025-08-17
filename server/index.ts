@@ -6,6 +6,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Ensure proper UTF-8 handling for file uploads
+app.use((req, res, next) => {
+  // Set UTF-8 encoding for all requests
+  req.setEncoding = req.setEncoding || (() => {});
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

@@ -65,18 +65,32 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      console.log(`📄 Processing file: ${file.originalname} (${file.size} bytes)`);
+      // Properly decode the original filename to handle UTF-8 characters
+      let originalName = file.originalname;
+      try {
+        // Try to decode the filename if it's been encoded incorrectly
+        if (originalName.includes('Ã')) {
+          // Convert from Latin-1 to UTF-8 to fix encoding issues
+          const buffer = Buffer.from(originalName, 'latin1');
+          originalName = buffer.toString('utf8');
+        }
+      } catch (e) {
+        // If decoding fails, keep the original name
+        console.warn('Could not decode filename, keeping original:', originalName);
+      }
+
+      console.log(`📄 Processing file: ${originalName} (${file.size} bytes)`);
 
       // Create document record with proper encoding for special characters
       const timestamp = Date.now();
       const randomId = Math.random().toString(36).substring(2, 15);
       // Preserve special characters (äöß) in both filenames
-      const safeFileName = `${timestamp}_${randomId}_${file.originalname}`;
+      const safeFileName = `${timestamp}_${randomId}_${originalName}`;
       
       const document = await mockStorage.createDocument({
         userId,
         fileName: safeFileName,
-        originalName: file.originalname, // Keep original with special characters
+        originalName: originalName, // Keep original with special characters properly decoded
         fileSize: file.size,
         mimeType: file.mimetype,
         status: "uploaded"
