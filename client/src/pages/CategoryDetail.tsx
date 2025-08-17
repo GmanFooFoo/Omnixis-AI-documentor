@@ -427,21 +427,43 @@ Please provide detailed analysis with specific insights relevant to supplier man
                           control={form.control}
                           name="isActive"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">Active Category</FormLabel>
-                                <CardDescription className="text-xs">
-                                  Available for selection
-                                </CardDescription>
-                              </div>
+                            <FormItem className="space-y-3">
+                              <FormLabel className="text-base">Category Status</FormLabel>
                               <FormControl>
-                                <input
-                                  type="checkbox"
-                                  checked={field.value}
-                                  onChange={field.onChange}
-                                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                />
+                                <div className="space-y-2">
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="active-yes"
+                                      name="isActive"
+                                      value="true"
+                                      checked={field.value === true}
+                                      onChange={() => field.onChange(true)}
+                                      className="text-blue-600 border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <label htmlFor="active-yes" className="text-sm font-medium text-gray-900 dark:text-white">
+                                      Active
+                                    </label>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <input
+                                      type="radio"
+                                      id="active-no"
+                                      name="isActive"
+                                      value="false"
+                                      checked={field.value === false}
+                                      onChange={() => field.onChange(false)}
+                                      className="text-blue-600 border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <label htmlFor="active-no" className="text-sm font-medium text-gray-900 dark:text-white">
+                                      Inactive
+                                    </label>
+                                  </div>
+                                </div>
                               </FormControl>
+                              <CardDescription className="text-xs">
+                                Active categories are available for document selection
+                              </CardDescription>
                             </FormItem>
                           )}
                         />
