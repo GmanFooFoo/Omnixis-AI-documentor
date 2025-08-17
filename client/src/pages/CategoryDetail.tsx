@@ -222,6 +222,22 @@ export default function CategoryDetail() {
                     <CardDescription>
                       Create detailed prompts using Markdown formatting. This prompt will guide the AI analysis for documents in this category.
                     </CardDescription>
+                    <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <i className="fab fa-markdown text-blue-600 dark:text-blue-400"></i>
+                        <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Markdown Formatting</span>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-blue-800 dark:text-blue-200">
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded"># Heading</code></div>
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">**bold**</code></div>
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">*italic*</code></div>
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">- list</code></div>
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">## Sub</code></div>
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">`code`</code></div>
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">1. number</code></div>
+                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">{'> quote'}</code></div>
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     {isEditing ? (
@@ -252,12 +268,8 @@ Please provide detailed analysis with specific insights relevant to supplier man
                                 {...field} 
                               />
                             </FormControl>
-                            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-4">
-                              <span className="flex items-center">
-                                <i className="fab fa-markdown mr-1"></i>
-                                Supports Markdown formatting
-                              </span>
-                              <span>**bold**, *italic*, # headings, - lists, etc.</span>
+                            <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                              Use the Markdown formatting shown above to create structured, professional prompts.
                             </div>
                             <FormMessage />
                           </FormItem>
@@ -400,26 +412,7 @@ Please provide detailed analysis with specific insights relevant to supplier man
                   </CardContent>
                 </Card>
 
-                {/* Markdown Reference Card */}
-                <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-                  <CardHeader>
-                    <CardTitle className="flex items-center space-x-2 text-sm">
-                      <i className="fab fa-markdown text-accent-blue"></i>
-                      <span>Markdown Reference</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-xs space-y-2">
-                    <div className="grid grid-cols-1 gap-2">
-                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded"># Heading</code> - Large heading</div>
-                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">## Subheading</code> - Medium heading</div>
-                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">**bold**</code> - Bold text</div>
-                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">*italic*</code> - Italic text</div>
-                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">- item</code> - Bullet list</div>
-                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">1. item</code> - Numbered list</div>
-                      <div><code className="bg-gray-100 dark:bg-dark-bg px-1 rounded">`code`</code> - Inline code</div>
-                    </div>
-                  </CardContent>
-                </Card>
+
 
                 {/* Metadata Card */}
                 <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
