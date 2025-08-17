@@ -378,6 +378,19 @@ export default function CategoryDetail() {
                   <CardContent>
                     {isEditing ? (
                       <div className="space-y-6">
+                        {/* Format Display - Read Only */}
+                        <div>
+                          <label className="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-2">Format</label>
+                          <div className="flex items-center space-x-2">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {(category as any).formatDescription || '(Context → Task → Output)'}
+                            </p>
+                            <Badge variant="outline" className="border-blue-500 text-blue-600 text-xs">
+                              {(category as any).formatName || 'CTO'}
+                            </Badge>
+                          </div>
+                        </div>
+
                         <FormField
                           control={form.control}
                           name="name"
@@ -469,7 +482,7 @@ export default function CategoryDetail() {
                           name="isActive"
                           render={({ field }) => (
                             <FormItem className="space-y-3">
-                              <FormLabel className="text-base">Status</FormLabel>
+                              <FormLabel className="text-[14px]">Status</FormLabel>
                               <FormControl>
                                 <div className="flex items-center space-x-6">
                                   <div className="flex items-center space-x-2">
