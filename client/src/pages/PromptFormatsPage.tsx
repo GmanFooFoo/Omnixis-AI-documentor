@@ -136,15 +136,6 @@ export default function PromptFormatsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-20">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
-          <Link href="/" className="hover:text-accent-blue">Home</Link>
-          <span>/</span>
-          <Link href="/settings" className="hover:text-accent-blue">Settings</Link>
-          <span>/</span>
-          <span className="text-gray-600 dark:text-gray-300">Prompt Formats</span>
-        </div>
-
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
