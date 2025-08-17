@@ -381,7 +381,8 @@ export default function Dashboard() {
                       </tr>
                     ) : (documents as any[])?.length > 0 ? (
                       (documents as any[]).slice(0, 5).map((doc: any) => (
-                        <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors">
+                        <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors cursor-pointer"
+                            onClick={() => window.location.href = `/documents/${doc.id}`}>
                           <td className="py-4 px-2">
                             <div className="flex items-center space-x-3">
                               <i className={`fas ${
@@ -415,7 +416,7 @@ export default function Dashboard() {
                           <td className="py-4 px-2 text-sm text-gray-500 dark:text-gray-400">
                             {new Date(doc.createdAt).toLocaleDateString()}
                           </td>
-                          <td className="py-4 px-2">
+                          <td className="py-4 px-2" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center space-x-2">
                               <Link href={`/documents/${doc.id}`}>
                                 <Button variant="ghost" size="sm" className="text-accent-blue hover:text-blue-600">

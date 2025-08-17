@@ -371,9 +371,10 @@ export default function Documents() {
                       </tr>
                     ) : filteredDocuments.length > 0 ? (
                       filteredDocuments.map((doc: any) => (
-                        <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors">
+                        <tr key={doc.id} className="hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors cursor-pointer" 
+                            onClick={() => window.location.href = `/documents/${doc.id}`}>
                           {isSelectMode && (
-                            <td className="py-4 px-2">
+                            <td className="py-4 px-2" onClick={(e) => e.stopPropagation()}>
                               <input
                                 type="checkbox"
                                 checked={selectedDocuments.includes(doc.id)}
@@ -416,7 +417,7 @@ export default function Documents() {
                           <td className="py-4 px-2 text-sm text-gray-500 dark:text-gray-400">
                             {new Date(doc.createdAt).toLocaleDateString()}
                           </td>
-                          <td className="py-4 px-2">
+                          <td className="py-4 px-2" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center space-x-2">
                               <Link href={`/documents/${doc.id}`}>
                                 <Button variant="ghost" size="sm" className="text-accent-blue hover:text-blue-600">
@@ -483,12 +484,13 @@ export default function Documents() {
                   ))
                 ) : filteredDocuments.length > 0 ? (
                   filteredDocuments.map((doc: any) => (
-                    <Card key={doc.id} className={`bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow ${
+                    <Card key={doc.id} className={`bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow cursor-pointer ${
                       isSelectMode && selectedDocuments.includes(doc.id) ? 'ring-2 ring-blue-500 border-blue-500' : ''
-                    }`}>
+                    }`} 
+                    onClick={() => window.location.href = `/documents/${doc.id}`}>
                       <CardContent className="p-6">
                         {isSelectMode && (
-                          <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center justify-between mb-4" onClick={(e) => e.stopPropagation()}>
                             <input
                               type="checkbox"
                               checked={selectedDocuments.includes(doc.id)}
@@ -547,7 +549,7 @@ export default function Documents() {
                           </div>
                         </div>
 
-                        <div className="flex space-x-2">
+                        <div className="flex space-x-2" onClick={(e) => e.stopPropagation()}>
                           <Link href={`/documents/${doc.id}`} className="flex-1">
                             <Button variant="outline" size="sm" className="w-full">
                               <i className="fas fa-eye mr-1"></i>View
@@ -557,7 +559,7 @@ export default function Documents() {
                             <i className="fas fa-download mr-1"></i>Download
                           </Button>
                         </div>
-                        <div className="mt-2">
+                        <div className="mt-2" onClick={(e) => e.stopPropagation()}>
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button variant="outline" size="sm" className="w-full text-red-500 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-800 dark:hover:bg-red-900">
