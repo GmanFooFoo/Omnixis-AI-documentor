@@ -81,7 +81,18 @@ export class DatabaseStorage implements IStorage {
         throw new Error(`Supabase error: ${supabaseError.message}`);
       }
       
-      return data || undefined;
+      if (!data) return undefined;
+      
+      // Map snake_case back to camelCase
+      return {
+        id: data.id,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        profileImageUrl: data.profile_image_url,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at),
+      };
     }
   }
 
@@ -102,12 +113,20 @@ export class DatabaseStorage implements IStorage {
       return user;
     } catch (error) {
       console.log('Using Supabase REST API for upsertUser');
+      // Map camelCase to snake_case for Supabase
+      const supabaseUserData = {
+        id: userData.id,
+        email: userData.email,
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        profile_image_url: userData.profileImageUrl,
+        created_at: userData.createdAt?.toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      
       const { data, error: supabaseError } = await this.supabase
         .from('users')
-        .upsert({
-          ...userData,
-          updated_at: new Date().toISOString(),
-        })
+        .upsert(supabaseUserData)
         .select()
         .single();
       
@@ -115,7 +134,16 @@ export class DatabaseStorage implements IStorage {
         throw new Error(`Supabase error: ${supabaseError.message}`);
       }
       
-      return data;
+      // Map snake_case back to camelCase for return
+      return {
+        id: data.id,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        profileImageUrl: data.profile_image_url,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at),
+      };
     }
   }
 
