@@ -20,6 +20,7 @@ const promptFormatSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   structure: z.string().min(1, "Structure is required"),
+  elements: z.string().min(1, "Elements is required"),
   bestFor: z.string().min(1, "Best for is required"),
   purpose: z.string().min(1, "Purpose is required"),
 });
@@ -31,8 +32,10 @@ interface PromptFormat {
   name: string;
   description: string;
   structure: string;
+  elements: string;
   bestFor: string;
   purpose: string;
+  isDefault: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,6 +52,7 @@ export default function PromptFormatsPage() {
       name: "",
       description: "",
       structure: "",
+      elements: "",
       bestFor: "",
       purpose: "",
     },
@@ -110,6 +114,7 @@ export default function PromptFormatsPage() {
         name: format.name,
         description: format.description,
         structure: format.structure,
+        elements: format.elements,
         bestFor: format.bestFor,
         purpose: format.purpose,
       });
@@ -213,6 +218,20 @@ export default function PromptFormatsPage() {
                             className="min-h-[100px]"
                             {...field} 
                           />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="elements"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Elements</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., Context, Task, Output" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -332,7 +351,7 @@ export default function PromptFormatsPage() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Structure</h4>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Elements</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">{format.elements}</span>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                       {format.structure}

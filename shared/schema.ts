@@ -96,6 +96,7 @@ export const promptFormats = pgTable("prompt_formats", {
   name: varchar("name").notNull().unique(),
   description: text("description"),
   structure: text("structure").notNull(),
+  elements: text("elements").notNull(), // Added elements field
   bestFor: text("best_for").notNull(),
   purpose: text("purpose").notNull(),
   isDefault: boolean("is_default").default(false).notNull(),
