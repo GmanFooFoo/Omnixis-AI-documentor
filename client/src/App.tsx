@@ -13,6 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import Documents from "@/pages/documents";
 import DocumentDetail from "@/pages/DocumentDetail";
 import Help from "@/pages/help";
+import Storybook from "@/pages/storybook";
 import Categories from "@/pages/categories";
 import CategoryDetail from "@/pages/CategoryDetail";
 
@@ -212,6 +213,7 @@ function Router() {
             <Route path="/categories" component={Categories} />
             <Route path="/categories/:id" component={CategoryDetail} />
             <Route path="/help" component={Help} />
+            <Route path="/storybook" component={Storybook} />
           </>
         )}
         <Route component={NotFound} />
