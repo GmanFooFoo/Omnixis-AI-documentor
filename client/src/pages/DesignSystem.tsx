@@ -5,20 +5,22 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Link } from "wouter";
 
 export default function DesignSystem() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg pt-20">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
-          <Link href="/" className="hover:text-accent-blue">Home</Link>
-          <span>/</span>
-          <Link href="/settings" className="hover:text-accent-blue">Settings</Link>
-          <span>/</span>
-          <span className="text-gray-600 dark:text-gray-300">Design System</span>
-        </div>
+        {/* Breadcrumb Navigation */}
+        <Breadcrumb 
+          items={[
+            { label: 'Home', href: '/', icon: 'fas fa-home' },
+            { label: 'Settings', href: '/settings', icon: 'fas fa-cog' },
+            { label: 'Design System', icon: 'fas fa-palette' }
+          ]}
+          showBackToTop={true}
+        />
 
         {/* Header */}
         <div className="mb-8">
@@ -274,6 +276,55 @@ export default function DesignSystem() {
                     Optimize for user efficiency with minimal cognitive load and quick task completion.
                   </p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Breadcrumb Navigation Component */}
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">Breadcrumb Navigation</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Basic Breadcrumb</h3>
+                <Breadcrumb 
+                  items={[
+                    { label: 'Home', href: '/', icon: 'fas fa-home' },
+                    { label: 'Documents', href: '/documents', icon: 'fas fa-file-text' },
+                    { label: 'Project Files', icon: 'fas fa-folder' }
+                  ]}
+                  showBackToTop={false}
+                  className="mb-4"
+                />
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Breadcrumbs help users understand their current location within the application hierarchy and provide quick navigation back to parent pages.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Features</h3>
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                  <li className="flex items-center">
+                    <i className="fas fa-check text-green-500 mr-2"></i>
+                    Automatic back-to-top button when scrolling
+                  </li>
+                  <li className="flex items-center">
+                    <i className="fas fa-check text-green-500 mr-2"></i>
+                    Icon support for visual hierarchy
+                  </li>
+                  <li className="flex items-center">
+                    <i className="fas fa-check text-green-500 mr-2"></i>
+                    Responsive design with mobile optimization
+                  </li>
+                  <li className="flex items-center">
+                    <i className="fas fa-check text-green-500 mr-2"></i>
+                    WCAG-compliant accessibility features
+                  </li>
+                  <li className="flex items-center">
+                    <i className="fas fa-check text-green-500 mr-2"></i>
+                    Smart truncation for long navigation paths
+                  </li>
+                </ul>
               </div>
             </CardContent>
           </Card>
