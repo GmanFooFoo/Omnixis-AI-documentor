@@ -5,18 +5,34 @@ export class SupabaseService {
   private bucketName = 'DocuAI';
 
   constructor() {
-    const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_URL_ENV_VAR || "default_url";
-    const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY_ENV_VAR || "default_key";
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.warn("Supabase credentials not configured - file storage will be disabled");
+      return;
+    }
+    
+    // Ensure we're using the correct Supabase URL format (not database URL)
+    if (supabaseUrl.includes('postgresql://') || supabaseUrl.includes(':5432')) {
+      console.error("Invalid Supabase URL - please provide the Supabase project URL (https://[project].supabase.co)");
+      return;
+    }
     
     this.supabase = createClient(supabaseUrl, supabaseKey);
+    console.log(`✅ Supabase client initialized for project: ${supabaseUrl}`);
   }
 
   async uploadImage(imageData: Buffer, fileName: string): Promise<string> {
+    if (!this.supabase) {
+      throw new Error("Supabase not configured - cannot upload image");
+    }
+
     try {
       // Generate unique filename with timestamp and random string
       const timestamp = Date.now();
       const randomString = Math.random().toString(36).substring(2, 15);
-      const uniqueFileName = `${timestamp}_${randomString}_${fileName}`;
+      const uniqueFileName = `images/${timestamp}_${randomString}_${fileName}`;
 
       const { data, error } = await this.supabase.storage
         .from(this.bucketName)
@@ -42,6 +58,10 @@ export class SupabaseService {
   }
 
   async uploadDocument(documentData: Buffer, fileName: string): Promise<string> {
+    if (!this.supabase) {
+      throw new Error("Supabase not configured - cannot upload document");
+    }
+
     try {
       // Generate unique filename
       const timestamp = Date.now();
