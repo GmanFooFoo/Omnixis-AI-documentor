@@ -44,8 +44,8 @@ app.use((req, res, next) => {
     const { DatabaseStorage } = await import('./storage');
     const dbStorage = new DatabaseStorage();
     
-    // Test the database connection
-    await dbStorage.getUser('test');
+    // Test the database connection with a simple query
+    const testResult = await dbStorage.getUser('test-connection');
     console.log('✅ Supabase database connected successfully');
     
     // Use authenticated routes with Supabase

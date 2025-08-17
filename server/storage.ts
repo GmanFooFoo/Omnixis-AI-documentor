@@ -16,6 +16,7 @@ import {
   type InsertProcessingQueueItem,
 } from "@shared/schema";
 import { db } from "./db";
+import { createClient } from '@supabase/supabase-js';
 import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
@@ -53,25 +54,69 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  private supabase: any;
+
+  constructor() {
+    // Fallback to Supabase REST API if direct DB connection fails
+    this.supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_ANON_KEY!
+    );
+  }
   // User operations (IMPORTANT) these user operations are mandatory for Replit Auth.
   async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    try {
+      // Try Drizzle first, fallback to Supabase REST API
+      const [user] = await db.select().from(users).where(eq(users.id, id));
+      return user;
+    } catch (error) {
+      console.log('Using Supabase REST API for getUser');
+      const { data, error: supabaseError } = await this.supabase
+        .from('users')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (supabaseError && supabaseError.code !== 'PGRST116') {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      return data || undefined;
+    }
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
+    try {
+      // Try Drizzle first, fallback to Supabase REST API
+      const [user] = await db
+        .insert(users)
+        .values(userData)
+        .onConflictDoUpdate({
+          target: users.id,
+          set: {
+            ...userData,
+            updatedAt: new Date(),
+          },
+        })
+        .returning();
+      return user;
+    } catch (error) {
+      console.log('Using Supabase REST API for upsertUser');
+      const { data, error: supabaseError } = await this.supabase
+        .from('users')
+        .upsert({
           ...userData,
-          updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return user;
+          updated_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+      
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      return data;
+    }
   }
 
   // Document operations

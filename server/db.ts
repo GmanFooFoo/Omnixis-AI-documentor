@@ -1,27 +1,20 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required");
 }
 
-// Supabase connection configuration with retries
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
-  // Add SSL configuration for Supabase
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+// Supabase connection with postgres-js (better compatibility)
+const client = postgres(process.env.DATABASE_URL, {
+  prepare: false,
+  max: 3,
+  idle_timeout: 30,
+  connect_timeout: 30,
+  ssl: process.env.NODE_ENV === "production" ? "require" : false,
+  connection: {
+    application_name: "DocuAI",
+  }
 });
 
-// Test connection and warm up the database
-pool.on('connect', () => {
-  console.log('Database connected successfully');
-});
-
-pool.on('error', (err) => {
-  console.error('Database connection error:', err);
-});
-
-export const db = drizzle(pool);
+export const db = drizzle(client);
