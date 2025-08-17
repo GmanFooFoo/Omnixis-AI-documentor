@@ -43,22 +43,14 @@ function TopNavigation() {
           <a href="/" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             Dashboard
           </a>
-          <div className="relative group">
-            <a href="/documents" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border">
-              <i className="fas fa-file-alt text-lg"></i>
-            </a>
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-              Documents
-            </div>
-          </div>
-          <div className="relative group">
-            <a href="/categories" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border">
-              <i className="fas fa-tags text-lg"></i>
-            </a>
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-              Categories
-            </div>
-          </div>
+          <a href="/documents" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
+            <i className="fas fa-file-alt"></i>
+            <span>Documents</span>
+          </a>
+          <a href="/categories" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
+            <i className="fas fa-tags"></i>
+            <span>Categories</span>
+          </a>
           <a href="#" className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             Analytics
           </a>
@@ -138,17 +130,17 @@ function TopNavigation() {
             </a>
             <a 
               href="/documents" 
-              className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg"
+              className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg flex items-center justify-center"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <i className="fas fa-file-text mr-3 w-4"></i>Documents
+              <i className="fas fa-file-alt text-lg"></i>
             </a>
             <a 
               href="/categories" 
-              className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg"
+              className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg flex items-center justify-center"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <i className="fas fa-tag mr-3 w-4"></i>Categories
+              <i className="fas fa-tags text-lg"></i>
             </a>
             <a 
               href="#" 
