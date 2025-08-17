@@ -8,10 +8,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, Save, Tag, Edit, Calendar } from 'lucide-react';
+import { ArrowLeft, Save, Tag, Edit, Calendar, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { DocumentCategory } from '@shared/schema';
 
@@ -215,29 +216,70 @@ export default function CategoryDetail() {
               <div className="lg:col-span-2">
                 <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
-                      <i className="fab fa-markdown text-accent-blue"></i>
-                      <span>AI Analysis Prompt</span>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <i className="fab fa-markdown text-accent-blue"></i>
+                        <span>AI Analysis Prompt</span>
+                      </div>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                            <Info className="h-4 w-4 mr-1" />
+                            Markdown Help
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[500px]">
+                          <DialogHeader>
+                            <DialogTitle className="flex items-center space-x-2">
+                              <i className="fab fa-markdown text-accent-blue"></i>
+                              <span>Markdown Formatting Guide</span>
+                            </DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                              Use these Markdown formatting options to create structured, professional prompts:
+                            </p>
+                            <div className="grid grid-cols-1 gap-3">
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm"># Heading</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Large heading</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm">## Subheading</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Medium heading</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm">**bold text**</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Bold text</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm">*italic text*</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Italic text</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm">- List item</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Bullet point</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm">1. Numbered</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Numbered list</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm">`inline code`</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Inline code</span>
+                              </div>
+                              <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm">{'> Quote'}</code>
+                                <span className="text-sm text-gray-600 dark:text-gray-300">Block quote</span>
+                              </div>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </CardTitle>
                     <CardDescription>
                       Create detailed prompts using Markdown formatting. This prompt will guide the AI analysis for documents in this category.
                     </CardDescription>
-                    <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <i className="fab fa-markdown text-blue-600 dark:text-blue-400"></i>
-                        <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Markdown Formatting</span>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-blue-800 dark:text-blue-200">
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded"># Heading</code></div>
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">**bold**</code></div>
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">*italic*</code></div>
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">- list</code></div>
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">## Sub</code></div>
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">`code`</code></div>
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">1. number</code></div>
-                        <div><code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">{'> quote'}</code></div>
-                      </div>
-                    </div>
                   </CardHeader>
                   <CardContent>
                     {isEditing ? (
@@ -269,7 +311,7 @@ Please provide detailed analysis with specific insights relevant to supplier man
                               />
                             </FormControl>
                             <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                              Use the Markdown formatting shown above to create structured, professional prompts.
+                              Use Markdown formatting to create structured, professional prompts. Click "Markdown Help" above for syntax reference.
                             </div>
                             <FormMessage />
                           </FormItem>
