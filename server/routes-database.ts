@@ -33,6 +33,15 @@ const upload = multer({
 });
 
 export async function registerDatabaseRoutes(app: Express): Promise<Server> {
+  // Import and register LLM routes
+  const { llmRouter } = await import("./routes-llm");
+  const { seedLlmData } = await import("./seedLlmData");
+
+  // Add LLM routes to the app
+  app.use('/api/llm', llmRouter);
+
+  // Seed LLM data on startup
+  seedLlmData().catch(console.error);
   // Demo user endpoint (no auth required)
   app.get('/api/auth/user', async (req, res) => {
     // Return a demo user for testing
@@ -532,17 +541,9 @@ function splitTextIntoChunks(text: string, maxChunkSize: number): string[] {
   return chunks.filter(chunk => chunk.length > 0);
 }
 
-// Import and register LLM routes
-import { llmRouter } from "./routes-llm";
-import { seedLlmData } from "./seedLlmData";
-
-// Add LLM routes to the app before returning the server
-app.use('/api/llm', llmRouter);
-
-// Seed LLM data on startup
-seedLlmData().catch(console.error);
-
-return server;
+  // Add this at the end of the function, before the closing brace
+  const server = createServer(app);
+  return server;
 }
 
 export { registerDatabaseRoutes };

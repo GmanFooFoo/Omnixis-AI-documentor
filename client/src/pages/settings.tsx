@@ -136,6 +136,30 @@ export default function Settings() {
             </CardContent>
           </Card>
 
+          {/* LLM Configuration */}
+          <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                  <SettingsIcon className="h-5 w-5 text-purple-500" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">LLM Models</CardTitle>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Configure AI language models and API keys for document processing.
+              </p>
+              <Link href="/settings/llm">
+                <Button variant="outline" className="w-full">
+                  Configure LLM Models
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
           {/* General Settings */}
           <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow">
             <CardHeader>
