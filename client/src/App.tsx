@@ -19,6 +19,7 @@ import CategoryDetail from "@/pages/CategoryDetail";
 import Settings from "@/pages/settings";
 import DesignSystem from "@/pages/DesignSystem";
 import LlmSettings from "@/pages/LlmSettings";
+import Analytics from "@/pages/Analytics";
 
 function TopNavigation() {
   const { user, isAuthenticated } = useAuth();
@@ -56,7 +57,7 @@ function TopNavigation() {
             <i className="fas fa-tags"></i>
             <span>Categories</span>
           </a>
-          <a href="#" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
+          <a href="/analytics" className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors text-sm xl:text-base">
             <i className="fas fa-chart-bar"></i>
             <span>Analytics</span>
           </a>
@@ -150,7 +151,7 @@ function TopNavigation() {
               <i className="fas fa-tags text-lg"></i>
             </a>
             <a 
-              href="#" 
+              href="/analytics" 
               className="text-gray-600 dark:text-gray-300 hover:text-accent-blue transition-colors py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-bg"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -218,6 +219,7 @@ function Router() {
             <Route path="/documents/:id" component={DocumentDetail} />
             <Route path="/categories" component={Categories} />
             <Route path="/categories/:id" component={CategoryDetail} />
+            <Route path="/analytics" component={Analytics} />
             <Route path="/help" component={Help} />
             <Route path="/storybook" component={Storybook} />
             <Route path="/settings" component={Settings} />
