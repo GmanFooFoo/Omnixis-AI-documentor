@@ -190,11 +190,13 @@ export default function Dashboard() {
 
           {/* Monitoring Panel */}
           <div className="space-y-6">
-            {/* Active Processing */}
+            {/* Active Processing / Uploader Status */}
             <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Active Processing</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {(activeProcessing as any[])?.length > 0 ? "Uploader Status" : "Active Processing"}
+                  </h3>
                   <Badge variant="secondary">
                     {processingLoading ? "..." : `${(activeProcessing as any[])?.length || 0} items`}
                   </Badge>
@@ -270,43 +272,12 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* System Status */}
-            <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Status</h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-accent-green rounded-full"></div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">Mistral AI OCR</span>
-                    </div>
-                    <Badge variant="default" className="bg-accent-green text-white">Operational</Badge>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-accent-green rounded-full"></div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">Supabase Storage</span>
-                    </div>
-                    <Badge variant="default" className="bg-accent-green text-white">Operational</Badge>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-accent-green rounded-full"></div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">Vector Database</span>
-                    </div>
-                    <Badge variant="default" className="bg-accent-green text-white">Operational</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
         {/* Recent Documents */}
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <Card className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
