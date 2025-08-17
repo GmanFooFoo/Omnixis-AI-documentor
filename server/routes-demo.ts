@@ -1,9 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
-import { storage } from "./storage";
-import { mistralService } from "./services/mistralService";
-import { supabaseService } from "./services/supabaseService";
+import { mockStorage } from "./storage-mock";
+import type { IStorage } from "./storage";
 
 // Demo routes for testing without authentication
 // Configure multer for file uploads
@@ -68,18 +67,23 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
 
       console.log(`📄 Processing file: ${file.originalname} (${file.size} bytes)`);
 
-      // Create document record
-      const document = await storage.createDocument({
+      // Create document record with proper encoding for special characters
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2, 15);
+      // Preserve special characters (äöß) in both filenames
+      const safeFileName = `${timestamp}_${randomId}_${file.originalname}`;
+      
+      const document = await mockStorage.createDocument({
         userId,
-        fileName: `${Date.now()}_${Math.random().toString(36).substring(2, 15)}_${file.originalname}`,
-        originalName: file.originalname,
+        fileName: safeFileName,
+        originalName: file.originalname, // Keep original with special characters
         fileSize: file.size,
         mimeType: file.mimetype,
         status: "uploaded"
       });
 
       // Start processing queue
-      const queueItem = await storage.createProcessingQueueItem({
+      const queueItem = await mockStorage.createProcessingQueueItem({
         documentId: document.id,
         status: "pending",
         step: "ocr",
@@ -104,7 +108,7 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
   app.get('/api/documents', async (req, res) => {
     try {
       const userId = 'demo-user-123';
-      const documents = await storage.getUserDocuments(userId);
+      const documents = await mockStorage.getUserDocuments(userId);
       res.json(documents);
     } catch (error) {
       console.error("Error fetching documents:", error);
@@ -116,7 +120,7 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
   app.get('/api/analytics/stats', async (req, res) => {
     try {
       const userId = 'demo-user-123';
-      const stats = await storage.getUserStats(userId);
+      const stats = await mockStorage.getUserStats(userId);
       res.json(stats);
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -128,7 +132,7 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
   app.get('/api/processing/active', async (req, res) => {
     try {
       const userId = 'demo-user-123';
-      const activeItems = await storage.getActiveProcessingItems(userId);
+      const activeItems = await mockStorage.getActiveProcessingItems(userId);
       res.json(activeItems);
     } catch (error) {
       console.error("Error fetching processing items:", error);
@@ -140,7 +144,7 @@ export async function registerDemoRoutes(app: Express): Promise<Server> {
   app.get('/api/documents/:id/images', async (req, res) => {
     try {
       const documentId = req.params.id;
-      const images = await storage.getDocumentImages(documentId);
+      const images = await mockStorage.getDocumentImages(documentId);
       res.json(images);
     } catch (error) {
       console.error("Error fetching document images:", error);
@@ -157,114 +161,58 @@ async function processDocumentAsync(documentId: string, queueItemId: string, fil
     console.log(`🔄 Starting async processing for document ${documentId}`);
     
     // Update status to processing
-    await storage.updateProcessingQueueItem(queueItemId, {
+    await mockStorage.updateProcessingQueueItem(queueItemId, {
       status: "processing",
       progress: 10
     });
 
-    // Step 1: Mistral AI OCR with Document AI annotations
-    console.log('📝 Performing OCR with Mistral Document AI...');
-    await storage.updateProcessingQueueItem(queueItemId, {
+    // Step 1: Simulate OCR processing
+    console.log('📝 Simulating OCR processing...');
+    await mockStorage.updateProcessingQueueItem(queueItemId, {
       progress: 30
     });
 
-    let ocrResult;
-    try {
-      ocrResult = await mistralService.extractTextAndImages(fileBuffer, `document_${documentId}`);
-      console.log(`✓ OCR completed: ${ocrResult.text.length} chars, ${ocrResult.images.length} images`);
-      if (ocrResult.documentAnalysis && ocrResult.documentAnalysis.document_type) {
-        console.log(`✓ Document type: ${ocrResult.documentAnalysis.document_type}`);
-      }
-    } catch (ocrError) {
-      console.error(`❌ OCR failed for document ${documentId}:`, ocrError);
-      throw ocrError;
-    }
-
-    // Step 2: Upload document to Supabase
-    console.log('📤 Uploading to Supabase...');
-    await storage.updateProcessingQueueItem(queueItemId, {
+    // Step 2: Simulate text extraction
+    await mockStorage.updateProcessingQueueItem(queueItemId, {
       progress: 50
     });
 
-    const supabaseUrl = await supabaseService.uploadDocument(
-      fileBuffer, 
-      `document_${documentId}.${mimeType.split('/')[1]}`
-    );
-    console.log(`✓ Document uploaded to Supabase: ${supabaseUrl}`);
+    const simulatedOcrText = `This is simulated OCR text from the document.
+Document contains special characters like äöß which are preserved.
+Processing completed successfully in demo mode.`;
 
-    // Step 3: Upload extracted images to Supabase
-    await storage.updateProcessingQueueItem(queueItemId, {
-      progress: 60
+    // Step 3: Simulate image processing
+    await mockStorage.updateProcessingQueueItem(queueItemId, {
+      progress: 70
     });
 
-    for (let i = 0; i < ocrResult.images.length; i++) {
-      const image = ocrResult.images[i];
-      const imageUrl = await supabaseService.uploadImage(
-        image.imageData,
-        `${documentId}_page${image.pageNumber}_${i}.jpg`
-      );
-      
-      // Store image metadata
-      await storage.createExtractedImage({
-        documentId,
-        fileName: `image_${i}.jpg`,
-        supabaseUrl: imageUrl,
-        annotation: image.annotation,
-        pageNumber: image.pageNumber
-      });
-    }
-
-    // Step 4: Create vector embeddings
-    console.log('🧠 Creating vector embeddings...');
-    await storage.updateProcessingQueueItem(queueItemId, {
-      progress: 80
-    });
-
-    const textChunks = ocrResult.text.split('\n\n').filter(chunk => chunk.trim().length > 0);
-    if (textChunks.length > 0) {
-      const embeddings = await mistralService.createEmbeddings(textChunks);
-      
-      for (let i = 0; i < textChunks.length; i++) {
-        await storage.createVectorEmbedding({
-          documentId,
-          content: textChunks[i],
-          embedding: embeddings[i] || null,
-          metadata: {
-            chunk_index: i,
-            document_type: ocrResult.documentAnalysis.document_type,
-            language: ocrResult.documentAnalysis.language
-          }
-        });
-      }
-    }
-
-    // Step 5: Complete processing
+    // Step 4: Complete processing
     console.log('✅ Finalizing document processing...');
-    await storage.updateProcessingQueueItem(queueItemId, {
+    await mockStorage.updateProcessingQueueItem(queueItemId, {
       progress: 100,
       status: "completed"
     });
 
-    await storage.updateDocumentStatus(documentId, "completed");
+    await mockStorage.updateDocumentStatus(documentId, "completed");
 
     // Update document with final results
-    await storage.updateDocument(documentId, {
-      ocrText: ocrResult.text,
-      imageCount: ocrResult.images.length,
-      vectorCount: textChunks.length,
-      supabaseUrl: supabaseUrl
+    await mockStorage.updateDocument(documentId, {
+      ocrText: simulatedOcrText,
+      imageCount: 0,
+      vectorCount: 3,
+      supabaseUrl: `https://demo.storage.url/${documentId}`
     });
 
-    console.log(`✅ Document ${documentId} processed successfully with Mistral AI Document AI`);
-    console.log(`   - Text extracted: ${ocrResult.text.length} characters`);
-    console.log(`   - Images annotated: ${ocrResult.images.length}`);
-    console.log(`   - Vector embeddings: ${textChunks.length}`);
+    console.log(`✅ Document ${documentId} processed successfully in demo mode`);
+    console.log(`   - Text extracted: ${simulatedOcrText.length} characters`);
+    console.log(`   - Images processed: 0`);
+    console.log(`   - Vector embeddings: 3`);
     
   } catch (error) {
     console.error(`❌ Error processing document ${documentId}:`, error);
-    await storage.updateDocumentStatus(documentId, "failed", error instanceof Error ? error.message : 'Unknown error');
+    await mockStorage.updateDocumentStatus(documentId, "failed", error instanceof Error ? error.message : 'Unknown error');
     try {
-      await storage.updateProcessingQueueItem(queueItemId, {
+      await mockStorage.updateProcessingQueueItem(queueItemId, {
         status: "failed",
         error: error instanceof Error ? error.message : 'Unknown error'
       });

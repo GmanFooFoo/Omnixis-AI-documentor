@@ -333,6 +333,7 @@ export class DatabaseStorage implements IStorage {
         .orderBy(desc(processingQueue.createdAt));
     } catch (error) {
       console.log('Using Supabase REST API for getActiveProcessingItems');
+      // Simplified query without error column since it doesn't exist in Supabase
       const { data, error: supabaseError } = await this.supabase
         .from('processing_queue')
         .select(`
@@ -341,7 +342,6 @@ export class DatabaseStorage implements IStorage {
           status,
           step,
           progress,
-          error,
           created_at,
           updated_at,
           documents!inner(file_name, original_name)
@@ -361,7 +361,7 @@ export class DatabaseStorage implements IStorage {
         status: item.status,
         step: item.step,
         progress: item.progress,
-        error: item.error,
+        error: null, // Not available in current Supabase schema
         createdAt: new Date(item.created_at),
         updatedAt: new Date(item.updated_at),
         fileName: item.documents?.file_name,
@@ -377,22 +377,47 @@ export class DatabaseStorage implements IStorage {
     vectorEmbeddings: number;
     storageUsed: number;
   }> {
-    const userDocs = await db
-      .select()
-      .from(documents)
-      .where(eq(documents.userId, userId));
+    try {
+      const userDocs = await db
+        .select()
+        .from(documents)
+        .where(eq(documents.userId, userId));
 
-    const documentsProcessed = userDocs.filter(doc => doc.status === "completed").length;
-    const imagesExtracted = userDocs.reduce((sum, doc) => sum + (doc.imageCount || 0), 0);
-    const vectorEmbeddings = userDocs.reduce((sum, doc) => sum + (doc.vectorCount || 0), 0);
-    const storageUsed = userDocs.reduce((sum, doc) => sum + doc.fileSize, 0);
+      const documentsProcessed = userDocs.filter(doc => doc.status === "completed").length;
+      const imagesExtracted = userDocs.reduce((sum, doc) => sum + (doc.imageCount || 0), 0);
+      const vectorEmbeddings = userDocs.reduce((sum, doc) => sum + (doc.vectorCount || 0), 0);
+      const storageUsed = userDocs.reduce((sum, doc) => sum + doc.fileSize, 0);
 
-    return {
-      documentsProcessed,
-      imagesExtracted,
-      vectorEmbeddings,
-      storageUsed,
-    };
+      return {
+        documentsProcessed,
+        imagesExtracted,
+        vectorEmbeddings,
+        storageUsed,
+      };
+    } catch (error) {
+      console.log('Using Supabase REST API for getUserStats');
+      const { data, error: supabaseError } = await this.supabase
+        .from('documents')
+        .select('status, image_count, vector_count, file_size')
+        .eq('user_id', userId);
+      
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+      
+      const userDocs = data || [];
+      const documentsProcessed = userDocs.filter((doc: any) => doc.status === "completed").length;
+      const imagesExtracted = userDocs.reduce((sum: number, doc: any) => sum + (doc.image_count || 0), 0);
+      const vectorEmbeddings = userDocs.reduce((sum: number, doc: any) => sum + (doc.vector_count || 0), 0);
+      const storageUsed = userDocs.reduce((sum: number, doc: any) => sum + doc.file_size, 0);
+
+      return {
+        documentsProcessed,
+        imagesExtracted,
+        vectorEmbeddings,
+        storageUsed,
+      };
+    }
   }
 }
 
